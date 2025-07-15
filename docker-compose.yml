@@ -1,0 +1,18 @@
+services:
+  flask-api:
+    build: ./flask-backend
+    ports:
+      - "5000:5000"
+    depends_on:
+      - java-service
+      - node-service
+
+  java-service:
+    build: ./java-converter
+    ports:
+      - "8080:8080"
+
+  node-service:
+    build: ./node-converter
+    ports:
+      - "3001:3001"
