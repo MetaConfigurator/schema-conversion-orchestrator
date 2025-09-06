@@ -1,15 +1,16 @@
-from typing import List, Set, Tuple
-from .data_structures import Converter, SchemaFeature, SchemaFormat
+from typing import List, Set, Tuple, Dict
+from data_structures import Converter, SchemaFeature, SchemaLanguage, SchemaFeatures, ConversionGraph, ConversionPath, ConversionPaths
 
-def build_conversion_tree(converters: List[Converter]):
-    global conversion_graph
+# Builds a schema conversion graph from the list of registered converters, connecting source formats to target formats with the edges being converters.
+def build_conversion_graph(converters: List[Converter]) -> Dict[str, List[Converter]]:
     conversion_graph = {}
     for conv in converters:
-        if conv.sourceFormat not in conversion_graph:
-            conversion_graph[conv.sourceFormat] = []
-        conversion_graph[conv.sourceFormat].append(conv)
+        if conv.source_format not in conversion_graph:
+            conversion_graph[conv.source_format] = []
+        conversion_graph[conv.source_format].append(conv)
+    return conversion_graph
 
-def identify_schema_features(schema: str, format: SchemaFormat) -> List[SchemaFeature]:
+def identify_schema_features(schema: str, format: SchemaLanguage, conversion_graph: ConversionGraph) -> SchemaFeatures:
     # Dummy logic
     return [
         SchemaFeature.Constraints,
@@ -18,7 +19,7 @@ def identify_schema_features(schema: str, format: SchemaFormat) -> List[SchemaFe
         SchemaFeature.References
     ]
 
-def find_paths(source: SchemaFormat, target: SchemaFormat, path: List[List[Converter]]|None=None, visited: Set[SchemaFormat]|None=None) -> List[List[Converter]]:
+def find_paths(source: SchemaLanguage, target: SchemaLanguage, conversion_graph: ConversionGraph, path: ConversionPaths | None=None, visited: Set[SchemaLanguage] | None=None) -> ConversionPaths:
     if path is None:
         path = []
     if visited is None:
@@ -34,16 +35,16 @@ def find_paths(source: SchemaFormat, target: SchemaFormat, path: List[List[Conve
     paths = []
 
     for conv in conversion_graph[source]:
-        if conv.targetFormat not in visited:
+        if conv.target_format not in visited:
             new_path = path + [conv]
-            sub_paths = find_paths(conv.targetFormat, target, new_path, visited.copy())
+            sub_paths = find_paths(conv.target_format, target, conversion_graph, new_path, visited.copy())
             paths.extend(sub_paths)
 
     return paths
 
 
 # ranks the paths based on how many features they support from the document schema plus returns a list of unsupported features for each path
-def rank_paths(paths: List[List[Converter]], doc_features: set[SchemaFeature]) -> List[Tuple[List[Converter], Set[SchemaFeature]]]:
+def rank_paths(paths: ConversionPaths, doc_features: set[SchemaFeature]) -> List[Tuple[ConversionPath, Set[SchemaFeature]]]:
     ranked_paths = []
 
     for path in paths:
@@ -51,8 +52,9 @@ def rank_paths(paths: List[List[Converter]], doc_features: set[SchemaFeature]) -
         unsupported_features = set(doc_features)
 
         for conv in path:
-            supported_features.update(conv.supportedFeatures)
-            unsupported_features -= conv.supportedFeatures
+            supported_features.update(conv.supported_features)
+            # remove supported features from unsupported features
+            unsupported_features.difference_update(conv.supported_features)
 
         score = len(supported_features)
         ranked_paths.append((path, unsupported_features, score))
@@ -64,7 +66,7 @@ def rank_paths(paths: List[List[Converter]], doc_features: set[SchemaFeature]) -
 
 
 # Returns either the best path + a list of schema features that are in the core document but not supported and will be omitted, or None if no path is found.
-def determine_best_path(paths: List[List[Converter]], doc_features: set[SchemaFeature]) -> Tuple[List[Converter], Set[SchemaFeature]] | None:
+def determine_best_path(paths: ConversionPaths, doc_features: set[SchemaFeature]) -> Tuple[ConversionPath, Set[SchemaFeature]] | None:
     if not paths:
         return None
 
