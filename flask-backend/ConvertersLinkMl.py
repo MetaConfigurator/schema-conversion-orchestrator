@@ -138,6 +138,10 @@ class ConverterJsonSchemaToLinkMl(ConverterInternal):
         schema_dict.pop("$schema", None)
         # schema_dict.pop("$id", None)
 
+        # if no title is present, add a dummy title
+        if "title" not in schema_dict:
+            schema_dict["title"] = "ImportedSchema"
+
         schema = json.dumps(schema_dict)
 
         # Import

@@ -5,8 +5,8 @@ from pathlib import Path
 # --- Configuration ---
 SERVER_URL = "http://localhost:5002/convert"
 SOURCE_FORMAT = "JsonSchema"
-TARGET_FORMAT = "SHACL"
-SCHEMA_FILE = Path("schemas/simpleSchema.schema.json")
+TARGET_FORMAT = "GraphQL"
+SCHEMA_FILE = Path("schemas/preciceAdapterConfigSchema.schema.json")
 
 
 def main():
