@@ -1,11 +1,8 @@
-from data_structures import Converter, SchemaFeature
-from logic import build_conversion_graph, identify_schema_features, find_paths, determine_best_path, rank_paths
+from data_structures import Converter, schema_language_from_string
+from logic import build_conversion_graph, identify_schema_features, find_paths, rank_paths
 from register_python_converters import register_python_converters
-from visualize_conversion_graph import visualize_conversion_graph
-from flask import Flask, request, jsonify
-from enum import Enum
+from flask import Flask, request
 from typing import List, Dict
-import requests
 
 app = Flask(__name__)
 
@@ -34,6 +31,9 @@ def convert():
     source = data["sourceFormat"]
     target = data["targetFormat"]
     schema = data["schema"]
+
+    source = schema_language_from_string(source)
+    target = schema_language_from_string(target)
 
     # if schema is an object, convert it to string
     if isinstance(schema, dict):

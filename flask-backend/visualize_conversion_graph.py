@@ -1,40 +1,81 @@
-from typing import Dict, List
-
-import networkx as nx
 import matplotlib
 matplotlib.use("TkAgg")  # or "Qt5Agg"
 import matplotlib.pyplot as plt
-
+import networkx as nx
+from typing import List
 from data_structures import Converter, ConversionGraph
 
-def visualize_conversion_graph(conversion_graph: ConversionGraph):
-    # Create a directed graph
-    G = nx.DiGraph()
 
-    # Add edges from converters
+def visualize_conversion_graph(conversion_graph: ConversionGraph):
+    # Build directed graph
+    G = nx.DiGraph()
+    edge_labels = {}
+
     for source, converters in conversion_graph.items():
         for converter in converters:
-            G.add_edge(str(converter.source_format), str(converter.target_format))
+            src, tgt = str(converter.source_format), str(converter.target_format)
+            G.add_edge(src, tgt)
+            edge_labels[(src, tgt)] = converter.name
 
-    # Layout for nodes
-    pos = nx.spring_layout(G, seed=42, k=1.5)
+    # Layout: shell spreads nodes in concentric circles
+    pos = nx.shell_layout(G)
 
-    # Draw nodes
-    nx.draw_networkx_nodes(G, pos, node_size=0, node_color="lightblue", edgecolors="black")
+    plt.figure(figsize=(16, 12))
 
-    # Draw edges
-    nx.draw_networkx_edges(G, pos, arrowstyle="->", arrowsize=30, edge_color="gray")
+    # --- Draw nodes ---
+    nx.draw_networkx_nodes(
+        G, pos,
+        node_size=1800,
+        node_color="skyblue",
+        edgecolors="black",
+        linewidths=1.2
+    )
 
-    # Draw labels
-    nx.draw_networkx_labels(G, pos, font_size=10, font_family="sans-serif")
+    # --- Draw edges with curvature for bidirectional ones ---
+    curved_edges = [edge for edge in G.edges() if (edge[1], edge[0]) in G.edges()]
+    straight_edges = list(set(G.edges()) - set(curved_edges))
 
-    # Show plot
-    plt.title("Schema Conversion Graph", fontsize=14)
+    # Straight edges
+    nx.draw_networkx_edges(
+        G, pos,
+        edgelist=straight_edges,
+        arrowstyle="->",
+        arrowsize=35,
+        edge_color="gray"
+    )
+
+    # Curved edges (for bidirectional connections)
+    nx.draw_networkx_edges(
+        G, pos,
+        edgelist=curved_edges,
+        arrowstyle="->",
+        arrowsize=35,
+        edge_color="gray",
+        connectionstyle="arc3,rad=0.25"
+    )
+
+    # --- Draw labels ---
+    nx.draw_networkx_labels(
+        G, pos,
+        font_size=10,
+        font_family="sans-serif"
+    )
+
+    # --- Draw edge labels (converter names) ---
+    nx.draw_networkx_edge_labels(
+        G, pos,
+        edge_labels=edge_labels,
+        font_size=8,
+        rotate=False,
+        bbox=dict(boxstyle="round,pad=0.2", fc="white", alpha=0.7)
+    )
+
+    plt.title("Schema Conversion Graph", fontsize=16)
     plt.axis("off")
+    plt.tight_layout()
     plt.show()
 
 
-# main function to generate graph and then plot it
 if __name__ == "__main__":
     from register_python_converters import register_python_converters
     from logic import build_conversion_graph

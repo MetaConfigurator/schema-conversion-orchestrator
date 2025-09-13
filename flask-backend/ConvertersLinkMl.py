@@ -4,8 +4,6 @@ from typing import Dict, Type
 
 import schema_automator
 from linkml.utils.generator import Generator
-from linkml_runtime import SchemaView
-from linkml_runtime.loaders import yaml_loader
 
 from data_structures import ConverterInternal, SchemaFeature, SchemaLanguage
 
@@ -21,6 +19,7 @@ from linkml.generators.owlgen import OwlSchemaGenerator
 from linkml.generators.docgen import DocGenerator
 from linkml.generators.pythongen import PythonGenerator
 from linkml.generators.sqlalchemygen import SQLAlchemyGenerator
+from linkml.generators.javagen import JavaGenerator
 
 
 class ConverterLinkMlToJsonSchema(ConverterInternal):
@@ -92,9 +91,11 @@ class ConverterFromLinkMl(ConverterInternal):
                 SchemaLanguage.JsonLD: JSONLDGenerator,
                 SchemaLanguage.SHACL: ShaclGenerator,
                 SchemaLanguage.Owl: OwlSchemaGenerator,
-                #"Markdown": DocGenerator,
-                SchemaLanguage.Python: PythonGenerator,
-                #"SQLAlchemy": SQLAlchemyGenerator
+                SchemaLanguage.Docs_LinkMl: DocGenerator,
+                SchemaLanguage.PythonLinkMl: PythonGenerator,
+                # SchemaLanguage.Java_LinkMl: JavaGenerator, # needs directory also as argument
+                SchemaLanguage.Shex: ShExGenerator,
+                SchemaLanguage.SqlAlchemy: SQLAlchemyGenerator
             }
             if fmt not in gen_map:
                 raise ValueError(f"Unsupported target format: {fmt}")
