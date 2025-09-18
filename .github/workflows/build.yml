@@ -18,18 +18,18 @@ jobs:
       with:
         node-version: '18'
         cache: 'npm'
-        cache-dependency-path: external_converters/node/package-lock.json
+        cache-dependency-path: schema-conversion-orchestrator/external_converters/node/package-lock.json
 
     - name: Install Node.js dependencies
-      working-directory: external_converters/node
+      working-directory: schema-conversion-orchestrator/external_converters/node
       run: npm ci
 
     - name: Build TypeScript
-      working-directory: external_converters/node
+      working-directory: schema-conversion-orchestrator/external_converters/node
       run: npm run build
 
     - name: Test Node.js converter
-      working-directory: external_converters/node
+      working-directory: schema-conversion-orchestrator/external_converters/node
       run: |
         echo '{"sourceFormat":"SHACL","targetFormat":"JsonSchema","schema":"test schema"}' > test.json
         node converter.js convert test.json
@@ -40,9 +40,9 @@ jobs:
       with:
         name: node-converter
         path: |
-          external_converters/node/*.js
-          external_converters/node/converters/*.js
-          external_converters/node/package.json
+          schema-conversion-orchestrator/external_converters/node/*.js
+          schema-conversion-orchestrator/external_converters/node/converters/*.js
+          schema-conversion-orchestrator/external_converters/node/package.json
 
   build-java:
     runs-on: ubuntu-latest
@@ -63,11 +63,11 @@ jobs:
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
 
     - name: Build with Maven
-      working-directory: external_converters/java
+      working-directory: schema-conversion-orchestrator/external_converters/java
       run: mvn clean compile package
 
     - name: Test Java converter
-      working-directory: external_converters/java
+      working-directory: schema-conversion-orchestrator/external_converters/java
       run: |
         echo '{"sourceFormat":"XSD","targetFormat":"DTD","schema":"test schema"}' > test.json
         java -jar converter.jar convert test.json
@@ -78,7 +78,7 @@ jobs:
       with:
         name: java-converter
         path: |
-          external_converters/java/converter.jar
+          schema-conversion-orchestrator/external_converters/java/converter.jar
 
   test-integration:
     needs: [build-node, build-java]
@@ -107,13 +107,13 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: node-converter
-        path: external_converters/node/
+        path: schema-conversion-orchestrator/external_converters/node/
 
     - name: Download Java artifacts
       uses: actions/download-artifact@v4
       with:
         name: java-converter
-        path: external_converters/java/
+        path: schema-conversion-orchestrator/external_converters/java/
 
     - name: Install Python dependencies
       run: |
@@ -122,8 +122,8 @@ jobs:
 
     - name: Make converters executable
       run: |
-        chmod +x external_converters/node/converter.js
-        chmod +x external_converters/java/converter.jar
+        chmod +x schema-conversion-orchestrator/external_converters/node/converter.js
+        chmod +x schema-conversion-orchestrator/external_converters/java/converter.jar
 
     - name: Test integration
       run: |
@@ -159,13 +159,13 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: node-converter
-        path: external_converters/node/
+        path: schema-conversion-orchestrator/external_converters/node/
 
     - name: Download Java artifacts
       uses: actions/download-artifact@v4
       with:
         name: java-converter
-        path: external_converters/java/
+        path: schema-conversion-orchestrator/external_converters/java/
 
     - name: Build Docker image
       run: docker build -t schema-converter:latest .
