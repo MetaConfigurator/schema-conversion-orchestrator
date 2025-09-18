@@ -124,6 +124,12 @@ jobs:
       run: |
         chmod +x schema-conversion-orchestrator/external_converters/java/converter.jar
 
+    - name: Install Python dependencies
+      working-directory: schema-conversion-orchestrator
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
     - name: Test integration
       run: |
         # Start the Flask app in background

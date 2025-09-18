@@ -3,7 +3,7 @@ FROM python:3.9-slim
 # Install Node.js and Java
 RUN apt-get update && apt-get install -y \
     curl \
-    openjdk-17-jre-headless \
+    openjdk-21-jdk-headless \
     && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs \
     && apt-get clean \
