@@ -122,7 +122,7 @@ jobs:
 
     - name: Make converters executable
       run: |
-        chmod +x schema-conversion-orchestrator/external_converters/node/converter.js
+        chmod +x schema-conversion-orchestrator/external_converters/node/dist/index.js
         chmod +x schema-conversion-orchestrator/external_converters/java/converter.jar
 
     - name: Test integration
@@ -168,7 +168,7 @@ jobs:
         path: schema-conversion-orchestrator/external_converters/java/
 
     - name: Build Docker image
-      run: docker build -t schema-converter:latest .
+      run: docker build -t schema-converter:latest schema-conversion-orchestrator/
 
     - name: Test Docker image
       run: |
