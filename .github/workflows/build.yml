@@ -32,8 +32,8 @@ jobs:
       working-directory: schema-conversion-orchestrator/external_converters/node
       run: |
         echo '{"sourceFormat":"SHACL","targetFormat":"JsonSchema","schema":"test schema"}' > test.json
-        node converter.js convert test.json
-        node converter.js list
+        node dist/index.js convert test.json
+        node dist/index.js list
 
     - name: Upload Node.js artifacts
       uses: actions/upload-artifact@v4
@@ -69,7 +69,7 @@ jobs:
     - name: Test Java converter
       working-directory: schema-conversion-orchestrator/external_converters/java
       run: |
-        echo '{"sourceFormat":"XSD","targetFormat":"DTD","schema":"test schema"}' > test.json
+        echo '{"sourceFormat":"Xsd","targetFormat":"Dtd","schema":"test schema"}' > test.json
         java -jar converter.jar convert test.json
         java -jar converter.jar list
 
