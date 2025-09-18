@@ -122,7 +122,6 @@ jobs:
 
     - name: Make converters executable
       run: |
-        chmod +x schema-conversion-orchestrator/external_converters/node/dist/index.js
         chmod +x schema-conversion-orchestrator/external_converters/java/converter.jar
 
     - name: Test integration

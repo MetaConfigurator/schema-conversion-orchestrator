@@ -18,15 +18,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy Python application
 COPY *.py ./
-COPY converter.py ./
-COPY converter_external.py ./
-COPY schema_types.py ./
+
 
 # Copy external converters
 COPY external_converters/ ./external_converters/
 
 # Make converters executable
-RUN chmod +x external_converters/node/converter.js
 RUN chmod +x external_converters/java/converter.jar
 
 # Install Node.js dependencies (if any runtime deps are needed)
