@@ -63,7 +63,8 @@ class ConverterExternal(Converter):
     def __init__(self, name: str, service_address: str, source_format: SchemaLanguage, target_format: SchemaLanguage, supported_features: List[SchemaFeature]):
         super().__init__(name, service_address, source_format, target_format, supported_features)
     def convert(self, schema: str) -> str:
-        r = requests.post(self.service_address + "/convert", json={
+        print(f"Calling external converter {self.name} at {self.service_address} for {self.source_format} to {self.target_format}")
+        r = requests.post(self.service_address, json={
             "sourceFormat": self.source_format,
             "targetFormat": self.target_format,
             "schema": schema

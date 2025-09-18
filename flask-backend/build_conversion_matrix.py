@@ -19,7 +19,7 @@ def build_conversion_matrix(conversion_graph: ConversionGraph) -> pd.DataFrame:
     for src in nodes:
         for tgt in nodes:
             if src == tgt:
-                matrix.loc[src, tgt] = "—"  # no self-conversion
+                matrix.loc[src, tgt] = "—"  # mark diagonal
                 continue
 
             # Number of direct conversions
@@ -40,30 +40,35 @@ def build_conversion_matrix(conversion_graph: ConversionGraph) -> pd.DataFrame:
 
 
 def plot_conversion_matrix(matrix: pd.DataFrame):
-    # Build numeric matrix for coloring (use total count only)
+    # Build weighted numeric matrix for coloring
     numeric_matrix = matrix.copy()
 
     for i in numeric_matrix.index:
         for j in numeric_matrix.columns:
             val = matrix.loc[i, j]
-            if val == "—":
-                numeric_matrix.loc[i, j] = 0
+
+            if val == "—":  # diagonal
+                numeric_matrix.loc[i, j] = 8  # highest weight
             elif val == "0":
                 numeric_matrix.loc[i, j] = 0
             else:
-                # Extract total count
-                total = int(val.split(" / ")[1].split()[0])
-                numeric_matrix.loc[i, j] = total
+                direct, total = val.split(" / ")
+                direct = int(direct)
+                total = int(total)
+                score = min(total, 8)
+                if direct > 0:
+                    score = min(score + 3, 8)
+                numeric_matrix.loc[i, j] = score
 
     numeric_matrix = numeric_matrix.astype(int)
 
     plt.figure(figsize=(12, 10))
     ax = sns.heatmap(
         numeric_matrix,
-        annot=matrix,  # annotate with original text
+        annot=matrix,  # show "direct / total" in cells
         fmt="",
         cmap="Blues",
-        cbar_kws={"label": "Total number of paths"},
+        cbar_kws={"label": "Weighted score (direct + paths)"},
         linewidths=0.5,
         linecolor="gray"
     )

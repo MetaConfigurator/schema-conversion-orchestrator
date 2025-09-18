@@ -118,3 +118,8 @@ This will:
 ## 📜 License
 
 MIT License — feel free to use, contribute, and share.
+
+
+## ToDOs
+
+- Use ZooKeeper for Service Registry
