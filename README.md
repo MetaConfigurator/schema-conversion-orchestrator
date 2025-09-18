@@ -1,49 +1,18 @@
-# 😍 Universal Schema Converter
+# Schema Conversion Orchestrator
 
-This project provides a schema conversion platform that supports converting between various data modeling formats (like JSON Schema, LinkML, XSD, DTD, RDF, etc.) using a microservice-based architecture. It consists of:
+This project provides a schema conversion platform that supports converting between various data modeling formats (like JSON Schema, LinkML, XSD, DTD, RDF, etc.) using a software architecture that supports different programming languages due to subprocess calling. It consists of:
 
-* 🐍 A central **Flask Orchestrator** (main API + smart pathfinding + schema feature matching)
-* ☕ A **Java Spring Boot** microservice (dummy schema converter)
-* 🪦 A **Node.js TypeScript** microservice (dummy schema converter)
+* 🐍 A central **Flask Orchestrator** (main API + smart pathfinding + schema feature matching + converters in Python)
+* ☕ A **Java** converters
+* 🪦 A **Node.js TypeScript** converters
 
----
 
-## 📁 Folder Structure
+## Features
 
-```
-schema-converter/
-│
-├── flask-backend/          # Central orchestrator with REST API and real converters
-│   ├── main.py
-│   └── ...
-│
-├── java-converter/         # Java Spring Boot dummy converter
-│   ├── Dockerfile
-│   └── ...
-│
-├── node-converter/         # Node.js TypeScript dummy converter
-│   ├── Dockerfile
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── src/
-│       └── index.ts
-│
-├── test_clients.py         # Script to register converters and trigger a conversion
-│
-├── docker-compose.yml      # Spins up all services together
-│
-└── README.md               # This file
-```
-
----
-
-## 🚀 Features
-
-* Auto-register schema converters (via REST)
 * Builds a dynamic conversion graph
 * Smartly selects the best conversion path based on schema features
 * Supports recursive multi-step conversions (e.g. JSONSchema → LinkML → RDF)
-* Easily extendable: add new converters in any language via Docker/microservices
+* Easily extendable: add new converters in any language
 
 ---
 
@@ -62,11 +31,7 @@ cd universal-schema-converter
 docker-compose up --build
 ```
 
-This will:
-
-* Start the Flask orchestrator on `http://localhost:5000`
-* Start the Java Spring Boot dummy converter on `http://localhost:8080`
-* Start the Node.js TypeScript converter on `http://localhost:3001`
+TODO
 
 ### 3. Test the System
 
@@ -109,17 +74,10 @@ This will:
 
 ## 🔌 Add Your Own Converter
 
-1. Create a service that exposes a `POST /convert` endpoint.
-2. Register it with the orchestrator via `/registerConversion`.
-3. Done! The orchestrator will use your converter automatically when needed.
+TODO
 
 ---
 
 ## 📜 License
 
 MIT License — feel free to use, contribute, and share.
-
-
-## ToDOs
-
-- Use ZooKeeper for Service Registry
