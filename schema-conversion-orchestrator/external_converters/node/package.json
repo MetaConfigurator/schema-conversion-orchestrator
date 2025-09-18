@@ -1,0 +1,30 @@
+{
+  "name": "schema-converter-node",
+  "version": "1.0.0",
+  "description": "Node.js schema conversion service",
+  "main": "converter.js",
+  "bin": {
+    "schema-converter": "./converter.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node converter.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rm -rf *.js *.js.map converters/*.js converters/*.js.map"
+  },
+  "keywords": ["schema", "conversion", "json-schema", "xsd", "shacl", "dtd"],
+  "author": "Felix Neubauer",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^24.5.2",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "files": [
+    "converter.js",
+    "dataStructures.js",
+    "converters/*.js"
+  ]
+}
