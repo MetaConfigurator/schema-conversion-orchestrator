@@ -127,7 +127,7 @@ jobs:
     - name: Test integration
       run: |
         # Start the Flask app in background
-        python app.py &
+        python schema-conversion-orchestrator/app.py &
         FLASK_PID=$!
         
         # Wait for Flask to start
