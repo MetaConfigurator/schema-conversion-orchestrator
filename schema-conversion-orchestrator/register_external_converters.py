@@ -43,7 +43,7 @@ def register_external_converters() -> List[Converter]:
     converters = []
 
     # Node.js service
-    node_executable = os.path.join(os.path.dirname(__file__), "external_converters", "node", "converter.js")
+    node_executable = os.path.join(os.path.dirname(__file__), "external_converters", "node", "dist", "index.js")
     if os.path.exists(node_executable):
         print(f"Found Node.js converter at: {node_executable}")
         converter_infos = get_external_converter_info(node_executable, "node")

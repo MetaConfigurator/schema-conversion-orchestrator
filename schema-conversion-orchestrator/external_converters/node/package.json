@@ -3,14 +3,16 @@
   "version": "1.0.0",
   "description": "Node.js schema conversion service",
   "main": "converter.js",
-  "bin": {
-    "schema-converter": "./converter.js"
+  "bin": "dist/index.js",
+  "pkg": {
+    "scripts": "dist/**/*.js",
+    "targets": [ "node18-macos-x64", "node18-linux-x64", "node18-win-x64" ]
   },
   "scripts": {
     "build": "tsc",
     "start": "node converter.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "clean": "rm -rf *.js *.js.map converters/*.js converters/*.js.map"
+    "clean": "rm -rf *.js *.js.map src/converters/*.js converters/*.js.map"
   },
   "keywords": ["schema", "conversion", "json-schema", "xsd", "shacl", "dtd"],
   "author": "Felix Neubauer",
@@ -25,6 +27,6 @@
   "files": [
     "converter.js",
     "dataStructures.js",
-    "converters/*.js"
+    "src/converters/*.js"
   ]
 }

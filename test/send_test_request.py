@@ -4,8 +4,8 @@ from pathlib import Path
 
 # --- Configuration ---
 SERVER_URL = "http://localhost:5002/convert"
-SOURCE_FORMAT = "JsonSchema"
-TARGET_FORMAT = "Dtd"
+SOURCE_FORMAT = "SHACL"
+TARGET_FORMAT = "JsonSchema"
 SCHEMA_FILE = Path("schemas/simpleSchema.schema.json")
 
 
