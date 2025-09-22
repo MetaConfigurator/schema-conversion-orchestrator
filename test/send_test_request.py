@@ -4,18 +4,15 @@ from pathlib import Path
 
 # --- Configuration ---
 SERVER_URL = "http://localhost:5002/convert"
-SOURCE_FORMAT = "SHACL"
-TARGET_FORMAT = "JsonSchema"
-SCHEMA_FILE = Path("schemas/simpleSchema.schema.json")
+SOURCE_FORMAT = "JsonSchema"
+TARGET_FORMAT = "Owl"
+SCHEMA_FILE = Path("schemas/preciceAdapterConfigSchema.schema.json")
 
 
 def main():
-    # Load schema from file
-    with SCHEMA_FILE.open("r", encoding="utf-8") as f:
-        schema_dict = json.load(f)
-
-    # Convert schema dict to a JSON string (your Flask server expects str)
-    schema_str = json.dumps(schema_dict)
+    # Load schema from file as string
+    with open(SCHEMA_FILE, "r") as f:
+        schema_str = f.read()
 
     # Build payload
     payload = {

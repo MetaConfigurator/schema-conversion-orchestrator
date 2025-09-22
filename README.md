@@ -25,13 +25,34 @@ git clone https://github.com/Logende/universal-schema-converter.git
 cd universal-schema-converter
 ```
 
-### 2. Build and start with Docker
+### 2. Build the sub-packages
+
+#### Java
 
 ```bash
-docker-compose up --build
+cd schema-conversion-orchestrator/external_converters/java
+mvn clean package
 ```
 
-TODO
+Result: `target/converter.jar`
+
+#### Node
+
+```bash
+cd schema-conversion-orchestrator/external_converters/node
+npm install
+npm run build
+```
+
+Result: `dist/index.js`
+
+### 3. Build and Run the Orchestrator
+
+```bash
+cd schema-conversion-orchestrator
+pip install -r requirements.txt
+python3 app.py
+```
 
 ### 3. Test the System
 

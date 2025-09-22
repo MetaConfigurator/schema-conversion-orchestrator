@@ -1,4 +1,4 @@
-import {Converter, SchemaLanguage, SchemaFeature} from "../dataStructures";
+import {Converter, SchemaLanguage, SchemaFeature} from "../dataStructures.js";
 
 export const converter: Converter = {
   name: "ShaclToJsonSchemaConverter",

@@ -1,5 +1,5 @@
 from typing import List
-from ConvertersLinkMl import ConverterFromLinkMl, ConverterJsonSchemaToLinkMl, ConverterLinkMlToJsonSchema
+from ConvertersLinkMl import ConverterFromLinkMl, ConverterJsonSchemaToLinkMl, ConverterLinkMlToJsonSchema, ConverterOwlToLinkMl
 from ConvertersMdModels import ConverterFromMdModels, ConverterJsonSchemaToMdModels
 
 from converter import Converter
@@ -22,6 +22,7 @@ def register_python_converters() -> List[Converter]:
         # ConverterFromLinkMl(target_format=SchemaLanguage.Java_LinkMl),
 
         ConverterJsonSchemaToLinkMl(),
+        ConverterOwlToLinkMl(),
 
         ConverterFromMdModels(target_format=SchemaLanguage.Protobuf),
         ConverterFromMdModels(target_format=SchemaLanguage.Xsd),

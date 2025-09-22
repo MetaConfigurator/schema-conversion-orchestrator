@@ -158,3 +158,52 @@ class ConverterJsonSchemaToLinkMl(ConverterInternal):
     def validate_output(self, schema: str) -> bool:
         # Implement validation logic for LinkML schema
         return True
+
+
+class ConverterOwlToLinkMl(ConverterInternal):
+    def __init__(self):
+        super().__init__(
+            name="LinkMl schema_automator OwlImportEngine",
+            service_address="internal",
+            source_format=SchemaLanguage.Owl,
+            target_format=SchemaLanguage.LinkMl,
+            supported_features=[
+                SchemaFeature.Comments,
+                SchemaFeature.Hierarchy,
+                SchemaFeature.References,
+                SchemaFeature.Constraints,
+                SchemaFeature.Properties,
+                SchemaFeature.Attributes,
+                SchemaFeature.Composition
+            ]
+        )
+
+    def converter_logic(self, schema: str) -> str:
+        schema_dict: dict = json.loads(schema)
+        # LinkML specific clean-up
+        schema_dict.pop("$schema", None)
+        # schema_dict.pop("$id", None)
+
+        # if no title is present, add a dummy title
+        if "title" not in schema_dict:
+            schema_dict["title"] = "ImportedSchema"
+
+        schema = json.dumps(schema_dict)
+
+        with tempfile.NamedTemporaryFile("w+", suffix=".owl") as f:
+            f.write(schema)
+            f.flush()
+            file_name = f.name
+
+        # Import
+        import_engine = schema_automator.OwlImportEngine()
+        schema_def: SchemaDefinition = import_engine.convert(file_name)
+        return yaml_dumper.dumps(schema_def)
+
+    def validate_input(self, schema: str) -> bool:
+        # Implement validation logic for Owl
+        return True
+
+    def validate_output(self, schema: str) -> bool:
+        # Implement validation logic for LinkML schema
+        return True

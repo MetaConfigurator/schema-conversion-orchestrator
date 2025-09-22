@@ -3,6 +3,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { Converter, SchemaLanguage, SchemaFeature } from './dataStructures';
+import {pathToFileURL} from "url";
 
 interface ConversionRequest {
   sourceFormat: string;
@@ -22,25 +23,28 @@ class ConverterRegistry {
     this.loadConverters();
   }
 
-  private loadConverters() {
+  private async loadConverters() {
     const convertersDir = path.join(__dirname, 'converters');
-    
+
     if (!fs.existsSync(convertersDir)) {
       console.error(`Converters directory not found: ${convertersDir}`);
       return;
     }
 
     const files = fs.readdirSync(convertersDir);
-    
+
     for (const file of files) {
-      if (file.endsWith('.js') || file.endsWith('.ts')) {
+      if (file.endsWith('.js') || file.endsWith('.ts') ) {
         try {
           const converterPath = path.join(convertersDir, file);
-          const converterModule = require(converterPath);
-          
+
+          const modulePath = pathToFileURL(converterPath).href;
+          console.log("attempting to import module at path: " + modulePath);
+          const converterModule = await import(modulePath);
+
           // Support both default export and named exports
           const converter = converterModule.default || converterModule.converter || converterModule;
-          
+
           if (this.isValidConverter(converter)) {
             const key = `${converter.sourceFormat}->${converter.targetFormat}`;
             this.converters.set(key, converter);
