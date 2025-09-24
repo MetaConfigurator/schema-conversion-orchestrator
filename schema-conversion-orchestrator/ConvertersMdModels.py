@@ -1,10 +1,9 @@
 import json
-import tempfile
 
 from converter import ConverterInternal
 from schema_types import SchemaLanguage, SchemaFeature
 
-from mdmodels import DataModel, Templates
+from mdmodels_core import DataModel, Templates
 
 
 
@@ -13,16 +12,12 @@ class ConverterFromMdModels(ConverterInternal):
         super().__init__(
             name="MdModels Templates: " + target_format.name,
             service_address="internal",
+            service_name="FlaskApp",
             source_format=SchemaLanguage.MdModels,
             target_format=target_format,
             supported_features=[
                 SchemaFeature.Comments,
                 SchemaFeature.Hierarchy,
-                SchemaFeature.References,
-                SchemaFeature.Constraints,
-                SchemaFeature.Properties,
-                SchemaFeature.Attributes,
-                SchemaFeature.Composition
             ]
         )
 
@@ -30,27 +25,27 @@ class ConverterFromMdModels(ConverterInternal):
         dm = DataModel.from_markdown_string(schema)
         try:
             if self.target_format == SchemaLanguage.Protobuf:
-                return dm.convert_to(Templates.PROTOBUF)
+                return dm.convert_to(Templates.Protobuf)
             elif self.target_format == SchemaLanguage.Xsd:
-                return dm.convert_to(Templates.XML_SCHEMA)
+                return dm.convert_to(Templates.XmlSchema)
             elif self.target_format == SchemaLanguage.PythonPydantic:
-                return dm.convert_to(Templates.PYTHON_PYDANTIC)
+                return dm.convert_to(Templates.PythonPydantic)
             elif self.target_format == SchemaLanguage.JsonSchema:
-                return dm.convert_to(Templates.JSON_SCHEMA) # test difference with JsonSchemaAll
+                return dm.convert_to(Templates.JsonSchema)  # test difference with JsonSchemaAll
             elif self.target_format == SchemaLanguage.GraphQL:
-                return dm.convert_to(Templates.GRAPHQL)
+                return dm.convert_to(Templates.Graphql)
             elif self.target_format == SchemaLanguage.Julia_MdModels:
-                return dm.convert_to(Templates.JULIA)
+                return dm.convert_to(Templates.Julia)
             elif self.target_format == SchemaLanguage.Mermaid:
-                return dm.convert_to(Templates.MERMAID)
+                return dm.convert_to(Templates.Mermaid)
             elif self.target_format == SchemaLanguage.SHACL:
-                return dm.convert_to(Templates.SHACL)
+                return dm.convert_to(Templates.Shacl)
             elif self.target_format == SchemaLanguage.Rust_MdModels:
-                return dm.convert_to(Templates.RUST)
+                return dm.convert_to(Templates.Rust)
             elif self.target_format == SchemaLanguage.TypeScript_MdModels:
-                return dm.convert_to(Templates.TYPESCRIPT)
+                return dm.convert_to(Templates.Typescript)
             elif self.target_format == SchemaLanguage.Shex:
-                return dm.convert_to(Templates.SHEX)
+                return dm.convert_to(Templates.Shex)
             else:
                 raise ValueError(f"Unsupported target format: {self.target_format}")
         except Exception as e:
@@ -70,6 +65,7 @@ class ConverterJsonSchemaToMdModels(ConverterInternal):
         super().__init__(
             name="MdModels DataModel from JsonSchema",
             service_address="internal",
+            service_name="FlaskApp",
             source_format=SchemaLanguage.JsonSchema,
             target_format=SchemaLanguage.MdModels,
             supported_features=[
@@ -96,7 +92,7 @@ class ConverterJsonSchemaToMdModels(ConverterInternal):
         schema = json.dumps(schema_dict)
 
         dm = DataModel.from_json_schema_string(schema)
-        return dm.convert_to(Templates.MARKDOWN)
+        return dm.convert_to(Templates.Markdown)
 
     def validate_input(self, schema: str) -> bool:
         # Implement validation logic for JSON Schema

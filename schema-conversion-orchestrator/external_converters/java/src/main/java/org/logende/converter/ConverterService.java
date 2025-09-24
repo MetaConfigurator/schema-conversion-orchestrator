@@ -26,6 +26,7 @@ public class ConverterService {
     public static class ConversionRequest {
         public String sourceFormat;
         public String targetFormat;
+        public String converterName;
         public String schema;
     }
     
@@ -74,7 +75,6 @@ public class ConverterService {
     private void register(Converter converter) {
         String key = converter.getSourceFormat() + "->" + converter.getTargetFormat();
         converters.put(key, converter);
-        System.err.println("Loaded converter: " + converter.getName() + " (" + key + ")");
     }
     
     public Converter findConverter(String sourceFormat, String targetFormat) {
@@ -125,8 +125,6 @@ public class ConverterService {
                                 request.sourceFormat, request.targetFormat, 
                                 String.join(", ", availableConversions)));
             }
-            
-            System.err.println("Using converter: " + converter.getName());
             
             // Perform conversion
             String convertedSchema = converter.convert(request.schema);

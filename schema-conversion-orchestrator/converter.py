@@ -10,9 +10,10 @@ from schema_types import SchemaLanguage, SchemaFeature
 
 
 class Converter:
-    def __init__(self, name: str, service_address: str, source_format: SchemaLanguage, target_format: SchemaLanguage, supported_features: List[SchemaFeature]):
+    def __init__(self, name: str, service_address: str, service_name: str, source_format: SchemaLanguage, target_format: SchemaLanguage, supported_features: List[SchemaFeature]):
         self.name = name
         self.service_address = service_address
+        self.service_name = service_name
         self.source_format = source_format
         self.target_format = target_format
         self.supported_features = supported_features
@@ -22,9 +23,9 @@ class Converter:
 
 
 class ConverterExternal(Converter):
-    def __init__(self, name: str, executable_path: str, source_format: SchemaLanguage,
+    def __init__(self, name: str, executable_path: str, service_name: str, source_format: SchemaLanguage,
                  target_format: SchemaLanguage, supported_features: List[SchemaFeature]):
-        super().__init__(name, executable_path, source_format, target_format, supported_features)
+        super().__init__(name, executable_path, service_name, source_format, target_format, supported_features)
         self.executable_path = executable_path
 
     def convert(self, schema: str) -> str:
@@ -36,6 +37,7 @@ class ConverterExternal(Converter):
             input_data = {
                 "sourceFormat": self.source_format.value,
                 "targetFormat": self.target_format.value,
+                "converterName": self.name,
                 "schema": schema
             }
             json.dump(input_data, input_file)
@@ -68,8 +70,8 @@ class ConverterExternal(Converter):
 
 
 class ConverterInternal(Converter):
-    def __init__(self, name: str, service_address: str, source_format: SchemaLanguage, target_format: SchemaLanguage, supported_features: List[SchemaFeature]):
-        super().__init__(name, service_address, source_format, target_format, supported_features)
+    def __init__(self, name: str, service_address: str, service_name: str, source_format: SchemaLanguage, target_format: SchemaLanguage, supported_features: List[SchemaFeature]):
+        super().__init__(name, service_address, service_name, source_format, target_format, supported_features)
 
     def convert(self, schema: str) -> str:
         if not self.validate_input(schema):
@@ -101,7 +103,7 @@ class ConverterExternalGeneric(ConverterExternal):
     def __init__(self, name: str, executable_path: str, source_format: SchemaLanguage,
                  target_format: SchemaLanguage, supported_features: List[SchemaFeature],
                  converter_type: str):
-        super().__init__(name, executable_path, source_format, target_format, supported_features)
+        super().__init__(name, executable_path, converter_type, source_format, target_format, supported_features)
         self.converter_type = converter_type
 
     def convert(self, schema: str) -> str:
@@ -113,6 +115,7 @@ class ConverterExternalGeneric(ConverterExternal):
             input_data = {
                 "sourceFormat": self.source_format.value,
                 "targetFormat": self.target_format.value,
+                "converterName": self.name,
                 "schema": schema
             }
             json.dump(input_data, input_file)

@@ -7,6 +7,7 @@ from linkml.utils.generator import Generator
 
 from converter import ConverterInternal
 from schema_types import SchemaFeature, SchemaLanguage
+from utils import simple_cname_convert
 
 from linkml_runtime.linkml_model import SchemaDefinition
 from linkml_runtime.dumpers import yaml_dumper
@@ -20,7 +21,6 @@ from linkml.generators.owlgen import OwlSchemaGenerator
 from linkml.generators.docgen import DocGenerator
 from linkml.generators.pythongen import PythonGenerator
 from linkml.generators.sqlalchemygen import SQLAlchemyGenerator
-from linkml.generators.javagen import JavaGenerator
 
 
 class ConverterLinkMlToJsonSchema(ConverterInternal):
@@ -28,6 +28,7 @@ class ConverterLinkMlToJsonSchema(ConverterInternal):
         super().__init__(
             name="LinkML JsonSchemaGenerator",
             service_address="internal",
+            service_name="FlaskApp",
             source_format=SchemaLanguage.LinkMl,
             target_format=SchemaLanguage.JsonSchema,
             supported_features=[
@@ -61,6 +62,7 @@ class ConverterFromLinkMl(ConverterInternal):
         super().__init__(
             name="LinkML " + target_format.name + " Generator",
             service_address="internal",
+            service_name="FlaskApp",
             source_format=SchemaLanguage.LinkMl,
             target_format=target_format,
             supported_features=[
@@ -121,6 +123,7 @@ class ConverterJsonSchemaToLinkMl(ConverterInternal):
         super().__init__(
             name="LinkMl schema_automator JsonSchemaImportEngine",
             service_address="internal",
+            service_name="FlaskApp",
             source_format=SchemaLanguage.JsonSchema,
             target_format=SchemaLanguage.LinkMl,
             supported_features=[
@@ -138,11 +141,14 @@ class ConverterJsonSchemaToLinkMl(ConverterInternal):
         schema_dict: dict = json.loads(schema)
         # LinkML specific clean-up
         schema_dict.pop("$schema", None)
-        # schema_dict.pop("$id", None)
+        schema_dict.pop("$id", None)
 
         # if no title is present, add a dummy title
         if "title" not in schema_dict:
             schema_dict["title"] = "ImportedSchema"
+        else:
+            # convert title to a simple class name
+            schema_dict["title"] = simple_cname_convert(schema_dict["title"])
 
         schema = json.dumps(schema_dict)
 
@@ -165,6 +171,7 @@ class ConverterOwlToLinkMl(ConverterInternal):
         super().__init__(
             name="LinkMl schema_automator OwlImportEngine",
             service_address="internal",
+            service_name="FlaskApp",
             source_format=SchemaLanguage.Owl,
             target_format=SchemaLanguage.LinkMl,
             supported_features=[

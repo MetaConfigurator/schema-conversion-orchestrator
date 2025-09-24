@@ -1,20 +1,17 @@
-import json
-import subprocess
 import traceback
 
 from converter import Converter, ConverterExternal
 from schema_types import schema_language_from_string
 from logic import build_conversion_graph, identify_schema_features, find_paths, rank_paths
-from register_python_converters import register_python_converters
-from register_external_converters import register_external_converters
+from register_converters import register_converters
 from flask import Flask, request
 from typing import List, Dict
 
 app = Flask(__name__)
 
+DETAILED_ERROR_OUTPUT = False
 
-converters: List[Converter] = register_python_converters()
-converters.extend(register_external_converters())
+converters: List[Converter] = register_converters()
 conversion_graph: Dict[str, List[Converter]] = build_conversion_graph(converters)
 print("Started Schema Conversion Orchestrator with the following converters:")
 for conv in converters:
@@ -74,9 +71,12 @@ def convert():
         try:
             result_schema = attempt_conversion_path(source, target, best_path, schema)
         except Exception as e:
-            full_traceback = traceback.format_exc()
-            attempt_errors.append(f"Error: {e}\nTraceback:\n{full_traceback}")
             ranked_paths = ranked_paths[1:]
+            if DETAILED_ERROR_OUTPUT:
+                full_traceback = traceback.format_exc()
+                attempt_errors.append(f"Error: {e}\nTraceback:\n{full_traceback}")
+            else:
+                attempt_errors.append(str(e))
 
     if result_schema is None:
         # return error message of all attempts together with the attempt number (1 to n)
@@ -93,14 +93,17 @@ def attempt_conversion_path(source: str, target: str, path: List[Converter], sch
         for conv in path:
             current_converter = conv
             current_schema = conv.convert(current_schema)
+            print("Intermediate schema of format " + conv.target_format + " after conversion via " + conv.service_name + ": " + current_schema)
         return current_schema
     except Exception as e:
-        raise Exception(f"Conversion failed at step from {current_converter.source_format} to {current_converter.target_format} via {current_converter.service_address} because of error: {str(e)}.")
+        print("Conversion failed at step from " + current_converter.source_format + " to " + current_converter.target_format + " via " + current_converter.service_name + " because of error: " + str(e) + ".")
+        print("With intermediate schema: " + current_schema)
+        raise Exception(f"Conversion failed at step from {current_converter.source_format} to {current_converter.target_format} via {current_converter.service_name} because of error: {str(e)}.")
 
 def print_conversion_path(source: str, target: str, path: List[Converter]) -> None:
     print("Given the source format " + source + " and target format " + target + ", the best available path is:")
     for conv in path:
-        print(f"{conv.source_format} -> {conv.target_format} via {conv.service_address}")
+        print(f"{conv.source_format} -> {conv.target_format} via {conv.name} ({conv.service_address})")
 
 def call_internal_converter(source: str, target: str, schema: str) -> str:
     if source == "JsonSchema" and target == "LinkMl":

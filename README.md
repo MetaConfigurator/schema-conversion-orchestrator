@@ -97,6 +97,10 @@ This will:
 
 TODO
 
+## TODO
+
+If a path fails due to a certain edge, remove all paths which include this edge as an optimization.
+
 ---
 
 ## 📜 License

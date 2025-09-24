@@ -77,8 +77,8 @@ def visualize_conversion_graph(conversion_graph: ConversionGraph):
 
 
 if __name__ == "__main__":
-    from register_python_converters import register_python_converters
+    from register_converters import register_converters
     from logic import build_conversion_graph
-    converters: List[Converter] = register_python_converters()
+    converters: List[Converter] = register_converters()
     conversion_graph: ConversionGraph = build_conversion_graph(converters)
     visualize_conversion_graph(conversion_graph)

@@ -28,9 +28,11 @@ def get_external_converter_info(executable_path: str, converter_type: str) -> Li
             return []
 
         if result.returncode == 0:
+            print("External converter info:", result.stdout)
             output_data = json.loads(result.stdout)
             return output_data.get("converters", [])
         else:
+            print(f"Return code: {result.stdout}")
             print(f"Failed to get converter info from {executable_path}: {result.stderr}")
             return []
 

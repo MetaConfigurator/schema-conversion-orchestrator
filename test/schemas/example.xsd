@@ -1,51 +1,24 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://tempuri.org/PurchaseOrderSchema.xsd"
+           targetNamespace="http://tempuri.org/PurchaseOrderSchema.xsd"
+           elementFormDefault="qualified">
+ <xsd:element name="PurchaseOrder" type="tns:PurchaseOrderType"/>
+ <xsd:complexType name="PurchaseOrderType">
+  <xsd:sequence>
+   <xsd:element name="ShipTo" type="tns:USAddress" maxOccurs="2"/>
+   <xsd:element name="BillTo" type="tns:USAddress"/>
+  </xsd:sequence>
+  <xsd:attribute name="OrderDate" type="xsd:date"/>
+ </xsd:complexType>
 
-<xs:simpleType name="stringtype">
-  <xs:restriction base="xs:string"/>
-</xs:simpleType>
-
-<xs:simpleType name="inttype">
-  <xs:restriction base="xs:positiveInteger"/>
-</xs:simpleType>
-
-<xs:simpleType name="dectype">
-  <xs:restriction base="xs:decimal"/>
-</xs:simpleType>
-
-<xs:simpleType name="orderidtype">
-  <xs:restriction base="xs:string">
-    <xs:pattern value="[0-9]{6}"/>
-  </xs:restriction>
-</xs:simpleType>
-
-<xs:complexType name="shiptotype">
-  <xs:sequence>
-    <xs:element name="name" type="stringtype"/>
-    <xs:element name="address" type="stringtype"/>
-    <xs:element name="city" type="stringtype"/>
-    <xs:element name="country" type="stringtype"/>
-  </xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="itemtype">
-  <xs:sequence>
-    <xs:element name="title" type="stringtype"/>
-    <xs:element name="note" type="stringtype" minOccurs="0"/>
-    <xs:element name="quantity" type="inttype"/>
-    <xs:element name="price" type="dectype"/>
-  </xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="shipordertype">
-  <xs:sequence>
-    <xs:element name="orderperson" type="stringtype"/>
-    <xs:element name="shipto" type="shiptotype"/>
-    <xs:element name="item" maxOccurs="unbounded" type="itemtype"/>
-  </xs:sequence>
-  <xs:attribute name="orderid" type="orderidtype" use="required"/>
-</xs:complexType>
-
-<xs:element name="shiporder" type="shipordertype"/>
-
-</xs:schema>
+ <xsd:complexType name="USAddress">
+  <xsd:sequence>
+   <xsd:element name="name"   type="xsd:string"/>
+   <xsd:element name="street" type="xsd:string"/>
+   <xsd:element name="city"   type="xsd:string"/>
+   <xsd:element name="state"  type="xsd:string"/>
+   <xsd:element name="zip"    type="xsd:integer"/>
+  </xsd:sequence>
+  <xsd:attribute name="country" type="xsd:NMTOKEN" fixed="US"/>
+ </xsd:complexType>
+</xsd:schema>

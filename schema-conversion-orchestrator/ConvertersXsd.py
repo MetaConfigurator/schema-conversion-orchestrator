@@ -12,6 +12,7 @@ class ConverterXsdToJsonSchema(ConverterInternal):
         super().__init__(
             name="XmlSchema to JsonSchema Converter",
             service_address="internal",
+            service_name="FlaskApp",
             source_format=SchemaLanguage.Xsd,
             target_format=SchemaLanguage.JsonSchema,
             supported_features=[

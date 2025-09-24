@@ -2,12 +2,15 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { Converter, SchemaLanguage, SchemaFeature } from './dataStructures';
-import {pathToFileURL} from "url";
+import { Converter} from './dataStructures.js';
+import {fileURLToPath, pathToFileURL} from "url";
+
+const DEBUG_MODE = false;
 
 interface ConversionRequest {
   sourceFormat: string;
   targetFormat: string;
+  converterName: string;
   schema: string;
 }
 
@@ -16,15 +19,19 @@ interface ConversionResponse {
   error?: string;
 }
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const convertersDir = path.join(__dirname, 'converters');
+
 class ConverterRegistry {
   private converters: Map<string, Converter> = new Map();
+  isLoaded: boolean = false;
 
   constructor() {
     this.loadConverters();
   }
 
   private async loadConverters() {
-    const convertersDir = path.join(__dirname, 'converters');
 
     if (!fs.existsSync(convertersDir)) {
       console.error(`Converters directory not found: ${convertersDir}`);
@@ -39,16 +46,18 @@ class ConverterRegistry {
           const converterPath = path.join(convertersDir, file);
 
           const modulePath = pathToFileURL(converterPath).href;
-          console.log("attempting to import module at path: " + modulePath);
+          if (DEBUG_MODE)
+            console.log("attempting to import module at path: " + modulePath);
           const converterModule = await import(modulePath);
 
           // Support both default export and named exports
-          const converter = converterModule.default || converterModule.converter || converterModule;
+          const converter: Converter = converterModule.default || converterModule.converter || converterModule;
 
           if (this.isValidConverter(converter)) {
-            const key = `${converter.sourceFormat}->${converter.targetFormat}`;
+            const key = converterKey(converter.sourceFormat, converter.targetFormat, converter.name);
             this.converters.set(key, converter);
-            console.error(`Loaded converter: ${converter.name} (${key})`);
+            if (DEBUG_MODE)
+              console.error(`Loaded converter: ${converter.name} (${key})`);
           } else {
             console.error(`Invalid converter in file ${file}:`, converter);
           }
@@ -58,7 +67,9 @@ class ConverterRegistry {
       }
     }
 
-    console.error(`Total converters loaded: ${this.converters.size}`);
+    if (DEBUG_MODE)
+      console.error(`Total converters loaded: ${this.converters.size}`);
+    this.isLoaded = true;
   }
 
   private isValidConverter(obj: any): obj is Converter {
@@ -70,14 +81,18 @@ class ConverterRegistry {
            Array.isArray(obj.supportedFeatures);
   }
 
-  findConverter(sourceFormat: string, targetFormat: string): Converter | null {
-    const key = `${sourceFormat}->${targetFormat}`;
+  findConverter(sourceFormat: string, targetFormat: string, name: string): Converter | null {
+    const key = converterKey(sourceFormat, targetFormat, name);
     return this.converters.get(key) || null;
   }
 
   getAllConverters(): Converter[] {
     return Array.from(this.converters.values());
   }
+}
+
+function converterKey(sourceFormat: string, targetFormat: string, name: string): string {
+    return `${name} (${sourceFormat}->${targetFormat})`;
 }
 
 async function main() {
@@ -93,6 +108,11 @@ async function main() {
 
   const command = args[0];
   const registry = new ConverterRegistry();
+
+    // Wait until converters are loaded
+    while (!registry.isLoaded) {
+        await new Promise(resolve => setTimeout(resolve, 20));
+    }
 
   if (command === 'list') {
     const converters = registry.getAllConverters();
@@ -126,7 +146,7 @@ async function main() {
       }
 
       // Find appropriate converter
-      const converter = registry.findConverter(request.sourceFormat, request.targetFormat);
+      const converter = registry.findConverter(request.sourceFormat, request.targetFormat, request.converterName);
       
       if (!converter) {
         throw new Error(
@@ -136,7 +156,8 @@ async function main() {
         );
       }
 
-      console.error(`Using converter: ${converter.name}`);
+      if (DEBUG_MODE)
+        console.error(`Using converter: ${converter.name}`);
 
       // Perform conversion
       const convertedSchema = await converter.convert(request.schema);
@@ -167,7 +188,7 @@ async function main() {
 }
 
 // Run the converter
-if (require.main === module) {
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
   main().catch(error => {
     console.error('Unhandled error:', error);
     process.exit(1);

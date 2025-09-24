@@ -15,9 +15,9 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "node converter.js",
+    "start": "node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "clean": "rm -rf *.js *.js.map src/converters/*.js converters/*.js.map"
+    "clean": "rm -rf *.js *.js.map dist/*.js dist/*.js.map"
   },
   "keywords": [
     "schema",
@@ -42,6 +42,7 @@
     "src/converters/*.js"
   ],
   "dependencies": {
-    "xsd-json-converter": "^2.1.1"
+    "xsd-json-converter": "^2.1.1",
+    "xsd2jsonschema": "^0.3.7"
   }
 }
