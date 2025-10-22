@@ -1,18 +1,22 @@
-import traceback
-
-from converter import Converter, ConverterExternal
-from schema_types import schema_language_from_string
-from logic import build_conversion_graph, identify_schema_features, find_paths, rank_paths
+from conversion_strategies import convert_with_strategy_most_features_preserved, ConversionStrategy, \
+    convert_with_strategy_least_character_loss
+from converter import (Converter, ConverterExternal)
+from schema_types import schema_language_from_string, SchemaLanguagesFeatures
+from logic import build_conversion_graph, find_paths
 from register_converters import register_converters
 from flask import Flask, request
 from typing import List, Dict
+from schema_languages_loader import load_schema_language_features
 
 app = Flask(__name__)
 
 DETAILED_ERROR_OUTPUT = False
+CONVERSION_STRATEGY = ConversionStrategy.LeastCharacterLoss
 
 converters: List[Converter] = register_converters()
 conversion_graph: Dict[str, List[Converter]] = build_conversion_graph(converters)
+schema_languages_features: SchemaLanguagesFeatures = load_schema_language_features()
+
 print("Started Schema Conversion Orchestrator with the following converters:")
 for conv in converters:
     print(f"- {conv.name}: {conv.source_format} -> {conv.target_format} at {conv.service_address}")
@@ -21,6 +25,7 @@ for conv in converters:
 @app.route("/health", methods=["GET"])
 def health():
     return {"status": "ok"}, 200
+
 
 @app.route("/registerConversion", methods=["POST"])
 def register_conversion():
@@ -35,7 +40,8 @@ def register_conversion():
     converters.append(conv)
     global conversion_graph
     conversion_graph = build_conversion_graph(converters)
-    print(f"Registered new converter: {conv.name} from {conv.source_format} to {conv.target_format} at {conv.service_address}.")
+    print(
+        f"Registered new converter: {conv.name} from {conv.source_format} to {conv.target_format} at {conv.service_address}.")
     return {"status": "registered"}, 200
 
 
@@ -58,52 +64,24 @@ def convert():
     if not all_paths:
         return {"error": "No path found for conversion from source " + source + " to target " + target + "."}, 400
 
-    doc_features = set(identify_schema_features(schema, source, conversion_graph))
-    ranked_paths = rank_paths(all_paths, doc_features)
-    attempt_errors = []
-    result_schema = None
+    if CONVERSION_STRATEGY == ConversionStrategy.MostFeaturesPreserved:
+        attempts = convert_with_strategy_most_features_preserved(
+            source, target, schema, all_paths)
+    elif CONVERSION_STRATEGY == ConversionStrategy.LeastCharacterLoss:
+        attempts = convert_with_strategy_least_character_loss(
+            source, target, schema, all_paths)
+    else:
+        return {"error": "Unknown conversion strategy: " + CONVERSION_STRATEGY}, 500
 
-    # attempt conversion via best path and if it fails, try remaining paths and print error message only to console
-    # if no path is left, return the error messages of all attempts consolidated
-    # create only one loop and try and catch and do not treat the first path specially
-    while result_schema is None and len(ranked_paths) > 0:
-        best_path, unsupported_features = ranked_paths[0]
-        try:
-            result_schema = attempt_conversion_path(source, target, best_path, schema)
-        except Exception as e:
-            ranked_paths = ranked_paths[1:]
-            if DETAILED_ERROR_OUTPUT:
-                full_traceback = traceback.format_exc()
-                attempt_errors.append(f"Error: {e}\nTraceback:\n{full_traceback}")
-            else:
-                attempt_errors.append(str(e))
+    best_attempt = attempts[0]
+    success, schema, conversion_path = best_attempt
 
-    if result_schema is None:
+    if not success:
         # return error message of all attempts together with the attempt number (1 to n)
-        return {"error": "All conversion paths failed. Details: " + " | ".join([f"Attempt {i+1}: {msg}" for i, msg in enumerate(attempt_errors)])}, 500
+        return {"error": "All conversion paths failed.", attempts: attempts}, 500
 
-    return {"schema": result_schema}, 200
+    return {"schema": schema}, 200
 
-
-def attempt_conversion_path(source: str, target: str, path: List[Converter], schema: str) -> str:
-    print_conversion_path(source, target, path)
-    current_schema = schema
-    current_converter = None
-    try:
-        for conv in path:
-            current_converter = conv
-            current_schema = conv.convert(current_schema)
-            print("Intermediate schema of format " + conv.target_format + " after conversion via " + conv.service_name + ": " + current_schema)
-        return current_schema
-    except Exception as e:
-        print("Conversion failed at step from " + current_converter.source_format + " to " + current_converter.target_format + " via " + current_converter.service_name + " because of error: " + str(e) + ".")
-        print("With intermediate schema: " + current_schema)
-        raise Exception(f"Conversion failed at step from {current_converter.source_format} to {current_converter.target_format} via {current_converter.service_name} because of error: {str(e)}.")
-
-def print_conversion_path(source: str, target: str, path: List[Converter]) -> None:
-    print("Given the source format " + source + " and target format " + target + ", the best available path is:")
-    for conv in path:
-        print(f"{conv.source_format} -> {conv.target_format} via {conv.name} ({conv.service_address})")
 
 def call_internal_converter(source: str, target: str, schema: str) -> str:
     if source == "JsonSchema" and target == "LinkMl":
@@ -112,6 +90,7 @@ def call_internal_converter(source: str, target: str, schema: str) -> str:
         return f"[Python] Converted from {source} to {target}: {schema}"
     else:
         raise Exception("Unsupported internal conversion")
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5002)

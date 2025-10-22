@@ -1,0 +1,181 @@
+{
+  "title": "SchemaLanguageFeatures",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "$defs": {
+    "FeatureSupport": {
+      "type": "string",
+      "enum": [
+        "preserved",
+        "approximated",
+        "weakened",
+        "lost"
+      ]
+    }
+  },
+  "properties": {
+    "schemaLanguages": {
+      "type": "array",
+      "items": {
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "schemaFeatures": {
+        "type": "object",
+        "properties": {
+          "Structural_Hierarchy": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Structural_Composition": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Structural_References": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Structural_Namespaces": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Structural_AttributesElements": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Structural_UnionIntersection": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Structural_AnonymousTypes": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Constraint_Cardinality": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Constraint_Datatype": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Constraint_Logical": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Constraint_Enumerations": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Constraint_Dependencies": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Constraint_ClosedShapes": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Semantic_Comments": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Semantic_Labels": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Semantic_Defaults": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Semantic_FixedValues": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Semantic_Examples": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Semantic_Deprecated": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Semantic_IdentityConstraints": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Graph_NodeShapes": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Graph_PropertyShapes": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Graph_PathExpressions": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Graph_WorldAssumption": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Graph_TargetDeclarations": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Graph_OntologyAlignment": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Graph_URIs": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Runtime_CustomValidation": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Runtime_ExternalReferences": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Runtime_Extensibility": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Domain_Ordering": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Domain_Nullability": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Domain_Scoping": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Domain_TypedLinks": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Domain_Polymorphism": {
+            "$ref": "#/$defs/FeatureSupport"
+          },
+          "Domain_InheritanceRestrictions": {
+            "$ref": "#/$defs/FeatureSupport"
+          }
+        },
+        "required": [
+          "Structural_Hierarchy",
+          "Structural_List",
+          "Structural_Composition",
+          "Structural_References",
+          "Structural_Namespaces",
+          "Structural_AttributesElements",
+          "Structural_UnionIntersection",
+          "Structural_AnonymousTypes",
+          "Constraint_Cardinality",
+          "Constraint_Datatype",
+          "Constraint_Logical",
+          "Constraint_Enumerations",
+          "Constraint_Dependencies",
+          "Constraint_ClosedShapes",
+          "Semantic_Comments",
+          "Semantic_Labels",
+          "Semantic_Defaults",
+          "Semantic_FixedValues",
+          "Semantic_Examples",
+          "Semantic_Deprecated",
+          "Semantic_IdentityConstraints",
+          "Graph_NodeShapes",
+          "Graph_PropertyShapes",
+          "Graph_PathExpressions",
+          "Graph_WorldAssumption",
+          "Graph_TargetDeclarations",
+          "Graph_OntologyAlignment",
+          "Graph_URIs",
+          "Domain_Ordering",
+          "Domain_Nullability",
+          "Domain_Scoping",
+          "Domain_TypedLinks",
+          "Domain_Polymorphism",
+          "Domain_InheritanceRestrictions"
+        ]
+      }
+    },
+    "required": [
+      "name",
+      "schemaFeatures"
+    ]
+  }
+    }
+  }
+}

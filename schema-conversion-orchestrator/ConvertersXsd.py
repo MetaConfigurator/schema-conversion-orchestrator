@@ -1,10 +1,8 @@
-
 from converter import ConverterInternal
-from schema_types import SchemaLanguage, SchemaFeature
+from schema_types import SchemaLanguage
 
 import xmlschema
 import json
-
 
 
 class ConverterXsdToJsonSchema(ConverterInternal):
@@ -15,15 +13,7 @@ class ConverterXsdToJsonSchema(ConverterInternal):
             service_name="FlaskApp",
             source_format=SchemaLanguage.Xsd,
             target_format=SchemaLanguage.JsonSchema,
-            supported_features=[
-                SchemaFeature.Comments,
-                SchemaFeature.Hierarchy,
-                SchemaFeature.References,
-                SchemaFeature.Constraints,
-                SchemaFeature.Properties,
-                SchemaFeature.Attributes,
-                SchemaFeature.Composition
-            ]
+            supported_features=None
         )
 
     def converter_logic(self, schema: str) -> str:

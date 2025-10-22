@@ -2,15 +2,24 @@ import json
 import os
 import subprocess
 import tempfile
+from typing import List, Dict, Tuple
+from schema_types import SchemaLanguage, SchemaFeature, SchemaFeatureSupport
 
-import requests
-from strenum import StrEnum
-from typing import List
-from schema_types import SchemaLanguage, SchemaFeature
 
 
 class Converter:
-    def __init__(self, name: str, service_address: str, service_name: str, source_format: SchemaLanguage, target_format: SchemaLanguage, supported_features: List[SchemaFeature]):
+    """
+    Abstract base class for schema converters
+    :param name: Name of the converter
+    :param service_address: Address of the converter service or path to executable
+    :param service_name: Name of the converter service
+    :param source_format: Source schema language
+    :param target_format: Target schema language
+    :param supported_features: Dictionary mapping SchemaFeature to SchemaFeatureSupport or None if unknown
+    """
+
+    def __init__(self, name: str, service_address: str, service_name: str, source_format: SchemaLanguage,
+                 target_format: SchemaLanguage, supported_features: Dict[SchemaFeature, SchemaFeatureSupport] | None):
         self.name = name
         self.service_address = service_address
         self.service_name = service_name
@@ -24,7 +33,7 @@ class Converter:
 
 class ConverterExternal(Converter):
     def __init__(self, name: str, executable_path: str, service_name: str, source_format: SchemaLanguage,
-                 target_format: SchemaLanguage, supported_features: List[SchemaFeature]):
+                 target_format: SchemaLanguage, supported_features: Dict[SchemaFeature, SchemaFeatureSupport] | None):
         super().__init__(name, executable_path, service_name, source_format, target_format, supported_features)
         self.executable_path = executable_path
 
@@ -70,7 +79,8 @@ class ConverterExternal(Converter):
 
 
 class ConverterInternal(Converter):
-    def __init__(self, name: str, service_address: str, service_name: str, source_format: SchemaLanguage, target_format: SchemaLanguage, supported_features: List[SchemaFeature]):
+    def __init__(self, name: str, service_address: str, service_name: str, source_format: SchemaLanguage,
+                 target_format: SchemaLanguage, supported_features: Dict[SchemaFeature, SchemaFeatureSupport] | None):
         super().__init__(name, service_address, service_name, source_format, target_format, supported_features)
 
     def convert(self, schema: str) -> str:
@@ -101,7 +111,7 @@ class ConverterExternalGeneric(ConverterExternal):
     """Generic external converter that can handle multiple conversion types"""
 
     def __init__(self, name: str, executable_path: str, source_format: SchemaLanguage,
-                 target_format: SchemaLanguage, supported_features: List[SchemaFeature],
+                 target_format: SchemaLanguage, supported_features: Dict[SchemaFeature, SchemaFeatureSupport] | None,
                  converter_type: str):
         super().__init__(name, executable_path, converter_type, source_format, target_format, supported_features)
         self.converter_type = converter_type
@@ -157,6 +167,13 @@ class ConverterExternalGeneric(ConverterExternal):
             # Clean up temporary file
             os.unlink(input_file_path)
 
+
 ConversionGraph = dict[str, list[Converter]]
 ConversionPath = List[Converter]
 ConversionPaths = List[ConversionPath]
+
+# Tuple of (success: bool, result_schema_or_error_message: str, conversion_path: ConversionPath)
+ConversionResult = Tuple[bool, str, ConversionPath]
+
+# List of results ranked by success
+ConversionResults = List[ConversionResult]

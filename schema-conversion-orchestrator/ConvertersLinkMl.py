@@ -6,7 +6,7 @@ import schema_automator
 from linkml.utils.generator import Generator
 
 from converter import ConverterInternal
-from schema_types import SchemaFeature, SchemaLanguage
+from schema_types import SchemaLanguage
 from utils import simple_cname_convert
 
 from linkml_runtime.linkml_model import SchemaDefinition
@@ -31,15 +31,7 @@ class ConverterLinkMlToJsonSchema(ConverterInternal):
             service_name="FlaskApp",
             source_format=SchemaLanguage.LinkMl,
             target_format=SchemaLanguage.JsonSchema,
-            supported_features=[
-                SchemaFeature.Comments,
-                SchemaFeature.Hierarchy,
-                SchemaFeature.References,
-                SchemaFeature.Constraints,
-                SchemaFeature.Properties,
-                SchemaFeature.Attributes,
-                SchemaFeature.Composition
-            ]
+            supported_features=None
         )
 
     def converter_logic(self, schema: str) -> str:
@@ -65,15 +57,7 @@ class ConverterFromLinkMl(ConverterInternal):
             service_name="FlaskApp",
             source_format=SchemaLanguage.LinkMl,
             target_format=target_format,
-            supported_features=[
-                SchemaFeature.Comments,
-                SchemaFeature.Hierarchy,
-                SchemaFeature.References,
-                SchemaFeature.Constraints,
-                SchemaFeature.Properties,
-                SchemaFeature.Attributes,
-                SchemaFeature.Composition
-            ]
+            supported_features=None
         )
 
     def converter_logic(self, schema: str) -> str:
@@ -126,15 +110,7 @@ class ConverterJsonSchemaToLinkMl(ConverterInternal):
             service_name="FlaskApp",
             source_format=SchemaLanguage.JsonSchema,
             target_format=SchemaLanguage.LinkMl,
-            supported_features=[
-                SchemaFeature.Comments,
-                SchemaFeature.Hierarchy,
-                SchemaFeature.References,
-                SchemaFeature.Constraints,
-                SchemaFeature.Properties,
-                SchemaFeature.Attributes,
-                SchemaFeature.Composition
-            ]
+            supported_features=None
         )
 
     def converter_logic(self, schema: str) -> str:
@@ -174,15 +150,7 @@ class ConverterOwlToLinkMl(ConverterInternal):
             service_name="FlaskApp",
             source_format=SchemaLanguage.Owl,
             target_format=SchemaLanguage.LinkMl,
-            supported_features=[
-                SchemaFeature.Comments,
-                SchemaFeature.Hierarchy,
-                SchemaFeature.References,
-                SchemaFeature.Constraints,
-                SchemaFeature.Properties,
-                SchemaFeature.Attributes,
-                SchemaFeature.Composition
-            ]
+            supported_features=None
         )
 
     def converter_logic(self, schema: str) -> str:

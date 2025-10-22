@@ -1,0 +1,176 @@
+{
+  "schemaLanguages": [
+    {
+      "name": "JSON Schema",
+      "schemaFeatures": {
+        "Structural_Hierarchy": "approximated",
+        "Structural_List": "preserved",
+        "Structural_Composition": "preserved",
+        "Structural_References": "preserved",
+        "Structural_Namespaces": "lost",
+        "Structural_AttributesElements": "lost",
+        "Structural_UnionIntersection": "approximated",
+        "Structural_AnonymousTypes": "preserved",
+
+        "Constraint_Cardinality": "weakened",
+        "Constraint_Datatype": "preserved",
+        "Constraint_Logical": "preserved",
+        "Constraint_Enumerations": "preserved",
+        "Constraint_Dependencies": "preserved",
+        "Constraint_ClosedShapes": "preserved",
+
+        "Semantic_Comments": "approximated",
+        "Semantic_Labels": "preserved",
+        "Semantic_Defaults": "preserved",
+        "Semantic_FixedValues": "preserved",
+        "Semantic_Examples": "preserved",
+        "Semantic_Deprecated": "weakened",
+        "Semantic_IdentityConstraints": "lost",
+
+        "Graph_NodeShapes": "lost",
+        "Graph_PropertyShapes": "lost",
+        "Graph_PathExpressions": "lost",
+        "Graph_WorldAssumption": "lost",
+        "Graph_TargetDeclarations": "lost",
+        "Graph_OntologyAlignment": "lost",
+        "Graph_URIs": "lost",
+
+        "Domain_Ordering": "lost",
+        "Domain_Nullability": "weakened",
+        "Domain_Scoping": "lost",
+        "Domain_TypedLinks": "lost",
+        "Domain_Polymorphism": "lost",
+        "Domain_InheritanceRestrictions": "lost"
+      }
+    },
+    {
+      "name": "LinkML",
+      "schemaFeatures": {
+        "Structural_Hierarchy": "preserved",
+        "Structural_List": "preserved",
+        "Structural_Composition": "preserved",
+        "Structural_References": "preserved",
+        "Structural_Namespaces": "preserved",
+        "Structural_AttributesElements": "preserved",
+        "Structural_UnionIntersection": "approximated",
+        "Structural_AnonymousTypes": "preserved",
+
+        "Constraint_Cardinality": "preserved",
+        "Constraint_Datatype": "preserved",
+        "Constraint_Logical": "approximated",
+        "Constraint_Enumerations": "preserved",
+        "Constraint_Dependencies": "approximated",
+        "Constraint_ClosedShapes": "preserved",
+
+        "Semantic_Comments": "preserved",
+        "Semantic_Labels": "preserved",
+        "Semantic_Defaults": "preserved",
+        "Semantic_FixedValues": "preserved",
+        "Semantic_Examples": "preserved",
+        "Semantic_Deprecated": "preserved",
+        "Semantic_IdentityConstraints": "preserved",
+
+        "Graph_NodeShapes": "preserved",
+        "Graph_PropertyShapes": "preserved",
+        "Graph_PathExpressions": "approximated",
+        "Graph_WorldAssumption": "preserved",
+        "Graph_TargetDeclarations": "preserved",
+        "Graph_OntologyAlignment": "preserved",
+        "Graph_URIs": "preserved",
+
+        "Domain_Ordering": "lost",
+        "Domain_Nullability": "preserved",
+        "Domain_Scoping": "preserved",
+        "Domain_TypedLinks": "preserved",
+        "Domain_Polymorphism": "preserved",
+        "Domain_InheritanceRestrictions": "preserved"
+      }
+    },
+    {
+      "name": "XSD",
+      "schemaFeatures": {
+        "Structural_Hierarchy": "preserved",
+        "Structural_List": "preserved",
+        "Structural_Composition": "preserved",
+        "Structural_References": "preserved",
+        "Structural_Namespaces": "preserved",
+        "Structural_AttributesElements": "preserved",
+        "Structural_UnionIntersection": "preserved",
+        "Structural_AnonymousTypes": "preserved",
+
+        "Constraint_Cardinality": "preserved",
+        "Constraint_Datatype": "preserved",
+        "Constraint_Logical": "approximated",
+        "Constraint_Enumerations": "preserved",
+        "Constraint_Dependencies": "weakened",
+        "Constraint_ClosedShapes": "approximated",
+
+        "Semantic_Comments": "preserved",
+        "Semantic_Labels": "preserved",
+        "Semantic_Defaults": "preserved",
+        "Semantic_FixedValues": "preserved",
+        "Semantic_Examples": "preserved",
+        "Semantic_Deprecated": "lost",
+        "Semantic_IdentityConstraints": "preserved",
+
+        "Graph_NodeShapes": "lost",
+        "Graph_PropertyShapes": "lost",
+        "Graph_PathExpressions": "lost",
+        "Graph_WorldAssumption": "lost",
+        "Graph_TargetDeclarations": "lost",
+        "Graph_OntologyAlignment": "lost",
+        "Graph_URIs": "lost",
+
+        "Domain_Ordering": "preserved",
+        "Domain_Nullability": "preserved",
+        "Domain_Scoping": "preserved",
+        "Domain_TypedLinks": "lost",
+        "Domain_Polymorphism": "approximated",
+        "Domain_InheritanceRestrictions": "preserved"
+      }
+    },
+    {
+      "name": "SHACL",
+      "schemaFeatures": {
+        "Structural_Hierarchy": "preserved",
+        "Structural_List": "preserved",
+        "Structural_Composition": "preserved",
+        "Structural_References": "preserved",
+        "Structural_Namespaces": "preserved",
+        "Structural_AttributesElements": "lost",
+        "Structural_UnionIntersection": "preserved",
+        "Structural_AnonymousTypes": "preserved",
+
+        "Constraint_Cardinality": "preserved",
+        "Constraint_Datatype": "preserved",
+        "Constraint_Logical": "preserved",
+        "Constraint_Enumerations": "preserved",
+        "Constraint_Dependencies": "preserved",
+        "Constraint_ClosedShapes": "preserved",
+
+        "Semantic_Comments": "preserved",
+        "Semantic_Labels": "preserved",
+        "Semantic_Defaults": "lost",
+        "Semantic_FixedValues": "preserved",
+        "Semantic_Examples": "preserved",
+        "Semantic_Deprecated": "preserved",
+        "Semantic_IdentityConstraints": "approximated",
+
+        "Graph_NodeShapes": "preserved",
+        "Graph_PropertyShapes": "preserved",
+        "Graph_PathExpressions": "preserved",
+        "Graph_WorldAssumption": "preserved",
+        "Graph_TargetDeclarations": "preserved",
+        "Graph_OntologyAlignment": "preserved",
+        "Graph_URIs": "preserved",
+
+        "Domain_Ordering": "lost",
+        "Domain_Nullability": "weakened",
+        "Domain_Scoping": "lost",
+        "Domain_TypedLinks": "preserved",
+        "Domain_Polymorphism": "preserved",
+        "Domain_InheritanceRestrictions": "preserved"
+      }
+    }
+  ]
+}

@@ -1,10 +1,9 @@
 import json
 
 from converter import ConverterInternal
-from schema_types import SchemaLanguage, SchemaFeature
+from schema_types import SchemaLanguage
 
 from mdmodels_core import DataModel, Templates
-
 
 
 class ConverterFromMdModels(ConverterInternal):
@@ -15,10 +14,7 @@ class ConverterFromMdModels(ConverterInternal):
             service_name="FlaskApp",
             source_format=SchemaLanguage.MdModels,
             target_format=target_format,
-            supported_features=[
-                SchemaFeature.Comments,
-                SchemaFeature.Hierarchy,
-            ]
+            supported_features=None
         )
 
     def converter_logic(self, schema: str) -> str:
@@ -68,15 +64,7 @@ class ConverterJsonSchemaToMdModels(ConverterInternal):
             service_name="FlaskApp",
             source_format=SchemaLanguage.JsonSchema,
             target_format=SchemaLanguage.MdModels,
-            supported_features=[
-                SchemaFeature.Comments,
-                SchemaFeature.Hierarchy,
-                SchemaFeature.References,
-                SchemaFeature.Constraints,
-                SchemaFeature.Properties,
-                SchemaFeature.Attributes,
-                SchemaFeature.Composition
-            ]
+            supported_features=None
         )
 
     def converter_logic(self, schema: str) -> str:

@@ -30,7 +30,9 @@
   "author": "Felix Neubauer",
   "license": "MIT",
   "devDependencies": {
+    "@types/n3": "^1.26.0",
     "@types/node": "^24.5.2",
+    "@types/rdf-ext": "^2.5.2",
     "typescript": "^5.0.0"
   },
   "engines": {
@@ -42,6 +44,11 @@
     "src/converters/*.js"
   ],
   "dependencies": {
+    "@frogcat/ttl2jsonld": "^0.0.10",
+    "jsonld": "^8.3.3",
+    "n3": "^1.26.0",
+    "rdf-ext": "^2.6.0",
+    "rdf-parse": "^4.0.0",
     "xsd-json-converter": "^2.1.1",
     "xsd2jsonschema": "^0.3.7"
   }

@@ -4,9 +4,9 @@ from pathlib import Path
 
 # --- Configuration ---
 SERVER_URL = "http://localhost:5002/convert"
-SOURCE_FORMAT = "JsonSchema"
-TARGET_FORMAT = "Shacl"
-SCHEMA_FILE = Path("schemas/preciceAdapterConfigSchema.schema.json")
+SOURCE_FORMAT = "Shacl"
+TARGET_FORMAT = "JsonSchema"
+SCHEMA_FILE = Path("schemas/owl.ttl")
 
 
 def main():

@@ -1,8 +1,11 @@
 from typing import List, Set, Tuple, Dict
 from converter import Converter, ConversionGraph, ConversionPath, ConversionPaths
-from schema_types import SchemaLanguage, SchemaFeature, SchemaFeatures
+from schema_types import SchemaLanguage, SchemaFeature, SchemaLanguagesFeatures, SchemaFeatureSupport
+from identify_schema_features_json_schema import identify_schema_features_json_schema
 
-# Builds a schema conversion graph from the list of registered converters, connecting source formats to target formats with the edges being converters.
+
+# Builds a schema conversion graph from the list of registered converters, connecting source formats to target
+# formats with the edges being converters.
 def build_conversion_graph(converters: List[Converter]) -> Dict[str, List[Converter]]:
     conversion_graph = {}
     for conv in converters:
@@ -11,16 +14,23 @@ def build_conversion_graph(converters: List[Converter]) -> Dict[str, List[Conver
         conversion_graph[conv.source_format].append(conv)
     return conversion_graph
 
-def identify_schema_features(schema: str, format: SchemaLanguage, conversion_graph: ConversionGraph) -> SchemaFeatures:
-    # Dummy logic
-    return [
-        SchemaFeature.Constraints,
-        SchemaFeature.Properties,
-        SchemaFeature.Hierarchy,
-        SchemaFeature.References
-    ]
 
-def find_paths(source: SchemaLanguage, target: SchemaLanguage, conversion_graph: ConversionGraph, path: ConversionPaths | None=None, visited: Set[SchemaLanguage] | None=None) -> ConversionPaths:
+def identify_schema_features(schema: str, format: SchemaLanguage) -> List[SchemaFeature] | None:
+    """
+    # Analyzes the input schema to identify which schema features it uses.
+    :param schema: The input schema as a string.
+    :param format: The format of the input schema.
+    :return: A dictionary mapping SchemaFeature to SchemaFeatureSupport, or None if no analysis is available for the
+    given schema language.
+    """
+    if format == SchemaLanguage.JsonSchema:
+        return identify_schema_features_json_schema(schema)
+
+    return None
+
+
+def find_paths(source: SchemaLanguage, target: SchemaLanguage, conversion_graph: ConversionGraph,
+               path: ConversionPaths | None = None, visited: Set[SchemaLanguage] | None = None) -> ConversionPaths:
     if path is None:
         path = []
     if visited is None:
@@ -44,8 +54,19 @@ def find_paths(source: SchemaLanguage, target: SchemaLanguage, conversion_graph:
     return paths
 
 
-# ranks the paths based on how many features they support from the document schema plus returns a list of unsupported features for each path
-def rank_paths(paths: ConversionPaths, doc_features: set[SchemaFeature]) -> List[Tuple[ConversionPath, Set[SchemaFeature]]]:
+# ranks the paths based on how many features they support from the document schema plus returns a list of unsupported
+# features for each path
+# Feature support is not a yes or no but an enum of preserved, approximated, weakened, lost.
+# We start with the state of features of the user document. Then for each path step we remove the unsupported features and apply
+# downgrades to the others, depending on 1. feature support by the schema language of this step and 2. feature support
+# by the conversion step itself.
+def rank_paths(paths: ConversionPaths, doc_features: set[SchemaFeature] | None,
+               schema_languages_features: SchemaLanguagesFeatures) -> List[
+    Tuple[ConversionPath, Dict[SchemaFeature, SchemaFeatureSupport]]]:
+    if doc_features is None:
+        # todo: assume ALL features in case of no known list of features
+        doc_features = set()
+
     ranked_paths = []
 
     for path in paths:
@@ -66,8 +87,10 @@ def rank_paths(paths: ConversionPaths, doc_features: set[SchemaFeature]) -> List
     return [(path, unsupported) for path, unsupported, _ in ranked_paths]
 
 
-# Returns either the best path + a list of schema features that are in the core document but not supported and will be omitted, or None if no path is found.
-def determine_best_path(paths: ConversionPaths, doc_features: set[SchemaFeature]) -> Tuple[ConversionPath, Set[SchemaFeature]] | None:
+# Returns either the best path + a list of schema features that are in the core document but not supported and will
+# be omitted, or None if no path is found.
+def determine_best_path(paths: ConversionPaths, doc_features: set[SchemaFeature]) -> Tuple[ConversionPath, Set[
+    SchemaFeature]] | None:
     if not paths:
         return None
 
