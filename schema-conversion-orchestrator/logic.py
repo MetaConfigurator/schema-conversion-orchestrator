@@ -1,6 +1,6 @@
 from typing import List, Set, Tuple, Dict
 from converter import Converter, ConversionGraph, ConversionPath, ConversionPaths
-from schema_types import SchemaLanguage, SchemaFeature, SchemaLanguagesFeatures, SchemaFeatureSupport
+from schema_types import SchemaLanguage, SchemaFeature
 from identify_schema_features_json_schema import identify_schema_features_json_schema
 
 
@@ -56,13 +56,8 @@ def find_paths(source: SchemaLanguage, target: SchemaLanguage, conversion_graph:
 
 # ranks the paths based on how many features they support from the document schema plus returns a list of unsupported
 # features for each path
-# Feature support is not a yes or no but an enum of preserved, approximated, weakened, lost.
-# We start with the state of features of the user document. Then for each path step we remove the unsupported features and apply
-# downgrades to the others, depending on 1. feature support by the schema language of this step and 2. feature support
-# by the conversion step itself.
-def rank_paths(paths: ConversionPaths, doc_features: set[SchemaFeature] | None,
-               schema_languages_features: SchemaLanguagesFeatures) -> List[
-    Tuple[ConversionPath, Dict[SchemaFeature, SchemaFeatureSupport]]]:
+def rank_paths(paths: ConversionPaths, doc_features: set[SchemaFeature] | None) -> List[
+    Tuple[ConversionPath, set[SchemaFeature]]]:
     if doc_features is None:
         # todo: assume ALL features in case of no known list of features
         doc_features = set()

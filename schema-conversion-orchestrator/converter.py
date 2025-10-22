@@ -2,9 +2,8 @@ import json
 import os
 import subprocess
 import tempfile
-from typing import List, Dict, Tuple
-from schema_types import SchemaLanguage, SchemaFeature, SchemaFeatureSupport
-
+from typing import List, Tuple
+from schema_types import SchemaLanguage, SchemaFeature
 
 
 class Converter:
@@ -19,7 +18,7 @@ class Converter:
     """
 
     def __init__(self, name: str, service_address: str, service_name: str, source_format: SchemaLanguage,
-                 target_format: SchemaLanguage, supported_features: Dict[SchemaFeature, SchemaFeatureSupport] | None):
+                 target_format: SchemaLanguage, supported_features: set[SchemaFeature]):
         self.name = name
         self.service_address = service_address
         self.service_name = service_name
@@ -33,7 +32,7 @@ class Converter:
 
 class ConverterExternal(Converter):
     def __init__(self, name: str, executable_path: str, service_name: str, source_format: SchemaLanguage,
-                 target_format: SchemaLanguage, supported_features: Dict[SchemaFeature, SchemaFeatureSupport] | None):
+                 target_format: SchemaLanguage, supported_features: set[SchemaFeature]):
         super().__init__(name, executable_path, service_name, source_format, target_format, supported_features)
         self.executable_path = executable_path
 
@@ -80,7 +79,7 @@ class ConverterExternal(Converter):
 
 class ConverterInternal(Converter):
     def __init__(self, name: str, service_address: str, service_name: str, source_format: SchemaLanguage,
-                 target_format: SchemaLanguage, supported_features: Dict[SchemaFeature, SchemaFeatureSupport] | None):
+                 target_format: SchemaLanguage, supported_features: set[SchemaFeature]):
         super().__init__(name, service_address, service_name, source_format, target_format, supported_features)
 
     def convert(self, schema: str) -> str:
@@ -111,7 +110,7 @@ class ConverterExternalGeneric(ConverterExternal):
     """Generic external converter that can handle multiple conversion types"""
 
     def __init__(self, name: str, executable_path: str, source_format: SchemaLanguage,
-                 target_format: SchemaLanguage, supported_features: Dict[SchemaFeature, SchemaFeatureSupport] | None,
+                 target_format: SchemaLanguage, supported_features: set[SchemaFeature],
                  converter_type: str):
         super().__init__(name, executable_path, converter_type, source_format, target_format, supported_features)
         self.converter_type = converter_type
@@ -177,3 +176,9 @@ ConversionResult = Tuple[bool, str, ConversionPath]
 
 # List of results ranked by success
 ConversionResults = List[ConversionResult]
+
+ConversionsCache = dict[str, str | None]
+
+
+def conversion_path_to_string(path: ConversionPath) -> str:
+    return " -> ".join([f"{conv.source_format.value} to {conv.target_format.value} via {conv.service_name}" for conv in path])

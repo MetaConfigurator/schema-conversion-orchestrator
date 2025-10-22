@@ -1,5 +1,5 @@
 from typing import List
-from ConvertersLinkMl import ConverterFromLinkMl, ConverterJsonSchemaToLinkMl, ConverterLinkMlToJsonSchema, ConverterOwlToLinkMl
+from ConvertersLinkMl import ConverterFromLinkMl, ConverterJsonSchemaToLinkMl, ConverterOwlToLinkMl
 from ConvertersMdModels import ConverterFromMdModels, ConverterJsonSchemaToMdModels
 
 from converter import Converter
@@ -37,7 +37,5 @@ def register_python_converters() -> List[Converter]:
         ConverterFromMdModels(target_format=SchemaLanguage.Shex),
 
         ConverterJsonSchemaToMdModels(),
-
-        ConverterLinkMlToJsonSchema() # redundant
 
     ]

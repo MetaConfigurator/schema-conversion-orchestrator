@@ -23,32 +23,6 @@ from linkml.generators.pythongen import PythonGenerator
 from linkml.generators.sqlalchemygen import SQLAlchemyGenerator
 
 
-class ConverterLinkMlToJsonSchema(ConverterInternal):
-    def __init__(self):
-        super().__init__(
-            name="LinkML JsonSchemaGenerator",
-            service_address="internal",
-            service_name="FlaskApp",
-            source_format=SchemaLanguage.LinkMl,
-            target_format=SchemaLanguage.JsonSchema,
-            supported_features=None
-        )
-
-    def converter_logic(self, schema: str) -> str:
-        with tempfile.NamedTemporaryFile("w+", suffix=".yaml") as f:
-            f.write(schema)
-            f.flush()
-            json_schema = JsonSchemaGenerator(f.name).serialize()
-        return json_schema
-
-    def validate_input(self, schema: str) -> bool:
-        # Implement validation logic for LinkML schema
-        return True
-
-    def validate_output(self, schema: str) -> bool:
-        # Implement validation logic for JSON Schema
-        return True
-
 class ConverterFromLinkMl(ConverterInternal):
     def __init__(self, target_format: SchemaLanguage):
         super().__init__(
@@ -57,7 +31,7 @@ class ConverterFromLinkMl(ConverterInternal):
             service_name="FlaskApp",
             source_format=SchemaLanguage.LinkMl,
             target_format=target_format,
-            supported_features=None
+            supported_features=set()
         )
 
     def converter_logic(self, schema: str) -> str:
@@ -102,6 +76,7 @@ class ConverterFromLinkMl(ConverterInternal):
         # Implement validation logic for LinkML schema
         return True
 
+
 class ConverterJsonSchemaToLinkMl(ConverterInternal):
     def __init__(self):
         super().__init__(
@@ -110,7 +85,7 @@ class ConverterJsonSchemaToLinkMl(ConverterInternal):
             service_name="FlaskApp",
             source_format=SchemaLanguage.JsonSchema,
             target_format=SchemaLanguage.LinkMl,
-            supported_features=None
+            supported_features=set()
         )
 
     def converter_logic(self, schema: str) -> str:
@@ -150,7 +125,7 @@ class ConverterOwlToLinkMl(ConverterInternal):
             service_name="FlaskApp",
             source_format=SchemaLanguage.Owl,
             target_format=SchemaLanguage.LinkMl,
-            supported_features=None
+            supported_features=set()
         )
 
     def converter_logic(self, schema: str) -> str:

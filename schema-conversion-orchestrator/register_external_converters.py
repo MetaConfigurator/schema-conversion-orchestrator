@@ -53,10 +53,10 @@ def register_external_converters() -> List[Converter]:
         for info in converter_infos:
             try:
                 # Parse supported features
-                features = {}
-                for feature_str in info.get('supportedFeatures', {}):
+                features = set()
+                for feature_str in info.get('supportedFeatures', []):
                     try:
-                        features[SchemaFeature(feature_str)] = info['supportedFeatures'][feature_str]
+                        features.add(SchemaFeature(feature_str))
                     except ValueError:
                         print(f"Unknown feature: {feature_str}")
 
@@ -85,10 +85,10 @@ def register_external_converters() -> List[Converter]:
         for info in converter_infos:
             try:
                 # Parse supported features
-                features = {}
-                for feature_str in info.get('supportedFeatures', {}):
+                features = set()
+                for feature_str in info.get('supportedFeatures', []):
                     try:
-                        features[SchemaFeature(feature_str)] = info['supportedFeatures'][feature_str]
+                        features.add(SchemaFeature(feature_str))
                     except ValueError:
                         print(f"Unknown feature: {feature_str}")
 

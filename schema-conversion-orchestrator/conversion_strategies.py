@@ -2,10 +2,10 @@ import traceback
 from typing import List
 from strenum import StrEnum
 
-from converter import (ConversionResult, ConversionResults, ConversionPaths, Converter)
+from converter import (ConversionResult, ConversionResults, ConversionPaths, Converter, conversion_path_to_string, ConversionsCache)
 from schema_types import SchemaLanguage
 from logic import identify_schema_features, rank_paths
-from app import DETAILED_ERROR_OUTPUT, schema_languages_features
+from app import DETAILED_ERROR_OUTPUT
 
 
 class ConversionStrategy(StrEnum):
@@ -20,8 +20,9 @@ def convert_with_strategy_most_features_preserved(source: SchemaLanguage, target
     doc_features = set(identify_schema_features(schema, source))
     if not doc_features:
         print("Warning: No schema feature identification available for the given schema format '" + source + "'.")
-    ranked_paths = rank_paths(paths, doc_features, schema_languages_features)
+    ranked_paths = rank_paths(paths, doc_features)
     all_attempts: List[ConversionResult] = []
+    conversions_cache = {}  # cache for all conversion sub-paths
     result_schema = None
 
     # attempt conversion via best path and if it fails, try remaining paths and print error message only to console
@@ -30,7 +31,9 @@ def convert_with_strategy_most_features_preserved(source: SchemaLanguage, target
     while result_schema is None and len(ranked_paths) > 0:
         best_path, unsupported_features = ranked_paths[0]
         try:
-            result_schema = attempt_conversion_path(source, target, best_path, schema)
+            result_schema, conversions_cache_update = attempt_conversion_path(source, target, best_path, schema,
+                                                                              conversions_cache)
+            conversions_cache = conversions_cache_update
 
             if not result_schema:
                 all_attempts.append((False, "Conversion resulted in 'None' schema.", best_path))
@@ -56,10 +59,13 @@ def convert_with_strategy_least_character_loss(source: SchemaLanguage, target: S
     Does not stop at success but explores all paths. Trivial feature loss strategy which is character based.
     Much less effort than a proper feature loss analysis and still effective."""
     all_attempts: List[ConversionResult] = []
+    conversions_cache = {}  # cache for all conversion sub-paths
     for path in paths:
         result_schema = None
         try:
-            result_schema = attempt_conversion_path(source, target, path, schema)
+            result_schema, conversions_cache_update = attempt_conversion_path(source, target, path, schema,
+                                                                              conversions_cache)
+            conversions_cache = conversions_cache_update
 
             if not result_schema:
                 all_attempts.append((False, "Conversion resulted in 'None' schema.", path))
@@ -78,17 +84,41 @@ def convert_with_strategy_least_character_loss(source: SchemaLanguage, target: S
     return all_attempts
 
 
-def attempt_conversion_path(source: str, target: str, path: List[Converter], schema: str) -> str:
+# the conversions cache contains the results of all previously attempted conversion sub-paths
+def attempt_conversion_path(source: str, target: str, path: List[Converter], schema: str,
+                            conversions_cache: ConversionsCache) -> tuple[str, ConversionsCache]:
     print_conversion_path(source, target, path)
     current_schema = schema
     current_converter = None
+    conversion_sub_path = []
     try:
         for conv in path:
             current_converter = conv
-            current_schema = conv.convert(current_schema)
-            print(
-                "Intermediate schema of format " + conv.target_format + " after conversion via " + conv.service_name + ": " + current_schema)
-        return current_schema
+            conversion_sub_path.append(conv)
+
+            # check cache
+            conversion_sub_path_hash = conversion_path_to_string(conversion_sub_path)
+            if conversion_sub_path_hash in conversions_cache:
+                # cache hit
+                cached_result = conversions_cache[conversion_sub_path_hash]
+                if cached_result is None:
+                    # previously failed conversion for this sub-path
+                    raise Exception("Previously failed conversion for this sub-path.")
+                else:
+                    # use cached result in case of cache hit and good previous conversion
+                    current_schema = cached_result
+                    print(
+                        "Using cached intermediate schema of format " + conv.target_format + " after conversion via " + conv.service_name + ": " + current_schema)
+                    continue
+            else:
+                # cache miss - perform conversion
+                current_schema = conv.convert(current_schema)
+                print(
+                    "Intermediate schema of format " + conv.target_format + " after conversion via " + conv.service_name + ": " + current_schema)
+                # store in cache
+                conversions_cache[conversion_sub_path_hash] = current_schema
+
+        return current_schema, conversions_cache
     except Exception as e:
         print(
             "Conversion failed at step from " + current_converter.source_format + " to " + current_converter.target_format + " via " + current_converter.service_name + " because of error: " + str(
