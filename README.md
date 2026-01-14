@@ -21,7 +21,7 @@ This project provides a schema conversion platform that supports converting betw
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/Logende/universal-schema-converter.git
+git clone https://github.com/Logende/schema-conversion-orchestrator.git
 cd universal-schema-converter
 ```
 
