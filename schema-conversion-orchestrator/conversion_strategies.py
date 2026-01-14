@@ -4,54 +4,12 @@ from strenum import StrEnum
 
 from converter import (ConversionResult, ConversionResults, ConversionPaths, Converter, conversion_path_to_string, ConversionsCache)
 from schema_types import SchemaLanguage
-from logic import identify_schema_features, rank_paths
 
 DETAILED_ERROR_OUTPUT = False
 
 
 class ConversionStrategy(StrEnum):
     LeastCharacterLoss = "LeastCharacterLoss"
-    MostFeaturesPreserved = "MostFeaturesPreserved"
-
-
-def convert_with_strategy_most_features_preserved(source: SchemaLanguage, target: SchemaLanguage, schema: str,
-                                                  paths: ConversionPaths) -> ConversionResults:
-    """ Ranks paths by how many features they preserve from the document schema and tries them in that order.
-    Stops at first success."""
-    doc_features = set(identify_schema_features(schema, source))
-    if not doc_features:
-        print("Warning: No schema feature identification available for the given schema format '" + source + "'.")
-    ranked_paths = rank_paths(paths, doc_features)
-    all_attempts: List[ConversionResult] = []
-    conversions_cache = {}  # cache for all conversion sub-paths
-    result_schema = None
-
-    # attempt conversion via best path and if it fails, try remaining paths and print error message only to console
-    # if no path is left, return the error messages of all attempts consolidated
-    # create only one loop and try and catch and do not treat the first path specially
-    while result_schema is None and len(ranked_paths) > 0:
-        best_path, unsupported_features = ranked_paths[0]
-        try:
-            result_schema, conversions_cache_update = attempt_conversion_path(source, target, best_path, schema,
-                                                                              conversions_cache)
-            conversions_cache = conversions_cache_update
-
-            if not result_schema:
-                all_attempts.append((False, "Conversion resulted in 'None' schema.", best_path))
-            else:
-                all_attempts.append((True, result_schema, best_path))
-                break
-        except Exception as e:
-            ranked_paths = ranked_paths[1:]
-            if DETAILED_ERROR_OUTPUT:
-                full_traceback = traceback.format_exc()
-                all_attempts.append((False, f"Error: {e}\nTraceback:\n{full_traceback}", best_path))
-            else:
-                all_attempts.append((False, str(e), best_path))
-
-    # sort all attempts by success: success first. Otherwise keep same order
-    all_attempts.sort(key=lambda x: not x[0])
-    return all_attempts
 
 
 def convert_with_strategy_least_character_loss(source: SchemaLanguage, target: SchemaLanguage, schema: str,

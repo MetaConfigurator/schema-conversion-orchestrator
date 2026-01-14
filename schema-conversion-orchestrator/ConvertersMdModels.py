@@ -14,7 +14,6 @@ class ConverterFromMdModels(ConverterInternal):
             service_name="FlaskApp",
             source_format=SchemaLanguage.MdModels,
             target_format=target_format,
-            supported_features=set()
         )
 
     def converter_logic(self, schema: str) -> str:
@@ -64,7 +63,6 @@ class ConverterJsonSchemaToMdModels(ConverterInternal):
             service_name="FlaskApp",
             source_format=SchemaLanguage.JsonSchema,
             target_format=SchemaLanguage.MdModels,
-            supported_features=set()
         )
 
     def converter_logic(self, schema: str) -> str:

@@ -4,7 +4,7 @@ import subprocess
 from typing import List, Dict
 
 from converter import Converter, ConverterExternalGeneric
-from schema_types import SchemaLanguage, SchemaFeature
+from schema_types import SchemaLanguage
 
 
 def get_external_converter_info(executable_path: str, converter_type: str) -> List[Dict]:
@@ -52,20 +52,11 @@ def register_external_converters() -> List[Converter]:
 
         for info in converter_infos:
             try:
-                # Parse supported features
-                features = set()
-                for feature_str in info.get('supportedFeatures', []):
-                    try:
-                        features.add(SchemaFeature(feature_str))
-                    except ValueError:
-                        print(f"Unknown feature: {feature_str}")
-
                 converter = ConverterExternalGeneric(
                     name=info['name'],
                     executable_path=f"node {node_executable}",
                     source_format=SchemaLanguage(info['sourceFormat']),
                     target_format=SchemaLanguage(info['targetFormat']),
-                    supported_features=features,
                     converter_type="node"
                 )
                 converters.append(converter)
@@ -84,20 +75,11 @@ def register_external_converters() -> List[Converter]:
         print("Java converter infos:", converter_infos)
         for info in converter_infos:
             try:
-                # Parse supported features
-                features = set()
-                for feature_str in info.get('supportedFeatures', []):
-                    try:
-                        features.add(SchemaFeature(feature_str))
-                    except ValueError:
-                        print(f"Unknown feature: {feature_str}")
-
                 converter = ConverterExternalGeneric(
                     name=info['name'],
                     executable_path=f"java -jar {java_jar}",
                     source_format=SchemaLanguage(info['sourceFormat']),
                     target_format=SchemaLanguage(info['targetFormat']),
-                    supported_features=features,
                     converter_type="java"
                 )
                 converters.append(converter)

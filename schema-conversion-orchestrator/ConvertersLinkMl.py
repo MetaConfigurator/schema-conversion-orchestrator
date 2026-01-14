@@ -31,7 +31,6 @@ class ConverterFromLinkMl(ConverterInternal):
             service_name="FlaskApp",
             source_format=SchemaLanguage.LinkMl,
             target_format=target_format,
-            supported_features=set()
         )
 
     def converter_logic(self, schema: str) -> str:
@@ -85,7 +84,6 @@ class ConverterJsonSchemaToLinkMl(ConverterInternal):
             service_name="FlaskApp",
             source_format=SchemaLanguage.JsonSchema,
             target_format=SchemaLanguage.LinkMl,
-            supported_features=set()
         )
 
     def converter_logic(self, schema: str) -> str:
@@ -125,7 +123,6 @@ class ConverterOwlToLinkMl(ConverterInternal):
             service_name="FlaskApp",
             source_format=SchemaLanguage.Owl,
             target_format=SchemaLanguage.LinkMl,
-            supported_features=set()
         )
 
     def converter_logic(self, schema: str) -> str:

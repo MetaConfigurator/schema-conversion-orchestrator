@@ -1,4 +1,4 @@
-from conversion_strategies import convert_with_strategy_most_features_preserved, ConversionStrategy, \
+from conversion_strategies import ConversionStrategy, \
     convert_with_strategy_least_character_loss
 from converter import (Converter, ConverterExternal, prepare_conversion_results_for_serializing)
 from schema_types import schema_language_from_string
@@ -14,7 +14,6 @@ CONVERSION_STRATEGY = ConversionStrategy.LeastCharacterLoss
 
 converters: List[Converter] = register_converters()
 conversion_graph: Dict[str, List[Converter]] = build_conversion_graph(converters)
-# schema_languages_features: SchemaLanguagesFeatures = load_schema_language_features()
 
 print("Started Schema Conversion Orchestrator with the following converters:")
 for conv in converters:
@@ -34,7 +33,6 @@ def register_conversion():
         data["serviceAddress"],
         data["sourceFormat"],
         data["targetFormat"],
-        data["supportedFeatures"]
     )
     converters.append(conv)
     global conversion_graph
@@ -65,10 +63,7 @@ def convert():
     if not all_paths:
         return {"error": "No path found for conversion from source " + source + " to target " + target + "."}, 400
 
-    if CONVERSION_STRATEGY == ConversionStrategy.MostFeaturesPreserved:
-        attempts = convert_with_strategy_most_features_preserved(
-            source, target, schema, all_paths)
-    elif CONVERSION_STRATEGY == ConversionStrategy.LeastCharacterLoss:
+    if CONVERSION_STRATEGY == ConversionStrategy.LeastCharacterLoss:
         attempts = convert_with_strategy_least_character_loss(
             source, target, schema, all_paths)
     else:
