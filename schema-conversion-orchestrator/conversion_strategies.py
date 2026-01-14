@@ -5,7 +5,8 @@ from strenum import StrEnum
 from converter import (ConversionResult, ConversionResults, ConversionPaths, Converter, conversion_path_to_string, ConversionsCache)
 from schema_types import SchemaLanguage
 from logic import identify_schema_features, rank_paths
-from app import DETAILED_ERROR_OUTPUT
+
+DETAILED_ERROR_OUTPUT = False
 
 
 class ConversionStrategy(StrEnum):

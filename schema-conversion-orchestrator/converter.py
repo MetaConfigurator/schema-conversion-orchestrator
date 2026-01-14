@@ -182,3 +182,15 @@ ConversionsCache = dict[str, str | None]
 
 def conversion_path_to_string(path: ConversionPath) -> str:
     return " -> ".join([f"{conv.source_format.value} to {conv.target_format.value} via {conv.service_name}" for conv in path])
+
+
+def prepare_conversion_results_for_serializing(results: ConversionResults) -> dict:
+    serialized_results = {}
+    for idx, (success, schema_or_error, path) in enumerate(results):
+        path_str = conversion_path_to_string(path)
+        serialized_results[f"Attempt {idx + 1}"] = {
+            "success": success,
+            "schema_or_error": schema_or_error,
+            "conversion_path": path_str
+        }
+    return serialized_results

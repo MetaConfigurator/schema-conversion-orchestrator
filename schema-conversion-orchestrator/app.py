@@ -1,21 +1,20 @@
 from conversion_strategies import convert_with_strategy_most_features_preserved, ConversionStrategy, \
     convert_with_strategy_least_character_loss
-from converter import (Converter, ConverterExternal)
-from schema_types import schema_language_from_string, SchemaLanguagesFeatures
+from converter import (Converter, ConverterExternal, prepare_conversion_results_for_serializing)
+from schema_types import schema_language_from_string
 from logic import build_conversion_graph, find_paths
 from register_converters import register_converters
 from flask import Flask, request
 from typing import List, Dict
-from schema_languages_loader import load_schema_language_features
+import json
 
 app = Flask(__name__)
 
-DETAILED_ERROR_OUTPUT = False
 CONVERSION_STRATEGY = ConversionStrategy.LeastCharacterLoss
 
 converters: List[Converter] = register_converters()
 conversion_graph: Dict[str, List[Converter]] = build_conversion_graph(converters)
-schema_languages_features: SchemaLanguagesFeatures = load_schema_language_features()
+# schema_languages_features: SchemaLanguagesFeatures = load_schema_language_features()
 
 print("Started Schema Conversion Orchestrator with the following converters:")
 for conv in converters:
@@ -52,12 +51,14 @@ def convert():
     target = data["targetFormat"]
     schema = data["schema"]
 
-    source = schema_language_from_string(source)
-    target = schema_language_from_string(target)
+    try:
+        source = schema_language_from_string(source)
+        target = schema_language_from_string(target)
+    except ValueError as e:
+        return {"error": str(e)}, 400
 
     # if schema is an object, convert it to string
     if isinstance(schema, dict):
-        import json
         schema = json.dumps(schema)
 
     all_paths = find_paths(source, target, conversion_graph)
@@ -78,7 +79,7 @@ def convert():
 
     if not success:
         # return error message of all attempts together with the attempt number (1 to n)
-        return {"error": "All conversion paths failed.", attempts: attempts}, 500
+        return {"error": "All conversion paths failed.", "attempts": prepare_conversion_results_for_serializing(attempts)}, 500
 
     return {"schema": schema}, 200
 

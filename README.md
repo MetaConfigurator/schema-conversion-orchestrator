@@ -3,8 +3,8 @@
 This project provides a schema conversion platform that supports converting between various data modeling formats (like JSON Schema, LinkML, XSD, DTD, RDF, etc.) using a software architecture that supports different programming languages due to subprocess calling. It consists of:
 
 * 🐍 A central **Flask Orchestrator** (main API + smart pathfinding + schema feature matching + converters in Python)
-* ☕ A **Java** converters
-* 🪦 A **Node.js TypeScript** converters
+* ☕ **Java** converters
+* 🪦 **Node.js TypeScript** converters
 
 
 ## Features
