@@ -30,6 +30,14 @@ class Converter:
 
 
 class ConverterExternal(Converter):
+    """
+    External converter that calls a subprocess to perform conversion
+    :param name: Name of the converter
+    :param executable_path: Path to the converter executable
+    :param service_name: Name of the converter service
+    :param source_format: Source schema language
+    :param target_format: Target schema language
+    """
     def __init__(self, name: str, executable_path: str, service_name: str, source_format: SchemaLanguage,
                  target_format: SchemaLanguage):
         super().__init__(name, executable_path, service_name, source_format, target_format)
@@ -77,6 +85,14 @@ class ConverterExternal(Converter):
 
 
 class ConverterInternal(Converter):
+    """
+    Internal converter that performs conversion using built-in logic, in Python
+    :param name: Name of the converter
+    :param service_address: Address of the converter service or path to executable
+    :param service_name: Name of the converter service
+    :param source_format: Source schema language
+    :param target_format: Target schema language
+    """
     def __init__(self, name: str, service_address: str, service_name: str, source_format: SchemaLanguage,
                  target_format: SchemaLanguage):
         super().__init__(name, service_address, service_name, source_format, target_format)

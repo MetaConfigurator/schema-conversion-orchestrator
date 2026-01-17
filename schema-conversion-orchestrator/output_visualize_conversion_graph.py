@@ -2,11 +2,10 @@ import matplotlib
 matplotlib.use("TkAgg")  # or "Qt5Agg"
 import matplotlib.pyplot as plt
 import networkx as nx
-from typing import List
-from converter import Converter, ConversionGraph
+from converter import ConversionGraph
 
 
-def visualize_conversion_graph(conversion_graph: ConversionGraph):
+def visualize_conversion_graph(conversion_graph: ConversionGraph, output_path):
     # Build directed graph
     G = nx.DiGraph()
     edge_labels = {}
@@ -73,12 +72,7 @@ def visualize_conversion_graph(conversion_graph: ConversionGraph):
     plt.title("Schema Conversion Graph", fontsize=16)
     plt.axis("off")
     plt.tight_layout()
-    plt.show()
 
+    # save plot to file
+    plt.savefig(output_path)
 
-if __name__ == "__main__":
-    from register_converters import register_converters
-    from logic import build_conversion_graph
-    converters: List[Converter] = register_converters()
-    conversion_graph: ConversionGraph = build_conversion_graph(converters)
-    visualize_conversion_graph(conversion_graph)

@@ -2,10 +2,12 @@ import traceback
 from typing import List
 from strenum import StrEnum
 
-from converter import (ConversionResult, ConversionResults, ConversionPaths, Converter, conversion_path_to_string, ConversionsCache)
+from converter import (ConversionResult, ConversionResults, ConversionPaths, Converter, conversion_path_to_string,
+                       ConversionsCache)
 from schema_types import SchemaLanguage
 
 DETAILED_ERROR_OUTPUT = False
+DETAILED_RESULT_OUTPUT = True
 
 
 class ConversionStrategy(StrEnum):
@@ -20,7 +22,6 @@ def convert_with_strategy_least_character_loss(source: SchemaLanguage, target: S
     all_attempts: List[ConversionResult] = []
     conversions_cache = {}  # cache for all conversion sub-paths
     for path in paths:
-        result_schema = None
         try:
             result_schema, conversions_cache_update = attempt_conversion_path(source, target, path, schema,
                                                                               conversions_cache)
@@ -39,6 +40,18 @@ def convert_with_strategy_least_character_loss(source: SchemaLanguage, target: S
 
     # sort all attempts by success: success first. Then by length of resulting schema (descending)
     all_attempts.sort(key=lambda x: (not x[0], -len(x[1]) if x[0] else float('inf')))
+
+    # print overall result: how many succeeded/failed and their character lengths
+    success_count = sum(1 for attempt in all_attempts if attempt[0])
+    failure_count = len(all_attempts) - success_count
+    print(f"Conversion attempts completed: {success_count} succeeded, {failure_count} failed.")
+    for i, attempt in enumerate(all_attempts):
+        success, result_schema_or_error, path = attempt
+        if success:
+            print(
+                f"- Attempt {i + 1} ({conversion_path_to_string(path)}): Success, Resulting schema length: {len(result_schema_or_error)} characters.")
+        else:
+            print(f"- Attempt {i + 1} ({conversion_path_to_string(path)}): Failure, Error: {result_schema_or_error}")
 
     return all_attempts
 
@@ -72,8 +85,9 @@ def attempt_conversion_path(source: str, target: str, path: List[Converter], sch
             else:
                 # cache miss - perform conversion
                 current_schema = conv.convert(current_schema)
-                print(
-                    "Intermediate schema of format " + conv.target_format + " after conversion via " + conv.service_name + ": " + current_schema)
+                if DETAILED_RESULT_OUTPUT:
+                    print(
+                        "\n\nIntermediate schema of format " + conv.target_format + " after conversion via " + conv.service_name + ": \n" + current_schema + "\n\n\n\n")
                 # store in cache
                 conversions_cache[conversion_sub_path_hash] = current_schema
 
@@ -88,6 +102,6 @@ def attempt_conversion_path(source: str, target: str, path: List[Converter], sch
 
 
 def print_conversion_path(source: str, target: str, path: List[Converter]) -> None:
-    print("Given the source format " + source + " and target format " + target + ", the best available path is:")
+    print("Conversion path for source format '" + source + "' and target format '" + target + "':")
     for conv in path:
-        print(f"{conv.source_format} -> {conv.target_format} via {conv.name} ({conv.service_address})")
+        print(f"- {conv.source_format} --({conv.name} ({conv.service_address})--> {conv.target_format})")

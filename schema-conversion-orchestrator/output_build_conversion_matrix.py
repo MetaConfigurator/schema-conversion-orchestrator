@@ -39,7 +39,7 @@ def build_conversion_matrix(conversion_graph: ConversionGraph) -> pd.DataFrame:
     return matrix
 
 
-def plot_conversion_matrix(matrix: pd.DataFrame):
+def plot_conversion_matrix(matrix: pd.DataFrame, output_path: str = None) -> None:
     # Build weighted numeric matrix for coloring
     numeric_matrix = matrix.copy()
 
@@ -76,20 +76,8 @@ def plot_conversion_matrix(matrix: pd.DataFrame):
     plt.xticks(rotation=45, ha="right")
     plt.yticks(rotation=0)
     plt.tight_layout()
-    plt.show()
-
-
-if __name__ == "__main__":
-    from register_converters import register_converters
-    from logic import build_conversion_graph
-
-    converters: List[Converter] = register_converters()
-    conversion_graph: ConversionGraph = build_conversion_graph(converters)
-
-    df = build_conversion_matrix(conversion_graph)
-
-    # Print in console
-    print(df.to_string())
-
-    # Plot nicely
-    plot_conversion_matrix(df)
+    if output_path:
+        plt.savefig(output_path)
+    else:
+        plt.show()
+    plt.close()

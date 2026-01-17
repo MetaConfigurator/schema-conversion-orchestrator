@@ -1,6 +1,6 @@
 from conversion_strategies import ConversionStrategy, \
     convert_with_strategy_least_character_loss
-from converter import (Converter, ConverterExternal, prepare_conversion_results_for_serializing)
+from converter import (Converter, prepare_conversion_results_for_serializing)
 from schema_types import schema_language_from_string
 from logic import build_conversion_graph, find_paths
 from register_converters import register_converters
@@ -23,23 +23,6 @@ for conv in converters:
 @app.route("/health", methods=["GET"])
 def health():
     return {"status": "ok"}, 200
-
-
-@app.route("/registerConversion", methods=["POST"])
-def register_conversion():
-    data = request.json
-    conv = ConverterExternal(
-        data["name"],
-        data["serviceAddress"],
-        data["sourceFormat"],
-        data["targetFormat"],
-    )
-    converters.append(conv)
-    global conversion_graph
-    conversion_graph = build_conversion_graph(converters)
-    print(
-        f"Registered new converter: {conv.name} from {conv.source_format} to {conv.target_format} at {conv.service_address}.")
-    return {"status": "registered"}, 200
 
 
 @app.route("/convert", methods=["POST"])
