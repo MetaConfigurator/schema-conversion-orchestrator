@@ -12,7 +12,7 @@ def visualize_conversion_graph(conversion_graph: ConversionGraph, output_path):
 
     for source, converters in conversion_graph.items():
         for converter in converters:
-            src, tgt = str(converter.source_format), str(converter.target_format)
+            src, tgt = str(converter.source_language), str(converter.target_language)
             G.add_edge(src, tgt)
             edge_labels[(src, tgt)] = converter.name
 

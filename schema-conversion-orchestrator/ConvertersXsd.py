@@ -11,8 +11,8 @@ class ConverterXsdToJsonSchema(ConverterInternal):
             name="XmlSchema to JsonSchema Converter",
             service_address="internal",
             service_name="FlaskApp",
-            source_format=SchemaLanguage.Xsd,
-            target_format=SchemaLanguage.JsonSchema,
+            source_language=SchemaLanguage.Xsd,
+            target_language=SchemaLanguage.JsonSchema,
         )
 
     def converter_logic(self, schema: str) -> str:

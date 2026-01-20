@@ -1,4 +1,4 @@
-import {Converter, SchemaLanguage, SchemaFeature} from "../dataStructures.js";
+import {Converter, SchemaLanguage} from "../dataStructures.js";
 
 import {Parser, Store, Writer} from "n3";
 import * as jsonld from "jsonld";
@@ -9,9 +9,8 @@ import { nodeShapeToJSONSchema } from '@comake/shacl-to-json-schema';
 
 export const converter: Converter = {
   name: "n3 and rdf-ext",
-  sourceFormat: SchemaLanguage.SHACL,
-  targetFormat: SchemaLanguage.JsonSchema,
-  supportedFeatures: [SchemaFeature.Properties, SchemaFeature.Attributes, SchemaFeature.Constraints],
+  sourceLanguage: SchemaLanguage.SHACL,
+  targetLanguage: SchemaLanguage.JsonSchema,
 
   async convert(schema: string): Promise<string> {
 

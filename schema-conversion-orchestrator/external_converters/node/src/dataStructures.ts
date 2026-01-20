@@ -22,22 +22,9 @@ export enum SchemaLanguage {
   SqlAlchemy = "SqlAlchemy",
 }
 
-export enum SchemaFeature {
-  Comments = "Comments",
-  Hierarchy = "Hierarchy",
-  References = "References",
-  Conditions = "Conditions",
-  Constraints = "Constraints",
-  Properties = "Properties",
-  Attributes = "Attributes",
-  Composition = "Composition",
-  Negation = "Negation",
-}
-
 export interface Converter {
   name: string;
-  sourceFormat: SchemaLanguage;
-  targetFormat: SchemaLanguage;
-  supportedFeatures: SchemaFeature[];
+  sourceLanguage: SchemaLanguage;
+  targetLanguage: SchemaLanguage;
   convert: (schema: string) => Promise<string>;
 }

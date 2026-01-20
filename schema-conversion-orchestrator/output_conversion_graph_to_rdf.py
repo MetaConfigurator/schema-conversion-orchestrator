@@ -13,17 +13,17 @@ def conversion_graph_to_rdf(conversion_graph: ConversionGraph, output_path):
     # define a class and a property for conversions
     CONVERSION = EX.Conversion
     HAS_NAME = EX.name
-    HAS_SOURCE = EX.sourceFormat
-    HAS_TARGET = EX.targetFormat
+    HAS_SOURCE = EX.sourceLanguage
+    HAS_TARGET = EX.targetLanguage
 
     for source, converters in conversion_graph.items():
         for converter in converters:
-            src = string_normalize(str(converter.source_format))
-            tgt = string_normalize(str(converter.target_format))
+            src = string_normalize(str(converter.source_language))
+            tgt = string_normalize(str(converter.target_language))
 
-            # create URIs for formats
-            src_uri = EX[f"format/{src}"]
-            tgt_uri = EX[f"format/{tgt}"]
+            # create URIs for languages
+            src_uri = EX[f"language/{src}"]
+            tgt_uri = EX[f"language/{tgt}"]
 
             # add label for readability
             g.add((src_uri, RDFS.label, Literal(src)))

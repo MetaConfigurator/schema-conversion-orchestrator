@@ -24,8 +24,8 @@ public class ConverterService {
     private final Map<String, Converter> converters = new HashMap<>();
     
     public static class ConversionRequest {
-        public String sourceFormat;
-        public String targetFormat;
+        public String sourceLanguage;
+        public String targetLanguage;
         public String converterName;
         public String schema;
     }
@@ -46,16 +46,15 @@ public class ConverterService {
     
     public static class ConverterInfo {
         public String name;
-        public String sourceFormat;
-        public String targetFormat;
+        public String sourceLanguage;
+        public String targetLanguage;
         public List<String> supportedFeatures;
     }
     
     public interface Converter {
         String getName();
-        String getSourceFormat();
-        String getTargetFormat();
-        List<String> getSupportedFeatures();
+        String getSourceLanguage();
+        String getTargetLanguage();
         String convert(String schema) throws Exception;
     }
     
@@ -73,12 +72,12 @@ public class ConverterService {
     }
 
     private void register(Converter converter) {
-        String key = converter.getSourceFormat() + "->" + converter.getTargetFormat();
+        String key = converter.getSourceLanguage() + "->" + converter.getTargetLanguage();
         converters.put(key, converter);
     }
     
-    public Converter findConverter(String sourceFormat, String targetFormat) {
-        String key = sourceFormat + "->" + targetFormat;
+    public Converter findConverter(String sourceLanguage, String targetLanguage) {
+        String key = sourceLanguage + "->" + targetLanguage;
         return converters.get(key);
     }
     
@@ -91,9 +90,8 @@ public class ConverterService {
         for (Converter converter : converters.values()) {
             ConverterInfo info = new ConverterInfo();
             info.name = converter.getName();
-            info.sourceFormat = converter.getSourceFormat();
-            info.targetFormat = converter.getTargetFormat();
-            info.supportedFeatures = converter.getSupportedFeatures();
+            info.sourceLanguage = converter.getSourceLanguage();
+            info.targetLanguage = converter.getTargetLanguage();
             infos.add(info);
         }
         
@@ -108,21 +106,21 @@ public class ConverterService {
             ConversionRequest request = objectMapper.readValue(new File(inputFile), ConversionRequest.class);
             
             // Validate request
-            if (request.sourceFormat == null || request.targetFormat == null || request.schema == null) {
-                throw new IllegalArgumentException("Missing required fields: sourceFormat, targetFormat, schema");
+            if (request.sourceLanguage == null || request.targetLanguage == null || request.schema == null) {
+                throw new IllegalArgumentException("Missing required fields: sourceLanguage, targetLanguage, schema");
             }
             
             // Find appropriate converter
-            Converter converter = findConverter(request.sourceFormat, request.targetFormat);
+            Converter converter = findConverter(request.sourceLanguage, request.targetLanguage);
             
             if (converter == null) {
                 List<String> availableConversions = new ArrayList<>();
                 for (Converter c : converters.values()) {
-                    availableConversions.add(c.getSourceFormat() + "->" + c.getTargetFormat());
+                    availableConversions.add(c.getSourceLanguage() + "->" + c.getTargetLanguage());
                 }
                 throw new IllegalArgumentException(
                     String.format("No converter found for %s → %s. Available converters: %s",
-                                request.sourceFormat, request.targetFormat, 
+                                request.sourceLanguage, request.targetLanguage, 
                                 String.join(", ", availableConversions)));
             }
             

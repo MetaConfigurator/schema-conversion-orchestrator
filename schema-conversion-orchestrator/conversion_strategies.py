@@ -80,28 +80,28 @@ def attempt_conversion_path(source: str, target: str, path: List[Converter], sch
                     # use cached result in case of cache hit and good previous conversion
                     current_schema = cached_result
                     print(
-                        "Using cached intermediate schema of format " + conv.target_format + " after conversion via " + conv.service_name + ": " + current_schema)
+                        "Using cached intermediate schema of format " + conv.target_language + " after conversion via " + conv.service_name + ": " + current_schema)
                     continue
             else:
                 # cache miss - perform conversion
                 current_schema = conv.convert(current_schema)
                 if DETAILED_RESULT_OUTPUT:
                     print(
-                        "\n\nIntermediate schema of format " + conv.target_format + " after conversion via " + conv.service_name + ": \n" + current_schema + "\n\n\n\n")
+                        "\n\nIntermediate schema of format " + conv.target_language + " after conversion via " + conv.service_name + ": \n" + current_schema + "\n\n\n\n")
                 # store in cache
                 conversions_cache[conversion_sub_path_hash] = current_schema
 
         return current_schema, conversions_cache
     except Exception as e:
         print(
-            "Conversion failed at step from " + current_converter.source_format + " to " + current_converter.target_format + " via " + current_converter.service_name + " because of error: " + str(
+            "Conversion failed at step from " + current_converter.source_language + " to " + current_converter.target_language + " via " + current_converter.service_name + " because of error: " + str(
                 e) + ".")
         print("With intermediate schema: " + current_schema)
         raise Exception(
-            f"Conversion failed at step from {current_converter.source_format} to {current_converter.target_format} via {current_converter.service_name} because of error: {str(e)}.")
+            f"Conversion failed at step from {current_converter.source_language} to {current_converter.target_language} via {current_converter.service_name} because of error: {str(e)}.")
 
 
 def print_conversion_path(source: str, target: str, path: List[Converter]) -> None:
     print("Conversion path for source format '" + source + "' and target format '" + target + "':")
     for conv in path:
-        print(f"- {conv.source_format} --({conv.name} ({conv.service_address})--> {conv.target_format})")
+        print(f"- {conv.source_language} --({conv.name} ({conv.service_address})--> {conv.target_language})")

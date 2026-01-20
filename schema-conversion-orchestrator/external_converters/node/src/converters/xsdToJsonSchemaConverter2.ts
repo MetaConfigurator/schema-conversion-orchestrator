@@ -1,4 +1,4 @@
-import {Converter, SchemaLanguage, SchemaFeature} from "../dataStructures.js";
+import {Converter, SchemaLanguage} from "../dataStructures.js";
 import * as fs from "fs";
 import { createRequire } from "module";
 
@@ -7,9 +7,8 @@ const require = createRequire(import.meta.url);
 
 export const converter: Converter = {
   name: "xsd-json-converter (xjc)",
-  sourceFormat: SchemaLanguage.Xsd,
-  targetFormat: SchemaLanguage.JsonSchema,
-  supportedFeatures: [SchemaFeature.Properties, SchemaFeature.Attributes, SchemaFeature.Constraints],
+  sourceLanguage: SchemaLanguage.Xsd,
+  targetLanguage: SchemaLanguage.JsonSchema,
 
   async convert(schema: string): Promise<string> {
       console.debug(`xsd-json-converter (xjc) processing schema: ${schema.substring(0, 100)}...`);

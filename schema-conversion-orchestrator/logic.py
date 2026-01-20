@@ -3,14 +3,14 @@ from converter import Converter, ConversionGraph, ConversionPaths
 from schema_types import SchemaLanguage
 
 
-# Builds a schema conversion graph from the list of registered converters, connecting source formats to target
-# formats with the edges being converters.
+# Builds a schema conversion graph from the list of registered converters, connecting source languages to target
+# languages with the edges being converters.
 def build_conversion_graph(converters: List[Converter]) -> Dict[str, List[Converter]]:
     conversion_graph = {}
     for conv in converters:
-        if conv.source_format not in conversion_graph:
-            conversion_graph[conv.source_format] = []
-        conversion_graph[conv.source_format].append(conv)
+        if conv.source_language not in conversion_graph:
+            conversion_graph[conv.source_language] = []
+        conversion_graph[conv.source_language].append(conv)
     return conversion_graph
 
 
@@ -31,9 +31,9 @@ def find_paths(source: SchemaLanguage, target: SchemaLanguage, conversion_graph:
     paths = []
 
     for conv in conversion_graph[source]:
-        if conv.target_format not in visited:
+        if conv.target_language not in visited:
             new_path = path + [conv]
-            sub_paths = find_paths(conv.target_format, target, conversion_graph, new_path, visited.copy())
+            sub_paths = find_paths(conv.target_language, target, conversion_graph, new_path, visited.copy())
             paths.extend(sub_paths)
 
     return paths

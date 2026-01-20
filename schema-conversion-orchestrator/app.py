@@ -17,7 +17,7 @@ conversion_graph: Dict[str, List[Converter]] = build_conversion_graph(converters
 
 print("Started Schema Conversion Orchestrator with the following converters:")
 for conv in converters:
-    print(f"- {conv.name}: {conv.source_format} -> {conv.target_format} at {conv.service_address}")
+    print(f"- {conv.name}: {conv.source_language} -> {conv.target_language} at {conv.service_address}")
 
 
 @app.route("/health", methods=["GET"])
@@ -28,8 +28,8 @@ def health():
 @app.route("/convert", methods=["POST"])
 def convert():
     data = request.json
-    source = data["sourceFormat"]
-    target = data["targetFormat"]
+    source = data["sourceLanguage"]
+    target = data["targetLanguage"]
     schema = data["schema"]
 
     try:

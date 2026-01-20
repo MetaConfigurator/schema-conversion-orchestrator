@@ -9,10 +9,11 @@ CORE_SCHEMA_LANGUAGES: List[SchemaLanguage] = [
     SchemaLanguage.JsonSchema,
     SchemaLanguage.Owl,
     SchemaLanguage.Xsd,
+    SchemaLanguage.Dtd,
     SchemaLanguage.SHACL,
     SchemaLanguage.MdModels,
     SchemaLanguage.LinkMl,
-    SchemaLanguage.JsonLD
+    SchemaLanguage.OntologyRdf
 ]
 
 
@@ -24,7 +25,7 @@ def register_converters(only_core_languages: bool = False) -> List[Converter]:
     if only_core_languages:
         converters = [
             conv for conv in converters
-            if conv.source_format in CORE_SCHEMA_LANGUAGES and conv.target_format in CORE_SCHEMA_LANGUAGES
+            if conv.source_language in CORE_SCHEMA_LANGUAGES and conv.target_language in CORE_SCHEMA_LANGUAGES
         ]
 
     return converters

@@ -12,18 +12,17 @@ class Converter:
     :param name: Name of the converter
     :param service_address: Address of the converter service or path to executable
     :param service_name: Name of the converter service
-    :param source_format: Source schema language
-    :param target_format: Target schema language
-    :param supported_features: Dictionary mapping SchemaFeature to SchemaFeatureSupport or None if unknown
+    :param source_language: Source schema language
+    :param target_language: Target schema language
     """
 
-    def __init__(self, name: str, service_address: str, service_name: str, source_format: SchemaLanguage,
-                 target_format: SchemaLanguage):
+    def __init__(self, name: str, service_address: str, service_name: str, source_language: SchemaLanguage,
+                 target_language: SchemaLanguage):
         self.name = name
         self.service_address = service_address
         self.service_name = service_name
-        self.source_format = source_format
-        self.target_format = target_format
+        self.source_language = source_language
+        self.target_language = target_language
 
     def convert(self, schema: str) -> str:
         raise NotImplementedError("This method should be overridden by subclasses")
@@ -31,27 +30,27 @@ class Converter:
 
 class ConverterExternal(Converter):
     """
-    External converter that calls a subprocess to perform conversion
+    External converter that calls a subprocess to perform conversions
     :param name: Name of the converter
     :param executable_path: Path to the converter executable
     :param service_name: Name of the converter service
-    :param source_format: Source schema language
-    :param target_format: Target schema language
+    :param source_language: Source schema language
+    :param target_language: Target schema language
     """
-    def __init__(self, name: str, executable_path: str, service_name: str, source_format: SchemaLanguage,
-                 target_format: SchemaLanguage):
-        super().__init__(name, executable_path, service_name, source_format, target_format)
+    def __init__(self, name: str, executable_path: str, service_name: str, source_language: SchemaLanguage,
+                 target_language: SchemaLanguage):
+        super().__init__(name, executable_path, service_name, source_language, target_language)
         self.executable_path = executable_path
 
     def convert(self, schema: str) -> str:
         print(
-            f"Calling external converter {self.name} at {self.executable_path} for {self.source_format} to {self.target_format}")
+            f"Calling external converter {self.name} at {self.executable_path} for {self.source_language} to {self.target_language}")
 
         # Create temporary files for input and output
         with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as input_file:
             input_data = {
-                "sourceFormat": self.source_format.value,
-                "targetFormat": self.target_format.value,
+                "sourceLanguage": self.source_language.value,
+                "targetLanguage": self.target_language.value,
                 "converterName": self.name,
                 "schema": schema
             }
@@ -90,12 +89,12 @@ class ConverterInternal(Converter):
     :param name: Name of the converter
     :param service_address: Address of the converter service or path to executable
     :param service_name: Name of the converter service
-    :param source_format: Source schema language
-    :param target_format: Target schema language
+    :param source_language: Source schema language
+    :param target_language: Target schema language
     """
-    def __init__(self, name: str, service_address: str, service_name: str, source_format: SchemaLanguage,
-                 target_format: SchemaLanguage):
-        super().__init__(name, service_address, service_name, source_format, target_format)
+    def __init__(self, name: str, service_address: str, service_name: str, source_language: SchemaLanguage,
+                 target_language: SchemaLanguage):
+        super().__init__(name, service_address, service_name, source_language, target_language)
 
     def convert(self, schema: str) -> str:
         if not self.validate_input(schema):
@@ -124,21 +123,21 @@ class ConverterInternal(Converter):
 class ConverterExternalGeneric(ConverterExternal):
     """Generic external converter that can handle multiple conversion types"""
 
-    def __init__(self, name: str, executable_path: str, source_format: SchemaLanguage,
-                 target_format: SchemaLanguage,
+    def __init__(self, name: str, executable_path: str, source_language: SchemaLanguage,
+                 target_language: SchemaLanguage,
                  converter_type: str):
-        super().__init__(name, executable_path, converter_type, source_format, target_format)
+        super().__init__(name, executable_path, converter_type, source_language, target_language)
         self.converter_type = converter_type
 
     def convert(self, schema: str) -> str:
         print(
-            f"Calling external {self.converter_type} converter {self.name} for {self.source_format} to {self.target_format}")
+            f"Calling external {self.converter_type} converter {self.name} for {self.source_language} to {self.target_language}")
 
         # Create temporary files for input and output
         with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as input_file:
             input_data = {
-                "sourceFormat": self.source_format.value,
-                "targetFormat": self.target_format.value,
+                "sourceLanguage": self.source_language.value,
+                "targetLanguage": self.target_language.value,
                 "converterName": self.name,
                 "schema": schema
             }
@@ -196,7 +195,7 @@ ConversionsCache = dict[str, str | None]
 
 
 def conversion_path_to_string(path: ConversionPath) -> str:
-    return " -> ".join([f"{conv.source_format.value} to {conv.target_format.value} via {conv.service_name}" for conv in path])
+    return " -> ".join([f"{conv.source_language.value} to {conv.target_language.value} via {conv.service_name}" for conv in path])
 
 
 def prepare_conversion_results_for_serializing(results: ConversionResults) -> dict:

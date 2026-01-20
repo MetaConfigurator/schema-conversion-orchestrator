@@ -4,8 +4,8 @@ from pathlib import Path
 
 # --- Configuration ---
 SERVER_URL = "http://localhost:5002/convert"
-SOURCE_FORMAT = "JsonSchema"
-TARGET_FORMAT = "SHACL"
+SOURCE_LANGUAGE = "JsonSchema"
+TARGET_LANGUAGE = "SHACL"
 SCHEMA_FILE = Path("schemas/preciceAdapterConfigSchema.schema.json")
 
 
@@ -16,13 +16,13 @@ def main():
 
     # Build payload
     payload = {
-        "sourceFormat": SOURCE_FORMAT,
-        "targetFormat": TARGET_FORMAT,
+        "sourceLanguage": SOURCE_LANGUAGE,
+        "targetLanguage": TARGET_LANGUAGE,
         "schema": schema_str
     }
 
     # Send request
-    print(f"Sending conversion request {SOURCE_FORMAT} → {TARGET_FORMAT} ...")
+    print(f"Sending conversion request {SOURCE_LANGUAGE} → {TARGET_LANGUAGE} ...")
     resp = requests.post(SERVER_URL, json=payload)
 
     # Handle response

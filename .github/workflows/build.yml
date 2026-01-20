@@ -31,7 +31,7 @@ jobs:
     - name: Test Node.js converter
       working-directory: schema-conversion-orchestrator/external_converters/node
       run: |
-        echo '{"sourceFormat":"SHACL","targetFormat":"JsonSchema","schema":"test schema"}' > test.json
+        echo '{"sourceLanguage":"SHACL","targetLanguage":"JsonSchema","schema":"test schema"}' > test.json
         node dist/index.js convert test.json
         node dist/index.js list
 
@@ -69,7 +69,7 @@ jobs:
     - name: Test Java converter
       working-directory: schema-conversion-orchestrator/external_converters/java
       run: |
-        echo '{"sourceFormat":"Xsd","targetFormat":"Dtd","schema":"test schema"}' > test.json
+        echo '{"sourceLanguage":"Xsd","targetLanguage":"Dtd","schema":"test schema"}' > test.json
         java -jar converter.jar convert test.json
         java -jar converter.jar list
 
@@ -148,7 +148,7 @@ jobs:
         # Test conversion (if converters are available)
         curl -f -X POST http://localhost:5002/convert \
           -H "Content-Type: application/json" \
-          -d '{"sourceFormat":"SHACL","targetFormat":"JsonSchema","schema":"test schema"}' || echo "No SHACL->JsonSchema converter available"
+          -d '{"sourceLanguage":"SHACL","targetLanguage":"JsonSchema","schema":"test schema"}' || echo "No SHACL->JsonSchema converter available"
         
         # Kill Flask app
         kill $FLASK_PID

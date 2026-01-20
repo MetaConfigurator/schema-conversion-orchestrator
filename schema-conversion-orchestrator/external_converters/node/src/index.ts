@@ -8,8 +8,8 @@ import {fileURLToPath, pathToFileURL} from "url";
 const DEBUG_MODE = false;
 
 interface ConversionRequest {
-  sourceFormat: string;
-  targetFormat: string;
+  sourceLanguage: string;
+  targetLanguage: string;
   converterName: string;
   schema: string;
 }
@@ -54,7 +54,7 @@ class ConverterRegistry {
           const converter: Converter = converterModule.default || converterModule.converter || converterModule;
 
           if (this.isValidConverter(converter)) {
-            const key = converterKey(converter.sourceFormat, converter.targetFormat, converter.name);
+            const key = converterKey(converter.sourceLanguage, converter.targetLanguage, converter.name);
             this.converters.set(key, converter);
             if (DEBUG_MODE)
               console.error(`Loaded converter: ${converter.name} (${key})`);
@@ -75,14 +75,14 @@ class ConverterRegistry {
   private isValidConverter(obj: any): obj is Converter {
     return obj && 
            typeof obj.name === 'string' &&
-           typeof obj.sourceFormat === 'string' &&
-           typeof obj.targetFormat === 'string' &&
+           typeof obj.sourceLanguage === 'string' &&
+           typeof obj.targetLanguage === 'string' &&
            typeof obj.convert === 'function' &&
            Array.isArray(obj.supportedFeatures);
   }
 
-  findConverter(sourceFormat: string, targetFormat: string, name: string): Converter | null {
-    const key = converterKey(sourceFormat, targetFormat, name);
+  findConverter(sourceLanguage: string, targetLanguage: string, name: string): Converter | null {
+    const key = converterKey(sourceLanguage, targetLanguage, name);
     return this.converters.get(key) || null;
   }
 
@@ -91,8 +91,8 @@ class ConverterRegistry {
   }
 }
 
-function converterKey(sourceFormat: string, targetFormat: string, name: string): string {
-    return `${name} (${sourceFormat}->${targetFormat})`;
+function converterKey(sourceLanguage: string, targetLanguage: string, name: string): string {
+    return `${name} (${sourceLanguage}->${targetLanguage})`;
 }
 
 async function main() {
@@ -119,9 +119,8 @@ async function main() {
     console.log(JSON.stringify({
       converters: converters.map(c => ({
         name: c.name,
-        sourceFormat: c.sourceFormat,
-        targetFormat: c.targetFormat,
-        supportedFeatures: c.supportedFeatures
+        sourceLanguage: c.sourceLanguage,
+        targetLanguage: c.targetLanguage,
       }))
     }, null, 2));
     return;
@@ -141,18 +140,18 @@ async function main() {
       const request: ConversionRequest = JSON.parse(inputData);
       
       // Validate request
-      if (!request.sourceFormat || !request.targetFormat || !request.schema) {
-        throw new Error('Missing required fields: sourceFormat, targetFormat, schema');
+      if (!request.sourceLanguage || !request.targetLanguage || !request.schema) {
+        throw new Error('Missing required fields: sourceLanguage, targetLanguage, schema');
       }
 
       // Find appropriate converter
-      const converter = registry.findConverter(request.sourceFormat, request.targetFormat, request.converterName);
+      const converter = registry.findConverter(request.sourceLanguage, request.targetLanguage, request.converterName);
       
       if (!converter) {
         throw new Error(
-          `No converter found for ${request.sourceFormat} → ${request.targetFormat}. ` +
+          `No converter found for ${request.sourceLanguage} → ${request.targetLanguage}. ` +
           `Available converters: ${registry.getAllConverters().map(c => 
-            `${c.sourceFormat}->${c.targetFormat}`).join(', ')}`
+            `${c.sourceLanguage}->${c.targetLanguage}`).join(', ')}`
         );
       }
 

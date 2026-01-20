@@ -40,6 +40,7 @@ def get_external_converter_info(executable_path: str, converter_type: str) -> Li
         print(f"Error getting converter info from {executable_path}: {e}")
         return []
 
+
 def register_external_converters() -> List[Converter]:
     """Register all external subprocess-based converters"""
     converters = []
@@ -55,13 +56,13 @@ def register_external_converters() -> List[Converter]:
                 converter = ConverterExternalGeneric(
                     name=info['name'],
                     executable_path=f"node {node_executable}",
-                    source_format=SchemaLanguage(info['sourceFormat']),
-                    target_format=SchemaLanguage(info['targetFormat']),
+                    source_language=SchemaLanguage(info['sourceLanguage']),
+                    target_language=SchemaLanguage(info['targetLanguage']),
                     converter_type="node"
                 )
                 converters.append(converter)
                 print(
-                    f"Registered Node.js converter: {info['name']} ({info['sourceFormat']} -> {info['targetFormat']})")
+                    f"Registered Node.js converter: {info['name']} ({info['sourceLanguage']} -> {info['targetLanguage']})")
             except Exception as e:
                 print(f"Failed to register Node.js converter {info.get('name', 'unknown')}: {e}")
     else:
@@ -78,12 +79,13 @@ def register_external_converters() -> List[Converter]:
                 converter = ConverterExternalGeneric(
                     name=info['name'],
                     executable_path=f"java -jar {java_jar}",
-                    source_format=SchemaLanguage(info['sourceFormat']),
-                    target_format=SchemaLanguage(info['targetFormat']),
+                    source_language=SchemaLanguage(info['sourceLanguage']),
+                    target_language=SchemaLanguage(info['targetLanguage']),
                     converter_type="java"
                 )
                 converters.append(converter)
-                print(f"Registered Java converter: {info['name']} ({info['sourceFormat']} -> {info['targetFormat']})")
+                print(
+                    f"Registered Java converter: {info['name']} ({info['sourceLanguage']} -> {info['targetLanguage']})")
             except Exception as e:
                 print(f"Failed to register Java converter {info.get('name', 'unknown')}: {e}")
     else:

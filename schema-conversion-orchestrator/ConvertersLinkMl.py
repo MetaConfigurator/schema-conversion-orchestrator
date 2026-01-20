@@ -24,13 +24,13 @@ from linkml.generators.sqlalchemygen import SQLAlchemyGenerator
 
 
 class ConverterFromLinkMl(ConverterInternal):
-    def __init__(self, target_format: SchemaLanguage):
+    def __init__(self, target_language: SchemaLanguage):
         super().__init__(
-            name="LinkML " + target_format.name + " Generator",
+            name="LinkML " + target_language.name + " Generator",
             service_address="internal",
             service_name="FlaskApp",
-            source_format=SchemaLanguage.LinkMl,
-            target_format=target_format,
+            source_language=SchemaLanguage.LinkMl,
+            target_language=target_language,
         )
 
     def converter_logic(self, schema: str) -> str:
@@ -41,8 +41,8 @@ class ConverterFromLinkMl(ConverterInternal):
 
             schema_path = f.name
 
-            # Pick generator based on target format
-            fmt = self.target_format
+            # Pick generator based on target language
+            fmt = self.target_language
 
             gen_map: Dict[SchemaLanguage, Type[Generator]] = {
                 SchemaLanguage.JsonSchema: JsonSchemaGenerator,
@@ -82,8 +82,8 @@ class ConverterJsonSchemaToLinkMl(ConverterInternal):
             name="LinkMl schema_automator JsonSchemaImportEngine",
             service_address="internal",
             service_name="FlaskApp",
-            source_format=SchemaLanguage.JsonSchema,
-            target_format=SchemaLanguage.LinkMl,
+            source_language=SchemaLanguage.JsonSchema,
+            target_language=SchemaLanguage.LinkMl,
         )
 
     def converter_logic(self, schema: str) -> str:
@@ -121,8 +121,8 @@ class ConverterOwlToLinkMl(ConverterInternal):
             name="LinkMl schema_automator OwlImportEngine",
             service_address="internal",
             service_name="FlaskApp",
-            source_format=SchemaLanguage.Owl,
-            target_format=SchemaLanguage.LinkMl,
+            source_language=SchemaLanguage.Owl,
+            target_language=SchemaLanguage.LinkMl,
         )
 
     def converter_logic(self, schema: str) -> str:

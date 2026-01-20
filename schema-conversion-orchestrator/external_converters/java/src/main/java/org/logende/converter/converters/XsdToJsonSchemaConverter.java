@@ -18,19 +18,15 @@ public class XsdToJsonSchemaConverter implements ConverterService.Converter {
     }
 
     @Override
-    public String getSourceFormat() {
+    public String getSourceLanguage() {
         return "Xsd";
     }
 
     @Override
-    public String getTargetFormat() {
+    public String getTargetLanguage() {
         return "JsonSchema";
     }
 
-    @Override
-    public List<String> getSupportedFeatures() {
-        return Collections.emptyList();
-    }
 
     @Override
     public String convert(String schema) throws Exception {

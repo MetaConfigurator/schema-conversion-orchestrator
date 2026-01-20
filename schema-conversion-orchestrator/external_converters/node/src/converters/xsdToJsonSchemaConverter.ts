@@ -1,4 +1,4 @@
-import {Converter, SchemaLanguage, SchemaFeature} from "../dataStructures.js";
+import {Converter, SchemaLanguage} from "../dataStructures.js";
 import { createRequire } from "module";
 
 // Create require function for CommonJS modules
@@ -6,9 +6,8 @@ const require = createRequire(import.meta.url);
 
 export const converter: Converter = {
   name: "xsd2jsonschema",
-  sourceFormat: SchemaLanguage.Xsd,
-  targetFormat: SchemaLanguage.JsonSchema,
-  supportedFeatures: [SchemaFeature.Properties, SchemaFeature.Attributes, SchemaFeature.Constraints],
+  sourceLanguage: SchemaLanguage.Xsd,
+  targetLanguage: SchemaLanguage.JsonSchema,
 
   async convert(schema: string): Promise<string> {
 

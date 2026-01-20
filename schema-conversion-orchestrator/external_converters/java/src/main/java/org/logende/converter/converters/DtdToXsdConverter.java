@@ -15,18 +15,13 @@ public class DtdToXsdConverter implements ConverterService.Converter {
     }
 
     @Override
-    public String getSourceFormat() {
+    public String getSourceLanguage() {
         return "Dtd";
     }
 
     @Override
-    public String getTargetFormat() {
+    public String getTargetLanguage() {
         return "Xsd";
-    }
-
-    @Override
-    public List<String> getSupportedFeatures() {
-        return Collections.emptyList();
     }
 
     @Override
