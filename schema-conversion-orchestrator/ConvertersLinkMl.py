@@ -51,8 +51,8 @@ class ConverterFromLinkMl(ConverterInternal):
                 SchemaLanguage.JsonLD: JSONLDGenerator,
                 SchemaLanguage.SHACL: ShaclGenerator,
                 SchemaLanguage.Owl: OwlSchemaGenerator,
-                SchemaLanguage.Docs_LinkMl: DocGenerator,
-                SchemaLanguage.PythonLinkMl: PythonGenerator,
+                # SchemaLanguage.Docs_LinkMl: DocGenerator,
+                # SchemaLanguage.PythonLinkMl: PythonGenerator,
                 # SchemaLanguage.Java_LinkMl: JavaGenerator, # needs directory also as argument
                 SchemaLanguage.Shex: ShExGenerator,
                 SchemaLanguage.SqlAlchemy: SQLAlchemyGenerator

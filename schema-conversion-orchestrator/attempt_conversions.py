@@ -7,18 +7,16 @@ from converter import (ConversionResult, ConversionResults, ConversionPaths, Con
 from schema_types import SchemaLanguage
 
 DETAILED_ERROR_OUTPUT = False
-DETAILED_RESULT_OUTPUT = True
+DETAILED_RESULT_OUTPUT = False
 
 
 class ConversionStrategy(StrEnum):
     LeastCharacterLoss = "LeastCharacterLoss"
 
 
-def convert_with_strategy_least_character_loss(source: SchemaLanguage, target: SchemaLanguage, schema: str,
+def attempt_all_conversion_paths(source: SchemaLanguage, target: SchemaLanguage, schema: str,
                                                paths: ConversionPaths) -> ConversionResults:
-    """ Always tries all paths and then ranks the results by character length (descending order).
-    Does not stop at success but explores all paths. Trivial feature loss strategy which is character based.
-    Much less effort than a proper feature loss analysis and still effective."""
+    """ Attempts all conversion paths without any ranking or selection. Returns all results as is."""
     all_attempts: List[ConversionResult] = []
     conversions_cache = {}  # cache for all conversion sub-paths
     for path in paths:
@@ -37,22 +35,6 @@ def convert_with_strategy_least_character_loss(source: SchemaLanguage, target: S
                 all_attempts.append((False, f"Error: {e}\nTraceback:\n{full_traceback}", path))
             else:
                 all_attempts.append((False, str(e), path))
-
-    # sort all attempts by success: success first. Then by length of resulting schema (descending)
-    all_attempts.sort(key=lambda x: (not x[0], -len(x[1]) if x[0] else float('inf')))
-
-    # print overall result: how many succeeded/failed and their character lengths
-    success_count = sum(1 for attempt in all_attempts if attempt[0])
-    failure_count = len(all_attempts) - success_count
-    print(f"Conversion attempts completed: {success_count} succeeded, {failure_count} failed.")
-    for i, attempt in enumerate(all_attempts):
-        success, result_schema_or_error, path = attempt
-        if success:
-            print(
-                f"- Attempt {i + 1} ({conversion_path_to_string(path)}): Success, Resulting schema length: {len(result_schema_or_error)} characters.")
-        else:
-            print(f"- Attempt {i + 1} ({conversion_path_to_string(path)}): Failure, Error: {result_schema_or_error}")
-
     return all_attempts
 
 
@@ -93,10 +75,11 @@ def attempt_conversion_path(source: str, target: str, path: List[Converter], sch
 
         return current_schema, conversions_cache
     except Exception as e:
-        print(
-            "Conversion failed at step from " + current_converter.source_language + " to " + current_converter.target_language + " via " + current_converter.service_name + " because of error: " + str(
-                e) + ".")
-        print("With intermediate schema: " + current_schema)
+        if DETAILED_ERROR_OUTPUT:
+            print(
+                "Conversion failed at step from " + current_converter.source_language + " to " + current_converter.target_language + " via " + current_converter.service_name + " because of error: " + str(
+                    e) + ".")
+            print("With intermediate schema: " + current_schema)
         raise Exception(
             f"Conversion failed at step from {current_converter.source_language} to {current_converter.target_language} via {current_converter.service_name} because of error: {str(e)}.")
 

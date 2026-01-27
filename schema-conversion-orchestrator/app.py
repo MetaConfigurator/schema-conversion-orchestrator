@@ -1,6 +1,9 @@
-from conversion_strategies import ConversionStrategy, \
-    convert_with_strategy_least_character_loss
-from converter import (Converter, prepare_conversion_results_for_serializing)
+from ranking_strategies import RankingStrategy, \
+    rank_with_strategy_least_character_loss
+from attempt_conversions import attempt_all_conversion_paths
+from converter import (Converter)
+from print_conversion_results import print_conversion_results
+from serialize_conversion_results import serialize_conversion_results
 from schema_types import schema_language_from_string
 from logic import build_conversion_graph, find_paths
 from register_converters import register_converters
@@ -10,7 +13,7 @@ import json
 
 app = Flask(__name__)
 
-CONVERSION_STRATEGY = ConversionStrategy.LeastCharacterLoss
+RANKING_STRATEGY = RankingStrategy.LeastCharacterLoss
 
 converters: List[Converter] = register_converters()
 conversion_graph: Dict[str, List[Converter]] = build_conversion_graph(converters)
@@ -27,6 +30,10 @@ def health():
 
 @app.route("/convert", methods=["POST"])
 def convert():
+    """
+    REST POST Request to convert a schema from sourceLanguage to targetLanguage.
+    :return: a JSON array as a list of all attempted paths and their results.
+    """
     data = request.json
     source = data["sourceLanguage"]
     target = data["targetLanguage"]
@@ -46,29 +53,16 @@ def convert():
     if not all_paths:
         return {"error": "No path found for conversion from source " + source + " to target " + target + "."}, 400
 
-    if CONVERSION_STRATEGY == ConversionStrategy.LeastCharacterLoss:
-        attempts = convert_with_strategy_least_character_loss(
-            source, target, schema, all_paths)
+    results = attempt_all_conversion_paths(source, target, schema, all_paths)
+
+    if RANKING_STRATEGY == RANKING_STRATEGY.LeastCharacterLoss:
+        rank_with_strategy_least_character_loss(results)
     else:
-        return {"error": "Unknown conversion strategy: " + CONVERSION_STRATEGY}, 500
+        return {"error": "Unknown conversion strategy: " + RANKING_STRATEGY}, 500
 
-    best_attempt = attempts[0]
-    success, schema, conversion_path = best_attempt
+    print_conversion_results(results)
 
-    if not success:
-        # return error message of all attempts together with the attempt number (1 to n)
-        return {"error": "All conversion paths failed.", "attempts": prepare_conversion_results_for_serializing(attempts)}, 500
-
-    return {"schema": schema}, 200
-
-
-def call_internal_converter(source: str, target: str, schema: str) -> str:
-    if source == "JsonSchema" and target == "LinkMl":
-        return f"[Python] Converted from {source} to {target}: {schema}"
-    elif source == "LinkMl" and target == "OntologyRdf":
-        return f"[Python] Converted from {source} to {target}: {schema}"
-    else:
-        raise Exception("Unsupported internal conversion")
+    return {"results": serialize_conversion_results(results)}, 200
 
 
 if __name__ == "__main__":

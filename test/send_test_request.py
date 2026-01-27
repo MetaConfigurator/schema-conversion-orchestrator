@@ -28,8 +28,8 @@ def main():
     # Handle response
     if resp.status_code == 200:
         result = resp.json()
-        print("Conversion successful!\n")
-        print(result["schema"])
+        print("Conversion Results:")
+        print(json.dumps(result, indent=2))
     else:
         print(f"Error {resp.status_code}: {resp.text}")
 

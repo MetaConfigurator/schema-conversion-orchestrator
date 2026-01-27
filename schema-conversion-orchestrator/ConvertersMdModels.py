@@ -23,22 +23,22 @@ class ConverterFromMdModels(ConverterInternal):
                 return dm.convert_to(Templates.Protobuf)
             elif self.target_language == SchemaLanguage.Xsd:
                 return dm.convert_to(Templates.XmlSchema)
-            elif self.target_language == SchemaLanguage.PythonPydantic:
-                return dm.convert_to(Templates.PythonPydantic)
+            # elif self.target_language == SchemaLanguage.PythonPydantic:
+            #    return dm.convert_to(Templates.PythonPydantic)
             elif self.target_language == SchemaLanguage.JsonSchema:
                 return dm.convert_to(Templates.JsonSchema)  # test difference with JsonSchemaAll
             elif self.target_language == SchemaLanguage.GraphQL:
                 return dm.convert_to(Templates.Graphql)
-            elif self.target_language == SchemaLanguage.Julia_MdModels:
-                return dm.convert_to(Templates.Julia)
+            # elif self.target_language == SchemaLanguage.Julia_MdModels:
+            #    return dm.convert_to(Templates.Julia)
             elif self.target_language == SchemaLanguage.Mermaid:
                 return dm.convert_to(Templates.Mermaid)
             elif self.target_language == SchemaLanguage.SHACL:
                 return dm.convert_to(Templates.Shacl)
-            elif self.target_language == SchemaLanguage.Rust_MdModels:
-                return dm.convert_to(Templates.Rust)
-            elif self.target_language == SchemaLanguage.TypeScript_MdModels:
-                return dm.convert_to(Templates.Typescript)
+            # elif self.target_language == SchemaLanguage.Rust_MdModels:
+            #    return dm.convert_to(Templates.Rust)
+            # elif self.target_language == SchemaLanguage.TypeScript_MdModels:
+            #   return dm.convert_to(Templates.Typescript)
             elif self.target_language == SchemaLanguage.Shex:
                 return dm.convert_to(Templates.Shex)
             else:

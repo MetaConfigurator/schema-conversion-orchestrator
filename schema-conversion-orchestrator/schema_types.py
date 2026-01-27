@@ -3,27 +3,27 @@ from strenum import StrEnum
 
 
 class SchemaLanguage(StrEnum):
+    LinkMl = "LinkMl"
+    MdModels = "MdModels"
     Dtd = "Dtd"
     Xsd = "Xsd"
     JsonSchema = "JsonSchema"
     SHACL = "SHACL"
     Owl = "Owl"
     OntologyRdf = "OntologyRdf"
-    LinkMl = "LinkMl"
     GraphQL = "GraphQL"
     Protobuf = "Protobuf"
-    MdModels = "MdModels"
     Shex = "Shex"
-    JsonLD = "JsonLD"
-    PythonLinkMl = "Python_LinkMl"
-    PythonPydantic = "Python_Pydantic"
-    Julia_MdModels = "Julia_MdModels"
-    Java_LinkMl = "Java_LinkMl"
     Mermaid = "Mermaid"
-    Rust_MdModels = "Rust_MdModels"
-    TypeScript_MdModels = "TypeScript_MdModels"
-    Docs_LinkMl = "Docs_LinkMl"
     SqlAlchemy = "SqlAlchemy"
+    # JsonLD = "JsonLD"
+    # PythonLinkMl = "Python_LinkMl"
+    # PythonPydantic = "Python_Pydantic"
+    # Julia_MdModels = "Julia_MdModels"
+    # Java_LinkMl = "Java_LinkMl"
+    # Rust_MdModels = "Rust_MdModels"
+    # TypeScript_MdModels = "TypeScript_MdModels"
+    # Docs_LinkMl = "Docs_LinkMl"
 
 
 # ignore case when comparing

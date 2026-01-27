@@ -7,13 +7,10 @@ from register_external_converters import register_external_converters
 
 CORE_SCHEMA_LANGUAGES: List[SchemaLanguage] = [
     SchemaLanguage.JsonSchema,
-    SchemaLanguage.Owl,
     SchemaLanguage.Xsd,
-    SchemaLanguage.Dtd,
     SchemaLanguage.SHACL,
     SchemaLanguage.MdModels,
     SchemaLanguage.LinkMl,
-    SchemaLanguage.OntologyRdf
 ]
 
 

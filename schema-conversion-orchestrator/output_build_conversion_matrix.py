@@ -46,6 +46,7 @@ def build_conversion_matrix(conversion_graph: ConversionGraph) -> pd.DataFrame:
     matrix.columns.name = "Target Language"
     return matrix
 
+
 def plot_conversion_matrix(matrix: pd.DataFrame, output_path: str = None) -> None:
     numeric_matrix = matrix.copy()
 
@@ -54,22 +55,13 @@ def plot_conversion_matrix(matrix: pd.DataFrame, output_path: str = None) -> Non
             val = matrix.loc[i, j]
 
             if val == "0":
-                numeric_matrix.loc[i, j] = 7
-            elif val == "—":
                 numeric_matrix.loc[i, j] = 0
+            elif val == "—":
+                numeric_matrix.loc[i, j] = 5
             else:
-                # all path lengths, shortest first
-                lenghts_sorted = list(map(int, val.split(", ")))
-
-                # scoring heuristics. 5 - shortest path length. If it has multiple paths, add 0.8 / path length for
-                # each additional path to a maximum of .9 additional score
-                score = max(1, 7 - lenghts_sorted[0])  # shortest path length
-                additional_score = 0
-                for l in lenghts_sorted[1:]:
-                    additional_score += 1 / l
-                score += min(0.9, additional_score)
-
-                numeric_matrix.loc[i, j] = score
+                # otherwise length of shortest path, to a max of 6
+                shortest_length = min(map(int, val.split(", ")))
+                numeric_matrix.loc[i, j] = min(shortest_length, 4)
 
     numeric_matrix = numeric_matrix.astype(int)
 
@@ -79,7 +71,7 @@ def plot_conversion_matrix(matrix: pd.DataFrame, output_path: str = None) -> Non
         annot=matrix,
         fmt="",
         cmap="Blues",
-        cbar_kws={"label": "Connectivity score (short & many paths)"},
+        cbar_kws={"label": "Distances of the possible conversion paths"},
         linewidths=0.5,
         linecolor="gray"
     )
