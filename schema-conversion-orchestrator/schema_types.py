@@ -8,22 +8,18 @@ class SchemaLanguage(StrEnum):
     Dtd = "Dtd"
     Xsd = "Xsd"
     JsonSchema = "JsonSchema"
-    SHACL = "SHACL"
-    Owl = "Owl"
+    SHACL_TTL = "SHACL_TTL"
+    SHACL_JSON_LD = "SHACL_JSON_LD"
+    Owl_TTL = "Owl_TTL"
+    Owl_XML = "Owl_XML"
+    Owl_OFN = "Owl_OFN",
+    OWL_OBO = "OWL_OBO"
     OntologyRdf = "OntologyRdf"
     GraphQL = "GraphQL"
     Protobuf = "Protobuf"
     Shex = "Shex"
     Mermaid = "Mermaid"
     SqlAlchemy = "SqlAlchemy"
-    # JsonLD = "JsonLD"
-    # PythonLinkMl = "Python_LinkMl"
-    # PythonPydantic = "Python_Pydantic"
-    # Julia_MdModels = "Julia_MdModels"
-    # Java_LinkMl = "Java_LinkMl"
-    # Rust_MdModels = "Rust_MdModels"
-    # TypeScript_MdModels = "TypeScript_MdModels"
-    # Docs_LinkMl = "Docs_LinkMl"
 
 
 # ignore case when comparing

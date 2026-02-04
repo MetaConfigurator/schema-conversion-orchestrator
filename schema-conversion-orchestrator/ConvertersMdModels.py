@@ -77,7 +77,11 @@ class ConverterJsonSchemaToMdModels(ConverterInternal):
 
         schema = json.dumps(schema_dict)
 
-        dm = DataModel.from_json_schema_string(schema)
+        try:
+            dm = DataModel.from_json_schema_string(schema)
+        except BaseException as panic_exc:  # Catches PanicException
+            print(f"Rust panic caught: {panic_exc}")  # Or log
+            raise ValueError(f"Schema deserialization failed (Rust panic): {panic_exc}") from panic_exc
         return dm.convert_to(Templates.Markdown)
 
     def validate_input(self, schema: str) -> bool:

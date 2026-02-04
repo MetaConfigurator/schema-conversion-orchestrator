@@ -44,6 +44,7 @@
     "src/converters/*.js"
   ],
   "dependencies": {
+    "@comake/shacl-to-json-schema": "^1.0.3",
     "@frogcat/ttl2jsonld": "^0.0.10",
     "jsonld": "^8.3.3",
     "n3": "^1.26.0",

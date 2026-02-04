@@ -48,12 +48,8 @@ class ConverterFromLinkMl(ConverterInternal):
                 SchemaLanguage.JsonSchema: JsonSchemaGenerator,
                 SchemaLanguage.Protobuf: ProtoGenerator,
                 SchemaLanguage.GraphQL: GraphqlGenerator,
-                SchemaLanguage.JsonLD: JSONLDGenerator,
-                SchemaLanguage.SHACL: ShaclGenerator,
-                SchemaLanguage.Owl: OwlSchemaGenerator,
-                # SchemaLanguage.Docs_LinkMl: DocGenerator,
-                # SchemaLanguage.PythonLinkMl: PythonGenerator,
-                # SchemaLanguage.Java_LinkMl: JavaGenerator, # needs directory also as argument
+                SchemaLanguage.SHACL_TTL: ShaclGenerator,
+                SchemaLanguage.Owl_TTL: OwlSchemaGenerator,
                 SchemaLanguage.Shex: ShExGenerator,
                 SchemaLanguage.SqlAlchemy: SQLAlchemyGenerator
             }
@@ -121,7 +117,7 @@ class ConverterOwlToLinkMl(ConverterInternal):
             name="LinkMl schema_automator OwlImportEngine",
             service_address="internal",
             service_name="FlaskApp",
-            source_language=SchemaLanguage.Owl,
+            source_language=SchemaLanguage.Owl_OFN,
             target_language=SchemaLanguage.LinkMl,
         )
 

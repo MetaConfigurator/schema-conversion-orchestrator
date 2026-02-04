@@ -77,8 +77,7 @@ class ConverterRegistry {
            typeof obj.name === 'string' &&
            typeof obj.sourceLanguage === 'string' &&
            typeof obj.targetLanguage === 'string' &&
-           typeof obj.convert === 'function' &&
-           Array.isArray(obj.supportedFeatures);
+           typeof obj.convert === 'function';
   }
 
   findConverter(sourceLanguage: string, targetLanguage: string, name: string): Converter | null {

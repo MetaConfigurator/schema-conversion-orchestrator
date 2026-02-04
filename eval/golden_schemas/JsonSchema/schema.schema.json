@@ -1,0 +1,207 @@
+{
+    "$defs": {
+      "interface": {
+        "if": {
+          "properties": {
+            "is_received": {
+              "const": true
+            }
+          }
+        },
+        "properties": {
+          "is_received": {
+            "description": "Whether mesh is received from another participant for (direct) API access or not (i.e. provided).",
+            "type": "boolean"
+          },
+          "location": {
+            "description": "Further specification of mesh locations",
+            "examples": [
+              "faceCenters",
+              "volumeCenters",
+              "faceNodes",
+              "nodes"
+            ],
+            "minLength": 1,
+            "type": "string"
+          },
+          "mesh_name": {
+            "default": "Fluid-Mesh",
+            "description": "Name of the mesh associated with this interface.",
+            "examples": [
+              "Fluid-Mesh",
+              "Solid-Mesh",
+              "Fluid-Upstream-Mesh",
+              "Fluid-Upstream-Mesh-Centers",
+              "Fluid-Upstream-Mesh-Nodes"
+            ],
+            "minLength": 6,
+            "pattern": "^[A-Z][a-zA-Z0-9]*(?:-[A-Z][a-zA-Z0-9]*)*-Mesh(?:-[A-Z][a-zA-Z0-9]*)*$",
+            "type": "string"
+          },
+          "patches": {
+            "description": "List of mesh or geometry patches (boundary or volume) to locate the interface.",
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "minItems": 1,
+            "type": "array"
+          },
+          "read_data": {
+            "description": "List of data fields to be read from this mesh.",
+            "items": {
+              "$ref": "#/$defs/precice_data"
+            },
+            "type": "array"
+          },
+          "write_data": {
+            "description": "List of data fields to be written to this mesh.",
+            "items": {
+              "$ref": "#/$defs/precice_data"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "mesh_name"
+        ],
+        "then": {
+          "not": {
+            "required": [
+              "location"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "precice_data": {
+        "properties": {
+          "name": {
+            "default": "Force",
+            "description": "Name of the data as specified in the preCICE configuration.",
+            "examples": [
+              "Force",
+              "Displacement",
+              "Velocity",
+              "Temperature",
+              "Heat-Flux",
+              "Force1",
+              "Force-Left",
+              "Heat-Transfer-Coefficient",
+              "Sink-Temperature"
+            ],
+            "minLength": 1,
+            "pattern": "^[A-Z][a-zA-Z0-9]*(?:-[A-Za-z0-9]+)*$",
+            "type": "string"
+          },
+          "operation": {
+            "description": "Operation applied by the adapter on the data (optional).",
+            "examples": [
+              "value",
+              "gradient"
+            ],
+            "minLength": 1,
+            "type": "string"
+          },
+          "solver_name": {
+            "description": "Name of the data as used by the solver (optional).",
+            "examples": [
+              "temp",
+              "T"
+            ],
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "type": "object"
+      }
+    },
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "additionalProperties": {
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "description": "An optional string setting, such as the location of the solver configuration file.",
+            "examples": [
+              "root_path",
+              "model_name",
+              "input_file_path",
+              "output_file_path"
+            ],
+            "title": "String property",
+            "type": "string"
+          },
+          {
+            "description": "An optional number setting, such as the write interval of the solver.",
+            "examples": [
+              "write-interval",
+              "delay"
+            ],
+            "title": "Number property",
+            "type": "number"
+          }
+        ],
+        "title": "Solver parameter"
+      },
+      "description": "Optional solver specific settings. We recommend calling the main object after the solver, e.g. 'mbdyn'",
+      "examples": [
+        "mbdyn",
+        "issm",
+        "code_aster",
+        "tau"
+      ],
+      "title": "Solver settings",
+      "type": "object"
+    },
+    "description": "A JSON schema for configurations of adapters and tools within the preCICE ecosystem. Use the schema for validation and LLM-based auto-conversion to other configuration languages (e.g., OpenFOAM dictionary or YAML). The schema is developed as part of the preECO standardization, see https://precice.discourse.group/t/shape-the-future-of-the-precice-ecosystem-the-preeco-project/2019.",
+    "metaConfigurator": {
+      "aiExportFormats": {
+        "ISSM": {
+          "description": "Export as an ISSM preCICE Adapter Configuration in YAML.",
+          "url": "https://github.com/precice/preeco-orga/blob/main/adapter-config-schema/export-formats/issm-example.yaml"
+        },
+        "OpenFOAM": {
+          "description": "Export as an OpenFOAM preCICE Adapter Configuration.",
+          "url": "https://github.com/precice/tutorials/blob/develop/perpendicular-flap/fluid-openfoam/system/preciceDict"
+        }
+      }
+    },
+    "properties": {
+      "interfaces": {
+        "items": {
+          "$ref": "#/$defs/interface"
+        },
+        "minItems": 1,
+        "type": "array"
+      },
+      "participant_name": {
+        "default": "Fluid",
+        "description": "Name of the participant.",
+        "examples": [
+          "Fluid",
+          "Solid",
+          "Fluid-Left"
+        ],
+        "minLength": 1,
+        "pattern": "^[A-Z][a-zA-Z0-9-]*$",
+        "type": "string"
+      },
+      "precice_config_file_path": {
+        "default": "../precice-config.xml",
+        "description": "Path to the preCICE configuration file relative to the current working directory of the coupled solver.",
+        "minLength": 1,
+        "pattern": "^/?(?:\\.\\./)*([a-zA-Z0-9]+(-[a-zA-Z0-9]+)*/)*[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*\\.xml$",
+        "type": "string"
+      }
+    },
+    "required": [
+      "participant_name",
+      "precice_config_file_path",
+      "interfaces"
+    ],
+    "title": "PreciseAdapterConfig",
+    "type": "object"
+  }

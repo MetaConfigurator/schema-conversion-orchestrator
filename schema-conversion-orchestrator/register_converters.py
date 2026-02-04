@@ -8,7 +8,7 @@ from register_external_converters import register_external_converters
 CORE_SCHEMA_LANGUAGES: List[SchemaLanguage] = [
     SchemaLanguage.JsonSchema,
     SchemaLanguage.Xsd,
-    SchemaLanguage.SHACL,
+    SchemaLanguage.SHACL_TTL,
     SchemaLanguage.MdModels,
     SchemaLanguage.LinkMl,
 ]

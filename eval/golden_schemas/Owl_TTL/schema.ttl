@@ -1,0 +1,2357 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://comicmeta.org/cbo/> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+@prefix cbv: <http://comicmeta.org/vocab/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix xsp: <http://www.owl-ontologies.com/2005/08/07/xsp.owl#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix vann: <http://purl.org/vocab/vann/> .
+@prefix dctype: <http://purl.org/dc/dcmitype/> .
+@prefix schema: <http://schema.org> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix protege: <http://protege.stanford.edu/plugins/owl/protege#> .
+
+<http://comicmeta.org/cbo/>
+    dc:creator <https://sean.petiya.com/#me> ;
+    dc:description "An OWL ontology and RDF metadata vocabulary for describing comic books and comic book collections." ;
+    dc:title "Comic Book Ontology"@en ;
+    dcterms:license <http://creativecommons.org/licenses/by/4.0> ;
+    dcterms:modified "2023-03-15" ;
+    vann:preferredNamespacePrefix "cbo" ;
+    vann:preferredNamespaceUri "http://comicmeta.org/cbo/" ;
+    a owl:Ontology ;
+    owl:versionIRI <http://comicmeta.org/cbo/> ;
+    owl:versionInfo "0.16.0" .
+
+:Agent
+    a owl:Class ;
+    rdfs:comment "A person, organization, or intelligence in a comic universe."@en ;
+    rdfs:label "Agent" ;
+    rdfs:subClassOf :Thing ;
+    vs:term_status "unstable" .
+
+:Artwork
+    a owl:Class ;
+    rdfs:comment "Original comic artwork."@en ;
+    rdfs:label "Artwork"@en ;
+    rdfs:subClassOf :Item, <http://schema.org/IndividualProduct> ;
+    vs:term_status "unstable" .
+
+:Balloon
+    a owl:Class ;
+    rdfs:comment "A word balloon in a comics sequence containing dialogue, thought, or sound."@en ;
+    rdfs:label "Balloon"@en ;
+    rdfs:seeAlso "http://dcl.slis.indiana.edu/cbml/schema/cbml.html#TEI.balloon" ;
+    rdfs:subClassOf :Sequence ;
+    vs:term_status "unstable" .
+
+:Binding
+    a owl:Class ;
+    rdfs:comment "A binding method or material used to bind the pages of a comic."@en ;
+    rdfs:label "Binding"@en ;
+    rdfs:subClassOf :Material ;
+    vs:term_status "unstable" .
+
+:Box
+    a owl:Class ;
+    rdfs:comment "A box that contains comic books."@en ;
+    rdfs:label "Box"@en ;
+    rdfs:subClassOf :Container ;
+    vs:term_status "unstable" .
+
+:Building
+    a owl:Class ;
+    rdfs:comment "A building in a comic universe."@en ;
+    rdfs:label "Building"@en ;
+    rdfs:subClassOf :Object ;
+    vs:term_status "unstable"@en .
+
+:Caption
+    a owl:Class ;
+    rdfs:comment "A caption containing narration in a comics sequence."@en ;
+    rdfs:label "Caption"@en ;
+    rdfs:seeAlso "http://dcl.slis.indiana.edu/cbml/schema/cbml.html#TEI.caption" ;
+    rdfs:subClassOf :Sequence ;
+    vs:term_status "unstable" .
+
+:Character
+    a owl:Class ;
+    rdfs:comment "A comic character."@en ;
+    rdfs:label "Character"@en ;
+    rdfs:subClassOf :Agent ;
+    vs:term_status "unstable" .
+
+:Collection
+    a owl:Class ;
+    rdfs:comment "A collection of comic books and related resources."@en ;
+    rdfs:label "Collection"@en ;
+    rdfs:subClassOf dctype:Collection ;
+    vs:term_status "unstable" .
+
+:Collector
+    a owl:Class ;
+    rdfs:comment "A comic book collector."@en ;
+    rdfs:label "Collector"@en ;
+    rdfs:subClassOf <http://schema.org/Person> ;
+    vs:term_status "unstable" .
+
+:Comic
+    a owl:Class ;
+    rdfs:comment "A creative work of sequential art: the juxtaposition of text, images, and other pictorial elements to communicate information."@en ;
+    rdfs:label "Comic"@en ;
+    rdfs:subClassOf <http://schema.org/CreativeWork> ;
+    vs:term_status "testing" .
+
+:ComicAge
+    a owl:Class ;
+    rdfs:comment "A period of comic book history."@en ;
+    rdfs:label "Comic Age"@en ;
+    rdfs:subClassOf <http://schema.org/Intangible> ;
+    vs:term_status "unstable" .
+
+:ComicUniverse
+    a owl:Class ;
+    rdfs:comment "A comic universe."@en ;
+    rdfs:label "Comic Universe"@en ;
+    rdfs:subClassOf <http://schema.org/CreativeWork> ;
+    vs:term_status "unstable" .
+
+:Condition
+    a owl:Class ;
+    rdfs:comment "A physical condition describing an object."@en ;
+    rdfs:label "Condition"@en ;
+    rdfs:subClassOf :PhysicalAttribute ;
+    vs:term_status "unstable" .
+
+:Container
+    a owl:Class ;
+    rdfs:comment "An object containing comic books."@en ;
+    rdfs:label "Container"@en ;
+    rdfs:subClassOf dctype:PhysicalObject ;
+    vs:term_status "unstable" .
+
+:Contributor
+    a owl:Class ;
+    rdfs:comment "An agent contributing to the creation of a comic work."@en ;
+    rdfs:label "Contributor"@en ;
+    rdfs:subClassOf <http://schema.org/Person> ;
+    vs:term_status "unstable" .
+
+:Copy
+    a owl:Class ;
+    rdfs:comment "A copy of a comic issue."@en ;
+    rdfs:label "Copy"@en ;
+    rdfs:subClassOf :Issue, :Item, <http://schema.org/IndividualProduct> ;
+    vs:term_status "unstable" .
+
+:Costume
+    a owl:Class ;
+    rdfs:comment "A comic character's costume."@en ;
+    rdfs:label "Costume"@en ;
+    rdfs:subClassOf :Object ;
+    vs:term_status "unstable" .
+
+:Creator
+    a owl:Class ;
+    rdfs:comment "An agent primarily responsible for the creation of a comic work."@en ;
+    rdfs:label "Creator"@en ;
+    rdfs:subClassOf <http://schema.org/Person> ;
+    vs:term_status "unstable" .
+
+:Distributor
+    a owl:Class ;
+    rdfs:comment "An agent responsible for the distribution of a comic publication."@en ;
+    rdfs:label "Distributor" ;
+    rdfs:subClassOf <http://schema.org/Organization> ;
+    vs:term_status "unstable" .
+
+:Document
+    a owl:Class ;
+    rdfs:comment "A document composed of the pages in a comics publication."@en ;
+    rdfs:label "Document"@en ;
+    rdfs:subClassOf :Comic ;
+    owl:deprecated true ;
+    vs:term_status "deprecated" .
+
+:Edition
+    a owl:Class ;
+    rdfs:comment "An edition of a comic issue."@en ;
+    rdfs:label "Edition"@en ;
+    rdfs:subClassOf <http://schema.org/Intangible> ;
+    vs:term_status "unstable" .
+
+:Event
+    a owl:Class ;
+    rdfs:comment "An event in a comic universe."@en ;
+    rdfs:label "Event"@en ;
+    rdfs:subClassOf :Thing ;
+    vs:term_status "unstable" .
+
+:Format
+    a owl:Class ;
+    rdfs:comment "A format in which a comic is embodied."@en ;
+    rdfs:label "Format"@en ;
+    rdfs:subClassOf <http://schema.org/Intangible> ;
+    vs:term_status "unstable" .
+
+:Frequency
+    a owl:Class ;
+    rdfs:comment "A frequency with which a comic is published."@en ;
+    rdfs:label "Frequency"@en ;
+    rdfs:subClassOf <http://schema.org/Intangible> ;
+    vs:term_status "unstable" .
+
+:Genre
+    a owl:Class ;
+    rdfs:comment "A comics genre."@en ;
+    rdfs:label "Genre"@en ;
+    rdfs:subClassOf <http://schema.org/Intangible> ;
+    vs:term_status "unstable" .
+
+:Grade
+    a owl:Class ;
+    rdfs:comment "A grade assigned to a comic item that represents a summary of its condition."@en ;
+    rdfs:label "Grade"@en ;
+    rdfs:subClassOf <http://schema.org/Intangible> ;
+    vs:term_status "unstable" .
+
+:Guarantor
+    a owl:Class ;
+    rdfs:comment "An organization that guarantees the stated condition of a comic book."@en ;
+    rdfs:label "Guarantor"@en ;
+    rdfs:subClassOf <http://schema.org/Organization> ;
+    vs:term_status "unstable" .
+
+:Gutter
+    a owl:Class ;
+    rdfs:comment "The space between panels in a comics sequence."@en ;
+    rdfs:label "Gutter"@en ;
+    rdfs:subClassOf :Sequence ;
+    vs:term_status "unstable" .
+
+:Imprint
+    a owl:Class ;
+    rdfs:comment "An imprint or tradename of a comic publisher."@en ;
+    rdfs:label "Imprint"@en ;
+    rdfs:subClassOf :Publisher ;
+    vs:term_status "unstable" .
+
+:Issue
+    a owl:Class ;
+    rdfs:comment "An issue of a comic publication."@en ;
+    rdfs:label "Issue"@en ;
+    rdfs:subClassOf :Publication, <http://schema.org/Product>, <http://schema.org/PublicationIssue> ;
+    owl:equivalentClass <http://schema.org/ComicIssue> ;
+    vs:term_status "unstable" .
+
+:Item
+    a owl:Class ;
+    rdfs:comment "A physical or digital item."@en ;
+    rdfs:label "Item" ;
+    vs:term_status "unstable" .
+
+:Library
+    a owl:Class ;
+    rdfs:comment "A physical or digital library containing a collection of comic resources."@en ;
+    rdfs:label "Library" ;
+    rdfs:subClassOf <http://schema.org/Organization> ;
+    vs:term_status "unstable" .
+
+:Location
+    a owl:Class ;
+    rdfs:comment "A location in a comic universe."@en ;
+    rdfs:label "Location"@en ;
+    rdfs:subClassOf :Thing ;
+    vs:term_status "unstable" .
+
+:Material
+    a owl:Class ;
+    rdfs:comment "A material or medium of which an object is composed."@en ;
+    rdfs:label "Material" ;
+    rdfs:subClassOf :PhysicalAttribute ;
+    vs:term_status "unstable" .
+
+:Museum
+    a owl:Class ;
+    rdfs:comment "A physical or digital museum exhibiting a collection of comic resources."@en ;
+    rdfs:label "Museum"@en ;
+    rdfs:subClassOf <http://schema.org/Organization> ;
+    vs:term_status "unstable" .
+
+:Object
+    a owl:Class ;
+    rdfs:comment "An object in a comic universe."@en ;
+    rdfs:label "Object"@en ;
+    rdfs:subClassOf :Thing ;
+    vs:term_status "unstable" .
+
+:Page
+    a owl:Class ;
+    rdfs:comment "A page in a comics sequence."@en ;
+    rdfs:label "Page"@en ;
+    rdfs:subClassOf :Sequence ;
+    vs:term_status "unstable" .
+
+:PageType
+    a owl:Class ;
+    rdfs:comment "A type of page appearing in a comic document."@en ;
+    rdfs:label "Page Type"@en ;
+    rdfs:subClassOf <http://schema.org/Intangible> ;
+    vs:term_status "unstable" .
+
+:Panel
+    a owl:Class ;
+    rdfs:comment "A visual frame containing part of a comics sequence."@en ;
+    rdfs:label "Panel"@en ;
+    rdfs:seeAlso "http://dcl.slis.indiana.edu/cbml/schema/cbml.html#TEI.panel" ;
+    rdfs:subClassOf :Sequence ;
+    vs:term_status "unstable" .
+
+:Paper
+    a owl:Class ;
+    rdfs:comment "A paper stock on which a comic is printed."@en ;
+    rdfs:label "Paper"@en ;
+    rdfs:subClassOf :Material ;
+    vs:term_status "unstable" .
+
+:Pedigree
+    a owl:Class ;
+    rdfs:comment "An exceptional original owner collection of high quality, vintage comic books often containing copies that are considered exemplars of key issues."@en ;
+    rdfs:label "Pedigree"@en ;
+    rdfs:subClassOf :Collection ;
+    vs:term_status "unstable" .
+
+:PhysicalAttribute
+    a owl:Class ;
+    rdfs:comment "An physical attribute or property of an item."@en ;
+    rdfs:label "Attribute"@en ;
+    vs:term_status "unstable" .
+
+:Planet
+    a owl:Class ;
+    rdfs:comment "A planetary body in a comic universe."@en ;
+    rdfs:label "Planet"@en ;
+    rdfs:subClassOf :Location ;
+    vs:term_status "unstable" .
+
+:Plastic
+    a owl:Class ;
+    rdfs:comment "A plastic of which a supply item is composed."@en ;
+    rdfs:label "Plastic"@en ;
+    rdfs:subClassOf :Material ;
+    vs:term_status "unstable" .
+
+:Publication
+    a owl:Class ;
+    rdfs:comment "A comics publication."@en ;
+    rdfs:label "Publication"@en ;
+    rdfs:subClassOf :Comic ;
+    vs:term_status "unstable" .
+
+:Publisher
+    a owl:Class ;
+    rdfs:comment "An agent responsible for the publication of a comic."@en ;
+    rdfs:label "Publisher"@en ;
+    rdfs:subClassOf <http://schema.org/Organization> ;
+    vs:term_status "unstable" .
+
+:Quality
+    a owl:Class ;
+    rdfs:comment "A distinctive quality belonging to an object."@en ;
+    rdfs:label "Quality" ;
+    rdfs:subClassOf :PhysicalAttribute ;
+    vs:term_status "unstable" .
+
+:Role
+    a owl:Class ;
+    rdfs:comment "A creative role in the production of a comic work."@en ;
+    rdfs:label "Role"@en ;
+    rdfs:subClassOf <http://schema.org/Intangible> ;
+    vs:term_status "unstable" .
+
+:Sequence
+    a owl:Class ;
+    rdfs:comment "A sequence of juxtaposed panels, text, and other pictorial elements."@en ;
+    rdfs:label "Sequence"@en ;
+    rdfs:subClassOf :Comic ;
+    vs:term_status "unstable" .
+
+:Series
+    a owl:Class ;
+    rdfs:comment "A comic publication containing one or more volumes and issues."@en ;
+    rdfs:label "Series"@en ;
+    rdfs:subClassOf :Publication, <http://schema.org/Periodical> ;
+    owl:equivalentClass <http://schema.org/ComicSeries> ;
+    vs:term_status "unstable" .
+
+:State
+    a owl:Class ;
+    rdfs:comment "A physical state describing an object."@en ;
+    rdfs:label "State"@en ;
+    rdfs:subClassOf :PhysicalAttribute ;
+    vs:term_status "unstable" .
+
+:Story
+    a owl:Class ;
+    rdfs:comment "A comics story."@en ;
+    rdfs:label "Story"@en ;
+    rdfs:subClassOf :Sequence ;
+    owl:equivalentClass <http://schema.org/ComicStory> ;
+    vs:term_status "unstable" .
+
+:Team
+    a owl:Class ;
+    rdfs:comment "A group of comic characters."@en ;
+    rdfs:label "Team" ;
+    rdfs:subClassOf :Agent ;
+    vs:term_status "unstable" .
+
+:Thing
+    a owl:Class ;
+    rdfs:comment "A thing in a comic universe."@en ;
+    rdfs:label "Thing" ;
+    rdfs:subClassOf :ComicUniverse ;
+    vs:term_status "unstable" .
+
+:Vehicle
+    a owl:Class ;
+    rdfs:comment "A vehicle in a comic universe." ;
+    rdfs:label "Vehicle" ;
+    rdfs:subClassOf :Object ;
+    vs:term_status "unstable" .
+
+:Volume
+    a owl:Class ;
+    rdfs:comment "A single issue or group of issues published in a comic series."@en ;
+    rdfs:label "Volume"@en ;
+    rdfs:subClassOf :Publication, <http://schema.org/PublicationVolume> ;
+    vs:term_status "unstable" .
+
+:adaptation
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a comic to an adaptation."@en ;
+    rdfs:domain :Comic ;
+    rdfs:label "adaptation"@en ;
+    rdfs:range <http://schema.org/CreativeWork> ;
+    rdfs:subPropertyOf dcterms:hasVersion ;
+    owl:inverseOf :adaptationOf ;
+    vs:term_status "unstable" .
+
+:adaptationOf
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a work to the comic work it is an adaptation of."@en ;
+    rdfs:domain :Comic ;
+    rdfs:label "adaptation of"@en ;
+    rdfs:range :Comic ;
+    rdfs:subPropertyOf dcterms:isVersionOf ;
+    vs:term_status "unstable" .
+
+:alternativeTitle
+    a owl:DatatypeProperty ;
+    rdfs:comment "An alternative title for any comic work."@en ;
+    rdfs:domain :Comic ;
+    rdfs:label "alternative title"@en ;
+    rdfs:range rdfs:Literal ;
+    rdfs:subPropertyOf dcterms:alternative ;
+    vs:term_status "unstable" .
+
+:appearance
+    a owl:ObjectProperty ;
+    rdfs:comment "Describes the appearance of a comic universe element within a comic work."@en ;
+    rdfs:domain :Comic ;
+    rdfs:label "appearance"@en ;
+    rdfs:range :Thing ;
+    vs:term_status "unstable" .
+
+:artist
+    a owl:ObjectProperty ;
+    rdfs:comment "Associates an artist with a comic work."@en ;
+    rdfs:domain :Comic ;
+    rdfs:label "artist"@en ;
+    rdfs:range :Contributor ;
+    rdfs:subPropertyOf :contributor ;
+    vs:term_status "unstable" .
+
+:artwork
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a comic page to its original artwork."@en ;
+    rdfs:domain :Page ;
+    rdfs:label "artwork"@en ;
+    rdfs:range :Artwork ;
+    owl:inverseOf :artworkOf ;
+    vs:term_status "unstable" .
+
+:artworkOf
+    a owl:ObjectProperty ;
+    rdfs:comment "Links orginal comic artwork to a page."@en ;
+    rdfs:domain :Artwork ;
+    rdfs:label "artwork of"@en ;
+    rdfs:range :Page ;
+    vs:term_status "unstable" .
+
+:artworkType
+    a owl:ObjectProperty ;
+    rdfs:comment "Describes the artwork type of one or more pages of comic art."@en ;
+    rdfs:label "artwork type"@en ;
+    vs:term_status "unstable" .
+
+:attribute
+    a owl:ObjectProperty ;
+    rdfs:comment "Describes a physical attribute of a comic item."@en ;
+    rdfs:domain dctype:PhysicalObject ;
+    rdfs:label "attribute"@en ;
+    rdfs:range :PhysicalAttribute ;
+    vs:term_status "unstable" .
+
+:bagged
+    dc:description "Having this property implies that the comic is bagged."@en ;
+    a owl:ObjectProperty ;
+    rdfs:comment "Describes the bag in which a comic is contained."@en ;
+    rdfs:domain :Copy ;
+    rdfs:label "bagged"@en ;
+    rdfs:range :Material ;
+    rdfs:subPropertyOf :attribute ;
+    vs:term_status "unstable" .
+
+:balloon
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a panel to a comics sequence."@en ;
+    rdfs:domain :Sequence ;
+    rdfs:label "balloon"@en ;
+    rdfs:range :Balloon ;
+    rdfs:subPropertyOf :sequence ;
+    vs:term_status "unstable" .
+
+:binding
+    a owl:ObjectProperty ;
+    rdfs:comment "Describes the binding of a comic issue."@en ;
+    rdfs:domain :Issue ;
+    rdfs:label "binding"@en ;
+    rdfs:range :Binding ;
+    rdfs:subPropertyOf :material ;
+    vs:term_status "unstable" .
+
+:boarded
+    dc:description "Having this property implies that the comic is boarded."@en ;
+    a owl:ObjectProperty ;
+    rdfs:comment "Describes the backing board of a comic."@en ;
+    rdfs:domain :Copy ;
+    rdfs:label "boarded"@en ;
+    rdfs:range :Material ;
+    rdfs:subPropertyOf :attribute ;
+    vs:term_status "unstable" .
+
+:box
+    a owl:ObjectProperty ;
+    rdfs:comment "Associates a box with a comic book collection."@en ;
+    rdfs:domain :Collection ;
+    rdfs:label "box"@en ;
+    rdfs:range :Box ;
+    rdfs:subPropertyOf dcterms:hasPart ;
+    vs:term_status "unstable" .
+
+:cameo
+    a owl:ObjectProperty ;
+    rdfs:comment "Describes a cameo appearance by a comic character in a comic work."@en ;
+    rdfs:domain :Comic ;
+    rdfs:label "cameo"@en ;
+    rdfs:range :Character ;
+    rdfs:subPropertyOf :character ;
+    vs:term_status "unstable" .
+
+:caption
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a caption to a comics sequence."@en ;
+    rdfs:domain :Sequence ;
+    rdfs:label "caption"@en ;
+    rdfs:range :Caption ;
+    rdfs:subPropertyOf :sequence ;
+    vs:term_status "unstable" .
+
+:category
+    a owl:AnnotationProperty .
+
+:cca
+    a owl:DatatypeProperty ;
+    rdfs:comment "Comics Code Authority (CCA) approved."@en ;
+    rdfs:domain :Issue ;
+    rdfs:label "CCA" ;
+    rdfs:range xsd:boolean ;
+    vs:term_status "unstable" .
+
+:certNumber
+    a owl:DatatypeProperty ;
+    rdfs:comment "The certification number assigned to a graded copy of a comic by a guarantor."@en ;
+    rdfs:domain :Copy ;
+    rdfs:label "certification number"@en ;
+    rdfs:range rdfs:Literal ;
+    rdfs:subPropertyOf dcterms:identifier ;
+    vs:term_status "unstable" .
+
+:character
+    a owl:ObjectProperty ;
+    rdfs:comment "Describes the appearance of a comic character in a comic work."@en ;
+    rdfs:domain :Comic ;
+    rdfs:label "character"@en ;
+    rdfs:range :Character ;
+    rdfs:subPropertyOf :appearance ;
+    vs:term_status "unstable" .
+
+:collectedIn
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a comic work to another work that reprints it as part of a comprehensive collection of reprinted material."@en ;
+    rdfs:domain :Issue ;
+    rdfs:label "collected in"@en ;
+    rdfs:range :Issue ;
+    rdfs:subPropertyOf :reprintedIn ;
+    owl:inverseOf :collects ;
+    vs:term_status "unstable" .
+
+:collection
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a collector to a collection."@en ;
+    rdfs:domain :Collector ;
+    rdfs:label "collection"@en ;
+    rdfs:range :Collection ;
+    vs:term_status "unstable" .
+
+:collects
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a comic issue to another work that reprints it as part of a comprehensive collection of reprinted material."@en ;
+    rdfs:domain :Issue ;
+    rdfs:label "collects" ;
+    rdfs:range :Issue ;
+    rdfs:subPropertyOf :reprints, dcterms:hasPart ;
+    vs:term_status "unstable" .
+
+:colorist
+    a owl:ObjectProperty ;
+    rdfs:comment "Associates a colorist with a comic work."@en ;
+    rdfs:domain :Comic ;
+    rdfs:label "colorist"@en ;
+    rdfs:range :Contributor ;
+    rdfs:subPropertyOf :contributor ;
+    vs:term_status "unstable" .
+
+:comicAge
+    a owl:ObjectProperty ;
+    rdfs:comment "Associates a comic with an era of comic book history."@en ;
+    rdfs:domain :Comic ;
+    rdfs:label "comic age"@en ;
+    rdfs:range :ComicAge ;
+    vs:term_status "unstable"@en .
+
+:condition
+    a owl:ObjectProperty ;
+    rdfs:comment "Describes the physical condition of a comic item."@en ;
+    rdfs:domain :Copy ;
+    rdfs:label "condition"@en ;
+    rdfs:range :Condition ;
+    vs:term_status "unstable" .
+
+:contains
+    a owl:ObjectProperty ;
+    rdfs:comment "Describes the contents of a box of comics."@en ;
+    rdfs:domain :Container ;
+    rdfs:label "contains"@en ;
+    rdfs:range :Copy ;
+    owl:inverseOf :inBox ;
+    vs:term_status "unstable" .
+
+:contributor
+    a owl:ObjectProperty ;
+    rdfs:comment "Associates a contributor with a comic work."@en ;
+    rdfs:domain :Comic ;
+    rdfs:label "contributor"@en ;
+    rdfs:range :Contributor ;
+    rdfs:subPropertyOf <http://schema.org/contributor> ;
+    vs:term_status "unstable" .
+
+:copy
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a comic issue to a specific copy."@en ;
+    rdfs:domain :Issue ;
+    rdfs:label "copy"@en ;
+    rdfs:range :Copy ;
+    owl:inverseOf :copyOf ;
+    vs:term_status "unstable" .
+
+:copyOf
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a specific copy to a comic issue."@en ;
+    rdfs:domain :Copy ;
+    rdfs:label "copy of"@en ;
+    rdfs:range :Issue ;
+    vs:term_status "unstable" .
+
+:copyState
+    a owl:ObjectProperty ;
+    rdfs:comment "Describes the physical state of a copy of a comic issue."@en ;
+    rdfs:domain :Copy ;
+    rdfs:label "copy state"@en ;
+    rdfs:range :State ;
+    vs:term_status "unstable" .
+
+:copyrightDate
+    a owl:DatatypeProperty ;
+    rdfs:comment "The copyright date of a comic issue."@en ;
+    rdfs:domain :Issue ;
+    rdfs:label "copyright date"@en ;
+    rdfs:range rdfs:Literal ;
+    rdfs:subPropertyOf dcterms:date ;
+    vs:term_status "unstable" .
+
+:country
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a comic series to its country of origin."@en ;
+    rdfs:domain :Series ;
+    rdfs:label "country"@en ;
+    rdfs:range owl:Thing ;
+    vs:term_status "unstable" .
+
+:coverArt
+    a owl:ObjectProperty ;
+    rdfs:comment "Describes the cover art of a comic issue."@en ;
+    rdfs:domain :Issue ;
+    rdfs:label "cover art"@en ;
+    rdfs:range :Page ;
+    vs:term_status "unstable" .
+
+:coverArtist
+    a owl:ObjectProperty ;
+    rdfs:comment "Associates an artist with cover artwork for a comic."@en ;
+    rdfs:domain :Comic ;
+    rdfs:label "cover artist"@en ;
+    rdfs:range :Contributor ;
+    rdfs:subPropertyOf :artist ;
+    vs:term_status "unstable"@en .
+
+:coverDate
+    a owl:DatatypeProperty ;
+    rdfs:comment "The cover date of a comic issue."@en ;
+    rdfs:domain :Issue ;
+    rdfs:label "cover date"@en ;
+    rdfs:range rdfs:Literal ;
+    rdfs:subPropertyOf dcterms:date ;
+    vs:term_status "testing" .
+
+:coverPrice
+    a owl:DatatypeProperty ;
+    rdfs:comment "The cover price of a comic issue."@en ;
+    rdfs:domain :Issue ;
+    rdfs:label "coverPrice"@en ;
+    rdfs:range rdfs:Literal ;
+    rdfs:subPropertyOf :price ;
+    vs:term_status "unstable" .
+
+:creator
+    a owl:ObjectProperty ;
+    rdfs:comment "Associates a creator with a comic work."@en ;
+    rdfs:domain :Comic, :ComicUniverse ;
+    rdfs:label "creator"@en ;
+    rdfs:range :Creator ;
+    rdfs:subPropertyOf <http://schema.org/creator> ;
+    vs:term_status "unstable" .
+
+:diamondCode
+    a owl:DatatypeProperty ;
+    rdfs:comment "A Diamond Comic Distributors code."@en ;
+    rdfs:domain :Publication ;
+    rdfs:label "Diamond code"@en ;
+    rdfs:range rdfs:Literal ;
+    rdfs:subPropertyOf :distributorCode ;
+    vs:term_status "unstable" .
+
+:distributedBy
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a comic series to a distributor."@en ;
+    rdfs:domain :Publication ;
+    rdfs:label "distributed by"@en ;
+    rdfs:range :Distributor ;
+    vs:term_status "unstable" .
+
+:distributorCode
+    a owl:DatatypeProperty ;
+    rdfs:comment "The distributor code associated with a comics publication."@en ;
+    rdfs:domain :Publication ;
+    rdfs:label "distributor code" ;
+    rdfs:range rdfs:Literal ;
+    rdfs:subPropertyOf dcterms:identifier ;
+    vs:term_status "unstable" .
+
+:edition
+    a owl:ObjectProperty ;
+    rdfs:comment "Describes the edition of a comic issue."@en ;
+    rdfs:domain :Issue ;
+    rdfs:label "edition"@en ;
+    rdfs:range :Edition ;
+    vs:term_status "unstable" .
+
+:editor
+    a owl:ObjectProperty ;
+    rdfs:comment "Associates an editor with a comic work."@en ;
+    rdfs:domain :Comic ;
+    rdfs:label "editor"@en ;
+    rdfs:range :Contributor ;
+    rdfs:subPropertyOf :contributor ;
+    vs:term_status "unstable" .
+
+:encased
+    dc:description "Having this property implies that the comic is encapsulated."@en ;
+    a owl:ObjectProperty ;
+    rdfs:comment "Describes the case in which a comic is encapsulated."@en ;
+    rdfs:domain :Copy ;
+    rdfs:label "encased"@en ;
+    rdfs:range :Material ;
+    rdfs:subPropertyOf :attribute ;
+    vs:term_status "unstable"@en .
+
+:endDate
+    a owl:DatatypeProperty ;
+    rdfs:comment "The date a comic ended publication."@en ;
+    rdfs:domain :Publication ;
+    rdfs:label "end year"@en ;
+    rdfs:range rdfs:Literal ;
+    rdfs:subPropertyOf dcterms:date ;
+    vs:term_status "unstable" .
+
+:event
+    a owl:ObjectProperty ;
+    rdfs:comment "Describes a comic universe event depicted in a comic work."@en ;
+    rdfs:domain :Comic ;
+    rdfs:label "event"@en ;
+    rdfs:range :Event ;
+    vs:term_status "unstable" .
+
+:feature
+    a owl:DatatypeProperty ;
+    rdfs:comment "Describes the feature or primary focus of a comic work."@en ;
+    rdfs:domain :Comic ;
+    rdfs:label "feature"@en ;
+    rdfs:range rdfs:Literal ;
+    vs:term_status "unstable"@en .
+
+:format
+    a owl:ObjectProperty ;
+    rdfs:comment "Describes the format of a comic work."@en ;
+    rdfs:domain :Publication ;
+    rdfs:label "format"@en ;
+    rdfs:range :Format ;
+    vs:term_status "unstable" .
+
+:genre
+    a owl:ObjectProperty ;
+    rdfs:comment "Describes the genre of a comic work."@en ;
+    rdfs:domain :Comic ;
+    rdfs:label "genre"@en ;
+    rdfs:range :Genre ;
+    vs:term_status "unstable" .
+
+:grade
+    a owl:ObjectProperty ;
+    rdfs:comment "Describes the grade assigned to a comic item by a guarantor."@en ;
+    rdfs:domain :Copy ;
+    rdfs:label "grade"@en ;
+    rdfs:range :Grade ;
+    vs:term_status "unstable" .
+
+:guaranteedBy
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a graded copy of a comic issue to a guarantor."@en ;
+    rdfs:domain :Copy ;
+    rdfs:label "guaranteed by"@en ;
+    rdfs:range :Guarantor ;
+    vs:term_status "unstable" .
+
+:gutter
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a gutter to a comics sequence."@en ;
+    rdfs:domain :Sequence ;
+    rdfs:label "gutter"@en ;
+    rdfs:range :Gutter ;
+    rdfs:subPropertyOf :sequence ;
+    vs:term_status "unstable" .
+
+:imprint
+    a owl:ObjectProperty ;
+    rdfs:comment "Associates a comic publisher with an imprint."@en ;
+    rdfs:domain :Publisher ;
+    rdfs:label "imprint"@en ;
+    rdfs:range :Imprint ;
+    owl:inverseOf :imprintOf ;
+    vs:term_status "unstable" .
+
+:imprintName
+    a owl:DatatypeProperty ;
+    rdfs:comment "The name of a comic imprint."@en ;
+    rdfs:domain :Imprint ;
+    rdfs:label "imprint name"@en ;
+    rdfs:range rdfs:Literal ;
+    rdfs:subPropertyOf <http://schema.org/name> ;
+    vs:term_status "unstable" .
+
+:imprintOf
+    a owl:ObjectProperty ;
+    rdfs:comment "Associates an imprint with a comic publisher."@en ;
+    rdfs:domain :Imprint ;
+    rdfs:label "imprint of"@en ;
+    rdfs:range :Publisher ;
+    vs:term_status "unstable" .
+
+:inBox
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a comic item to a box."@en ;
+    rdfs:domain :Copy ;
+    rdfs:label "in box"@en ;
+    rdfs:range :Box ;
+    vs:term_status "unstable" .
+
+:indiciaFrequency
+    a owl:DatatypeProperty ;
+    rdfs:comment "The publication frequency of a comic as printed in the indicia of an issue."@en ;
+    rdfs:domain :Issue ;
+    rdfs:label "indicia frequency"@en ;
+    rdfs:range rdfs:Literal ;
+    vs:term_status "unstable" .
+
+:indiciaPublisher
+    a owl:DatatypeProperty ;
+    rdfs:comment "The publisher name as printed in the indicia of a comic issue."@en ;
+    rdfs:domain :Issue ;
+    rdfs:label "indicia publisher"@en ;
+    rdfs:range rdfs:Literal ;
+    vs:term_status "unstable" .
+
+:inker
+    a owl:ObjectProperty ;
+    rdfs:comment "Associates an inker with a comic work."@en ;
+    rdfs:domain :Comic ;
+    rdfs:label "inker"@en ;
+    rdfs:range :Contributor ;
+    rdfs:subPropertyOf :contributor ;
+    vs:term_status "unstable" .
+
+:isbn
+    a owl:DatatypeProperty ;
+    rdfs:comment "The ISBN of a comic publication."@en ;
+    rdfs:label "ISBN" ;
+    rdfs:subPropertyOf <http://schema.org/isbn> ;
+    vs:term_status "unstable" .
+
+:issue
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a volume of comics to an issue."@en ;
+    rdfs:domain :Volume ;
+    rdfs:label "issue"@en ;
+    rdfs:range :Issue ;
+    rdfs:subPropertyOf dcterms:hasPart ;
+    owl:inverseOf :issueOf ;
+    vs:term_status "unstable" .
+
+:issueCount
+    a owl:DatatypeProperty ;
+    rdfs:comment "The total number of issues in a volume of comics."@en ;
+    rdfs:domain :Volume ;
+    rdfs:label "issue count"@en ;
+    rdfs:range xsd:integer ;
+    rdfs:subPropertyOf owl:topDataProperty .
+
+:issueNumber
+    a owl:DatatypeProperty ;
+    rdfs:comment "The number of a comic issue."@en ;
+    rdfs:domain :Issue ;
+    rdfs:label "issueNumber"@en ;
+    rdfs:range rdfs:Literal ;
+    rdfs:subPropertyOf dcterms:identifier ;
+    vs:term_status "testing" .
+
+:issueOf
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a comic issue to a volume."@en ;
+    rdfs:domain :Issue ;
+    rdfs:label "issue of"@en ;
+    rdfs:range :Volume ;
+    rdfs:subPropertyOf dcterms:isPartOf ;
+    vs:term_status "unstable" .
+
+:item
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a comic book collection to an item."@en ;
+    rdfs:domain :Collection ;
+    rdfs:label "item"@en ;
+    rdfs:range :Item ;
+    rdfs:subPropertyOf dcterms:hasPart ;
+    owl:inverseOf :itemOf ;
+    vs:term_status "unstable" .
+
+:itemNumber
+    a owl:DatatypeProperty ;
+    rdfs:comment "An unique identifier assigned to a comic item."@en ;
+    rdfs:domain :Issue ;
+    rdfs:label "item number"@en ;
+    rdfs:range rdfs:Literal ;
+    rdfs:subPropertyOf dcterms:identifier ;
+    vs:term_status "unstable"@en .
+
+:itemOf
+    a owl:ObjectProperty ;
+    rdfs:comment "Links an item to a comic book collection."@en ;
+    rdfs:domain :Item ;
+    rdfs:label "item of"@en ;
+    rdfs:range :Collection ;
+    rdfs:subPropertyOf dcterms:isPartOf ;
+    vs:term_status "unstable" .
+
+:language
+    a owl:ObjectProperty ;
+    rdfs:comment "Decribes the language of a comic series."@en ;
+    rdfs:domain :Series ;
+    rdfs:label "language"@en ;
+    rdfs:range owl:Thing ;
+    rdfs:subPropertyOf dcterms:language ;
+    vs:term_status "unstable" .
+
+:letterer
+    a owl:ObjectProperty ;
+    rdfs:comment "Associates a letterer with a comic work."@en ;
+    rdfs:domain :Comic ;
+    rdfs:label "letterer"@en ;
+    rdfs:range :Contributor ;
+    rdfs:subPropertyOf :contributor ;
+    vs:term_status "unstable" .
+
+:level
+    a owl:AnnotationProperty ;
+    rdfs:comment "The level of description associated with a term."@en ;
+    rdfs:label "level"@en .
+
+:material
+    a owl:ObjectProperty ;
+    rdfs:comment "Describes the material of which a physical item is composed."@en ;
+    rdfs:domain dctype:PhysicalObject ;
+    rdfs:label "material"@en ;
+    rdfs:range :Material ;
+    vs:term_status "unstable" .
+
+:note
+    a owl:DatatypeProperty ;
+    rdfs:comment "A note."@en ;
+    rdfs:label "note" ;
+    rdfs:range rdfs:Literal ;
+    vs:term_status "unstable" .
+
+:object
+    a owl:ObjectProperty ;
+    rdfs:comment "Describes the appearance of a comic object in a comic work."@en ;
+    rdfs:domain :Comic ;
+    rdfs:label "object"@en ;
+    rdfs:range :Object ;
+    rdfs:subPropertyOf :appearance ;
+    vs:term_status "unstable" .
+
+:onSaleDate
+    a owl:DatatypeProperty ;
+    rdfs:comment "The date of availability of a comic issue."@en ;
+    rdfs:domain :Issue ;
+    rdfs:label "on-sale date"@en ;
+    rdfs:range rdfs:Literal ;
+    rdfs:subPropertyOf dcterms:date ;
+    vs:term_status "testing" .
+
+:owner
+    a owl:ObjectProperty ;
+    rdfs:comment "Links an item or collection to the agent that owns it."@en ;
+    rdfs:domain :Collection, :Item ;
+    rdfs:label "owner"@en ;
+    rdfs:range foaf:Agent ;
+    vs:term_status "unstable" .
+
+:ownerOf
+    a owl:ObjectProperty ;
+    rdfs:comment "Links an agent to an owned item or collection."@en ;
+    rdfs:domain foaf:Agent ;
+    rdfs:label "owner of"@en ;
+    rdfs:range :Collection, :Item ;
+    vs:term_status "unstable" .
+
+:page
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a page to a comics sequence."@en ;
+    rdfs:domain :Sequence ;
+    rdfs:label "page"@en ;
+    rdfs:range :Page ;
+    rdfs:subPropertyOf :sequence ;
+    vs:term_status "unstable" .
+
+:pageCount
+    a owl:DatatypeProperty ;
+    rdfs:comment "The number of pages in a comic issue."@en ;
+    rdfs:domain :Document, :Story ;
+    rdfs:label "page count"@en ;
+    rdfs:range rdfs:Literal ;
+    rdfs:subPropertyOf owl:topDataProperty ;
+    vs:term_status "unstable" .
+
+:pageNumber
+    a owl:DatatypeProperty ;
+    rdfs:comment "The number of a page in a comics document."@en ;
+    rdfs:domain :Page ;
+    rdfs:label "page number"@en ;
+    rdfs:range rdfs:Literal .
+
+:pageType
+    a owl:ObjectProperty ;
+    rdfs:comment "Describes the type of one or more comic pages."@en ;
+    rdfs:domain :Page ;
+    rdfs:label "page type"@en ;
+    rdfs:range :PageType ;
+    vs:term_status "unstable" .
+
+:panel
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a panel to a comics sequence."@en ;
+    rdfs:domain :Sequence ;
+    rdfs:label "panel"@en ;
+    rdfs:range :Panel ;
+    rdfs:subPropertyOf :sequence ;
+    vs:term_status "unstable" .
+
+:paper
+    a owl:ObjectProperty ;
+    rdfs:comment "Describes the paper stock of a comic issue."@en ;
+    rdfs:domain :Issue ;
+    rdfs:label "paper"@en ;
+    rdfs:range :Paper ;
+    rdfs:subPropertyOf :material ;
+    vs:term_status "unstable" .
+
+:penciller
+    a owl:ObjectProperty ;
+    rdfs:comment "Associates a penciller with a comic work."@en ;
+    rdfs:domain :Comic ;
+    rdfs:label "penciller"@en ;
+    rdfs:range :Contributor ;
+    rdfs:subPropertyOf :contributor ;
+    vs:term_status "unstable" .
+
+:plotter
+    a owl:ObjectProperty ;
+    rdfs:comment "Associates a plotter with a comic work."@en ;
+    rdfs:label "plotter"@en ;
+    rdfs:subPropertyOf :contributor ;
+    vs:term_status "unstable" .
+
+:preview
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a comic issue to a preview or sample of that work."@en ;
+    rdfs:domain :Issue ;
+    rdfs:label "preview"@en ;
+    rdfs:range :Issue ;
+    vs:term_status "unstable" .
+
+:price
+    a owl:DatatypeProperty ;
+    rdfs:comment "A general price."@en ;
+    rdfs:label "price"@en ;
+    vs:term_status "unstable" .
+
+:printing
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "The numerical print run of a comic issue."@en ;
+    rdfs:domain :Issue ;
+    rdfs:label "printing"@en ;
+    rdfs:range rdfs:Literal ;
+    vs:term_status "unstable" .
+
+:publicationDate
+    a owl:DatatypeProperty ;
+    rdfs:comment "The date a comic issue was published."@en ;
+    rdfs:domain :Issue ;
+    rdfs:label "publication date"@en ;
+    rdfs:range rdfs:Literal ;
+    rdfs:subPropertyOf dcterms:date ;
+    vs:term_status "testing" .
+
+:publicationFrequency
+    a owl:ObjectProperty ;
+    rdfs:comment "The publication frequency of a comic."@en ;
+    rdfs:domain :Volume ;
+    rdfs:label "publication frequency"@en ;
+    rdfs:range :Frequency ;
+    vs:term_status "unstable" .
+
+:publisher
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a publisher to a comic publication."@en ;
+    rdfs:domain :Series ;
+    rdfs:label "publisher"@en ;
+    rdfs:range :Publisher ;
+    rdfs:subPropertyOf <http://schema.org/publisher> ;
+    vs:term_status "unstable" .
+
+:publisherName
+    a owl:DatatypeProperty ;
+    rdfs:comment "The name of a comic publisher."@en ;
+    rdfs:domain :Publisher ;
+    rdfs:label "publisher name"@en ;
+    rdfs:range rdfs:Literal ;
+    rdfs:subPropertyOf <http://schema.org/name> ;
+    vs:term_status "testing" .
+
+:purchasePrice
+    a owl:DatatypeProperty ;
+    rdfs:comment "The purchase price of a comic item."@en ;
+    rdfs:domain :Item ;
+    rdfs:label "purchase price"@en ;
+    rdfs:range rdfs:Literal ;
+    rdfs:subPropertyOf :price ;
+    vs:term_status "unstable" .
+
+:qlabel
+    a owl:AnnotationProperty ;
+    rdfs:subPropertyOf rdfs:label .
+
+:quality
+    a owl:ObjectProperty ;
+    rdfs:comment "Describes a distinctive quality of an object."@en ;
+    rdfs:domain dctype:PhysicalObject ;
+    rdfs:label "quality"@en ;
+    rdfs:range :Quality ;
+    vs:term_status "unstable" .
+
+:rating
+    a owl:ObjectProperty ;
+    rdfs:comment "The rating of a comics publication."@en ;
+    rdfs:domain :Publication ;
+    rdfs:label "rating"@en ;
+    rdfs:range owl:Thing ;
+    vs:term_status "unstable" .
+
+:related
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a comic to a related object."@en ;
+    rdfs:domain :Comic ;
+    rdfs:label "related" ;
+    rdfs:range owl:Thing ;
+    vs:term_status "unstable" .
+
+:reprintedIn
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a comic issue to a work that reprints it."@en ;
+    rdfs:domain :Issue ;
+    rdfs:label "reprinted in"@en ;
+    rdfs:range :Issue ;
+    rdfs:subPropertyOf dcterms:hasVersion ;
+    owl:inverseOf :reprints ;
+    vs:term_status "unstable" .
+
+:reprints
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a comic to the original work it reprints."@en ;
+    rdfs:domain :Issue ;
+    rdfs:label "reprints"@en ;
+    rdfs:range :Issue ;
+    rdfs:subPropertyOf dcterms:isVersionOf ;
+    vs:term_status "unstable" .
+
+:role
+    a owl:ObjectProperty ;
+    rdfs:comment "Describes the role of a contributor in the creation of a comic work."@en ;
+    rdfs:domain :Contributor ;
+    rdfs:label "role"@en ;
+    rdfs:range :Role ;
+    vs:term_status "unstable" .
+
+:salePrice
+    a owl:DatatypeProperty ;
+    rdfs:comment "The sale price of a comic item."@en ;
+    rdfs:domain :Item ;
+    rdfs:label "sale price"@en ;
+    rdfs:range rdfs:Literal ;
+    rdfs:subPropertyOf :price ;
+    vs:term_status "unstable" .
+
+:sequence
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a sequence to a comic."@en ;
+    rdfs:domain :Comic ;
+    rdfs:label "sequence"@en ;
+    rdfs:range :Sequence ;
+    rdfs:subPropertyOf dcterms:hasPart ;
+    vs:term_status "unstable" .
+
+:series
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a comic to a series."@en ;
+    rdfs:domain :Comic ;
+    rdfs:label "series"@en ;
+    rdfs:range :Series ;
+    rdfs:subPropertyOf dcterms:hasPart ;
+    owl:inverseOf :seriesOf ;
+    vs:term_status "unstable" .
+
+:seriesOf
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a series to a comic work."@en ;
+    rdfs:domain :Series ;
+    rdfs:label "series of"@en ;
+    rdfs:range :Publication ;
+    rdfs:subPropertyOf dcterms:isPartOf ;
+    vs:term_status "unstable" .
+
+:seriesTitle
+    a owl:DatatypeProperty ;
+    rdfs:comment "The title of a comic series."@en ;
+    rdfs:domain :Series ;
+    rdfs:label "series title"@en ;
+    rdfs:range rdfs:Literal ;
+    rdfs:subPropertyOf dcterms:title ;
+    vs:term_status "testing" .
+
+:seriesYear
+    a owl:DatatypeProperty ;
+    rdfs:comment "The year a comic series began publication."@en ;
+    rdfs:domain :Series ;
+    rdfs:label "series year" ;
+    rdfs:range rdfs:Literal ;
+    rdfs:subPropertyOf :startDate ;
+    vs:term_status "unstable" .
+
+:standard
+    a owl:AnnotationProperty ;
+    rdfs:comment "A recommended encoding standard or guidelines."@en ;
+    rdfs:label "standard"@en .
+
+:startDate
+    a owl:DatatypeProperty ;
+    rdfs:comment "The date a comic began publication."@en ;
+    rdfs:domain :Publication ;
+    rdfs:label "start year"@en ;
+    rdfs:range rdfs:Literal ;
+    rdfs:subPropertyOf dcterms:date ;
+    vs:term_status "unstable" .
+
+:state
+    a owl:ObjectProperty ;
+    rdfs:comment "Describes the physical state of a comic item."@en ;
+    rdfs:domain :Copy, dctype:PhysicalObject ;
+    rdfs:label "state"@en ;
+    rdfs:range :State ;
+    vs:term_status "unstable" .
+
+:story
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a story to a comic."@en ;
+    rdfs:domain :Comic ;
+    rdfs:label "story"@en ;
+    rdfs:range :Story ;
+    rdfs:subPropertyOf :sequence ;
+    vs:term_status "unstable" .
+
+:storyArc
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a comic story to a story arc."@en ;
+    rdfs:domain :Story ;
+    rdfs:label "story arc" ;
+    rdfs:range :Story ;
+    rdfs:subPropertyOf dcterms:hasPart ;
+    owl:inverseOf :storyOf ;
+    vs:term_status "unstable" .
+
+:storyOf
+    a owl:ObjectProperty ;
+    rdfs:comment "Connects an individual story to the story arc it is a part of."@en ;
+    rdfs:domain :Story ;
+    rdfs:label "has story"@en ;
+    rdfs:range :Story ;
+    rdfs:subPropertyOf dcterms:isPartOf ;
+    vs:term_status "unstable"@en .
+
+:storyTitle
+    a owl:DatatypeProperty ;
+    rdfs:comment "The title of a comic story."@en ;
+    rdfs:domain :Story ;
+    rdfs:label "story title"@en ;
+    rdfs:range rdfs:Literal ;
+    rdfs:subPropertyOf dcterms:title ;
+    vs:term_status "unstable" .
+
+:subject
+    a owl:ObjectProperty ;
+    rdfs:comment "The subject of a comic story."@en ;
+    rdfs:domain :Story ;
+    rdfs:label "subject"@en ;
+    rdfs:range owl:Thing ;
+    vs:term_status "unstable" .
+
+:synopsis
+    a owl:DatatypeProperty ;
+    rdfs:comment "The synopsis of a comic story."@en ;
+    rdfs:domain :Story ;
+    rdfs:label "synopsis"@en ;
+    rdfs:range rdfs:Literal ;
+    vs:term_status "unstable"@en .
+
+:team
+    a owl:ObjectProperty ;
+    rdfs:comment "Describes the appearance of a team of comic characters in a comic work."@en ;
+    rdfs:domain :Comic ;
+    rdfs:label "team"@en ;
+    rdfs:range :Team ;
+    rdfs:subPropertyOf :appearance ;
+    vs:term_status "unstable" .
+
+:tracking
+    a owl:DatatypeProperty ;
+    rdfs:comment "Describes the tracking or numbering between comic series."@en ;
+    rdfs:domain :Series ;
+    rdfs:label "tracking"@en ;
+    rdfs:range rdfs:Literal ;
+    vs:term_status "unstable" .
+
+:translation
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a comic issue to a translation."@en ;
+    rdfs:domain :Issue ;
+    rdfs:label "translation"@en ;
+    rdfs:range :Issue ;
+    rdfs:subPropertyOf dcterms:hasVersion ;
+    owl:inverseOf :translationOf ;
+    vs:term_status "unstable" .
+
+:translationOf
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a comic issue to the issue it is a translation of."@en ;
+    rdfs:domain :Issue ;
+    rdfs:label "translation of"@en ;
+    rdfs:range :Issue ;
+    rdfs:subPropertyOf dcterms:isVersionOf ;
+    vs:term_status "unstable" .
+
+:universe
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a thing to a comic universe."@en ;
+    rdfs:domain :Thing ;
+    rdfs:label "universe"@en ;
+    rdfs:range :ComicUniverse ;
+    vs:term_status "unstable" .
+
+:universeOf
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a comic universe to the universe from which it originates."@en ;
+    rdfs:domain :ComicUniverse ;
+    rdfs:label "universe of"@en ;
+    rdfs:range :ComicUniverse ;
+    vs:term_status "unstable"@en .
+
+:upc
+    a owl:DatatypeProperty ;
+    rdfs:comment "The UPC of a comic publication."@en ;
+    rdfs:domain :Publication ;
+    rdfs:label "UPC"@en ;
+    rdfs:range rdfs:Literal ;
+    rdfs:subPropertyOf dcterms:identifier ;
+    vs:term_status "unstable" .
+
+:value
+    a owl:DatatypeProperty ;
+    rdfs:comment "The estimated value of a comic item."@en ;
+    rdfs:domain :Copy ;
+    rdfs:label "value"@en ;
+    rdfs:range rdfs:Literal ;
+    vs:term_status "unstable" .
+
+:variance
+    a owl:DatatypeProperty ;
+    rdfs:comment "Any variance to the regular manifestation of a comic issue."@en ;
+    rdfs:domain :Issue ;
+    rdfs:label "variance"@en ;
+    rdfs:range rdfs:Literal ;
+    owl:equivalentProperty <https://bib.schema.org/variantCover> ;
+    vs:term_status "unstable" .
+
+:variant
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a comic issue to a variant."@en ;
+    rdfs:domain :Issue ;
+    rdfs:label "variant"@en ;
+    rdfs:range :Issue ;
+    rdfs:subPropertyOf dcterms:hasVersion ;
+    owl:inverseOf :variantOf ;
+    vs:term_status "unstable"@en .
+
+:variantOf
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a comic issue to the issue it is a variant of."@en ;
+    rdfs:domain :Issue ;
+    rdfs:label "variant of"@en ;
+    rdfs:range :Issue ;
+    rdfs:subPropertyOf dcterms:isVersionOf ;
+    vs:term_status "unstable" .
+
+:volume
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a series to a comic volume."@en ;
+    rdfs:domain :Series ;
+    rdfs:label "volume"@en ;
+    rdfs:range :Volume ;
+    rdfs:subPropertyOf dcterms:hasPart ;
+    owl:inverseOf :volumeOf ;
+    vs:term_status "unstable" .
+
+:volumeNumber
+    a owl:DatatypeProperty ;
+    rdfs:comment "The unique identifier of a comic volume."@en ;
+    rdfs:domain :Volume ;
+    rdfs:label "volumeNumber"@en ;
+    rdfs:range rdfs:Literal ;
+    rdfs:subPropertyOf dcterms:identifier ;
+    vs:term_status "testing" .
+
+:volumeOf
+    a owl:ObjectProperty ;
+    rdfs:comment "Links a volume to a comic series."@en ;
+    rdfs:domain :Volume ;
+    rdfs:label "volume of"@en ;
+    rdfs:range :Series ;
+    rdfs:subPropertyOf dcterms:isPartOf ;
+    vs:term_status "unstable" .
+
+:writer
+    a owl:ObjectProperty ;
+    rdfs:comment "Associates a writer with a comic work."@en ;
+    rdfs:domain :Comic ;
+    rdfs:label "writer"@en ;
+    rdfs:range :Contributor ;
+    rdfs:subPropertyOf :contributor ;
+    vs:term_status "unstable" .
+
+<http://comicmeta.org/vocab/0.5>
+    a :Grade, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+<http://comicmeta.org/vocab/1.0>
+    a :Grade, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+<http://comicmeta.org/vocab/1.5>
+    a :Grade, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+<http://comicmeta.org/vocab/1.8>
+    a :Grade, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+<http://comicmeta.org/vocab/10.0>
+    a :Grade, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+<http://comicmeta.org/vocab/2.0>
+    a :Grade, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+<http://comicmeta.org/vocab/2.5>
+    a :Grade, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+<http://comicmeta.org/vocab/3.0>
+    a :Grade, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+<http://comicmeta.org/vocab/3.5>
+    a :Grade, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+<http://comicmeta.org/vocab/4.0>
+    a :Grade, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+<http://comicmeta.org/vocab/4.5>
+    a :Grade, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+<http://comicmeta.org/vocab/5.0>
+    a :Grade, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+<http://comicmeta.org/vocab/5.5>
+    a :Grade, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+<http://comicmeta.org/vocab/6.0>
+    a :Grade, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+<http://comicmeta.org/vocab/6.5>
+    a :Grade, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+<http://comicmeta.org/vocab/7.0>
+    a :Grade, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+<http://comicmeta.org/vocab/7.5>
+    a :Grade, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+<http://comicmeta.org/vocab/8.0>
+    a :Grade, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+<http://comicmeta.org/vocab/8.5>
+    a :Grade, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+<http://comicmeta.org/vocab/9.0>
+    a :Grade, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+<http://comicmeta.org/vocab/9.2>
+    a :Grade, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+<http://comicmeta.org/vocab/9.4>
+    a :Grade, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+<http://comicmeta.org/vocab/9.6>
+    a :Grade, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+<http://comicmeta.org/vocab/9.8>
+    a :Grade, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+<http://comicmeta.org/vocab/9.9>
+    a :Grade, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:AcidFree
+    a :Quality, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Adult
+    a :Genre, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Annual
+    a :Frequency, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:AntiStatic
+    a :Quality, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Archival
+    a :Quality, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:AshCan
+    a :Format, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Bagged
+    a :State, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:BiMonthly
+    a :Frequency, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:BiWeekly
+    a :Frequency, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:BlackAndWhite
+    a :Format, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Boarded
+    a :State, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Bound
+    a :State, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:BronzeAge
+    a :ComicAge, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Color
+    a :Format, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Colorist
+    a :Role, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:ComicBook
+    a :Format, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Comix
+    a :Genre, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:CoverPage
+    a :PageType, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Crime
+    a :Genre, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:DigitalComic
+    a :Format, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Direct
+    a :Edition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Editor
+    a :Role, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Embellisher
+    a :Role, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Encapsulated
+    a :State, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:FN
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+<http://comicmeta.org/vocab/FN+>
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:FN-
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:FN_VF
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:FR
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:FR_GD
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Fair
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Fanzine
+    a :Format, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Fine
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Finisher
+    a :Role, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Fumetii
+    a :Format, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:FunnyAnimal
+    a :Genre, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:GD
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+<http://comicmeta.org/vocab/GD+>
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:GD-
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:GD_VG
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:GM
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Glossy
+    a :Paper, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:GoldenAge
+    a :ComicAge, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Good
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:GraphicNovel
+    a :Format, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Hardcover
+    a :Binding, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Horror
+    a :Genre, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Illustrator
+    a :Role, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Inker
+    a :Role, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Letterer
+    a :Role, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:LettersPage
+    a :PageType, owl:NamedIndividual ;
+    rdfs:isDefinedBy cbv:LettersPage .
+
+cbv:Limited
+    a :Edition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:MT
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Manga
+    a :Format, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:MassMarketPaperback
+    a :Format, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Mint
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:ModernAge
+    a :ComicAge, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Monthly
+    a :Frequency, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Mylar
+    a :Plastic, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:NM
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+<http://comicmeta.org/vocab/NM+>
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:NM-
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:NM_MT
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:NearMint
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Newsprint
+    a :Paper, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Newsstand
+    a :Edition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Omnibus
+    a :Format, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:OneShot
+    a :Frequency, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:PR
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Painter
+    a :Role, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Penciller
+    a :Role, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:PerfectBound
+    a :Binding, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Plotter
+    a :Role, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Polyethylene
+    a :Plastic, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Polypropylene
+    a :Plastic, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Polystyrene
+    a :Plastic, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Poor
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Pressed
+    a :State, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Preview
+    a :Format, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Producer
+    a :Role, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Promotional
+    a :Format, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Publisher
+    a :Role, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Raw
+    a :State, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Romance
+    a :Genre, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:SaddleStitched
+    a :Binding, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Sample
+    a owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:ScienceFiction
+    a :Genre, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:SemiMonthly
+    a :Frequency, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:SewnBound
+    a :Binding, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:SilverAge
+    a :ComicAge, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Slabbed
+    a :State, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Softcover
+    a :Binding, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:SplashPage
+    a :PageType, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Spread
+    a :PageType, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Squarebound
+    a :Binding, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Subscription
+    a :Edition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:SuperHero
+    a :Genre, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:TradePaperback
+    a :Format, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Trimmed
+    a :State, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:VF
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+<http://comicmeta.org/vocab/VF+>
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:VF-
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:VF_NM
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:VG
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+<http://comicmeta.org/vocab/VG+>
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:VG-
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:VG_FN
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:VeryFine
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:VeryGood
+    a :Condition, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:War
+    a :Genre, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:WebComic
+    a :Format, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Weekly
+    a :Frequency, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Western
+    a :Genre, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+cbv:Writer
+    a :Role, owl:NamedIndividual ;
+    rdfs:isDefinedBy <http://comicmeta.org/vocab> .
+
+dctype:Collection
+    :qlabel "dctype:Collection" ;
+    a owl:Class ;
+    rdfs:isDefinedBy <http://purl.org/dc/dcmitype> .
+
+dctype:PhysicalObject
+    :qlabel "dctype:PhysicalObject" ;
+    a owl:Class ;
+    rdfs:isDefinedBy <http://purl.org/dc/dcmitype> .
+
+dc:creator
+    a owl:AnnotationProperty .
+
+dc:description
+    a owl:AnnotationProperty .
+
+dc:rights
+    a owl:AnnotationProperty .
+
+dc:title
+    a owl:AnnotationProperty .
+
+dcterms:alternative
+    dc:description "Used to indicate an alternative title for a resource."@en ;
+    a owl:DatatypeProperty ;
+    rdfs:comment "An alternative title."@en ;
+    rdfs:isDefinedBy <http://purl.org/dc/terms> ;
+    rdfs:range rdfs:Literal .
+
+dcterms:created
+    a owl:AnnotationProperty ;
+    rdfs:label "dcterms:created" .
+
+dcterms:date
+    a owl:DatatypeProperty ;
+    rdfs:isDefinedBy <http://purl.org/dc/terms> .
+
+dcterms:description
+    dc:description "Used to provide a description for any resource."@en ;
+    a owl:DatatypeProperty ;
+    rdfs:comment "A description."@en ;
+    rdfs:isDefinedBy <http://purl.org/dc/terms> ;
+    rdfs:range rdfs:Literal .
+
+dcterms:hasPart
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy <http://purl.org/dc/terms> ;
+    owl:inverseOf dcterms:isPartOf .
+
+dcterms:hasVersion
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy <http://purl.org/dc/terms> .
+
+dcterms:identifier
+    dc:description "Any unique identifier of a comic resource."@en ;
+    a owl:DatatypeProperty ;
+    rdfs:comment "An identifier."@en ;
+    rdfs:isDefinedBy <http://purl.org/dc/terms> ;
+    rdfs:range rdfs:Literal .
+
+dcterms:isPartOf
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy <http://purl.org/dc/terms> .
+
+dcterms:isVersionOf
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy <http://purl.org/dc/terms> .
+
+dcterms:issued
+    a owl:AnnotationProperty ;
+    rdfs:label "dcterms:issued" .
+
+dcterms:language
+    a owl:ObjectProperty ;
+    rdfs:domain :Series ;
+    rdfs:isDefinedBy <http://purl.org/dc/terms> ;
+    rdfs:range owl:Thing .
+
+dcterms:license
+    a owl:AnnotationProperty .
+
+dcterms:modified
+    a owl:AnnotationProperty ;
+    rdfs:label "dcterms:modified" .
+
+dcterms:title
+    a owl:DatatypeProperty ;
+    rdfs:comment "A title."@en ;
+    rdfs:isDefinedBy <http://purl.org/dc/terms> ;
+    rdfs:range rdfs:Literal .
+
+vann:preferredNamespacePrefix
+    :qlabel "vann:preferredNamespacePrefix" ;
+    vann:preferredNamespacePrefix "The preferred namespace prefix to use when using terms from this vocabulary in an XML document."@en ;
+    a owl:AnnotationProperty ;
+    rdfs:isDefinedBy <http://purl.org/vocab/vann> .
+
+vann:preferredNamespaceUri
+    :qlabel "vann:preferredNamespaceUri"@en ;
+    a owl:AnnotationProperty ;
+    rdfs:comment "The preferred namespace URI to use when using terms from this vocabulary in an XML document."@en ;
+    rdfs:isDefinedBy <http://purl.org/vocab/vann> .
+
+<http://schema.org/ComicCoverArt>
+    a owl:Class ;
+    rdfs:isDefinedBy <http://bib.schema.org> ;
+    rdfs:subClassOf <http://schema.org/ComicStory>, <http://schema.org/CoverArt> .
+
+<http://schema.org/ComicIssue>
+    a owl:Class ;
+    rdfs:isDefinedBy <http://bib.schema.org> ;
+    rdfs:subClassOf <http://schema.org/PublicationIssue> .
+
+<http://schema.org/ComicSeries>
+    a owl:Class ;
+    rdfs:isDefinedBy <http://bib.schema.org> ;
+    rdfs:subClassOf <http://schema.org/Periodical> .
+
+<http://schema.org/ComicStory>
+    a owl:Class ;
+    rdfs:isDefinedBy <http://bib.schema.org> ;
+    rdfs:subClassOf <http://schema.org/CreativeWork> .
+
+<http://schema.org/CoverArt>
+    a owl:Class ;
+    rdfs:isDefinedBy <http://bib.schema.org> ;
+    rdfs:subClassOf <http://schema.org/VisualArtwork> .
+
+<http://schema.org/CreativeWork>
+    :qlabel "schema:CreativeWork" ;
+    a owl:Class ;
+    rdfs:isDefinedBy <http://schema.org> .
+
+<http://schema.org/IndividualProduct>
+    :qlabel "schema:IndividualProduct" ;
+    a owl:Class ;
+    rdfs:isDefinedBy <http://schema.org> ;
+    rdfs:subClassOf <http://schema.org/Product> .
+
+<http://schema.org/Intangible>
+    :qlabel "schema:Intangible" ;
+    a owl:Class ;
+    rdfs:isDefinedBy <http://schema.org> .
+
+<http://schema.org/Organization>
+    :qlabel "schema:Organization" ;
+    a owl:Class ;
+    rdfs:comment "An organization."@en ;
+    rdfs:isDefinedBy <http://schema.org> ;
+    rdfs:subClassOf foaf:Agent .
+
+<http://schema.org/Periodical>
+    :qlabel "schema:Periodical" ;
+    a owl:Class ;
+    rdfs:isDefinedBy <http://schema.org> ;
+    rdfs:subClassOf <http://schema.org/CreativeWork> .
+
+<http://schema.org/Person>
+    :qlabel "schema:Person" ;
+    a owl:Class ;
+    rdfs:comment "A person."@en ;
+    rdfs:isDefinedBy <http://schema.org> ;
+    rdfs:subClassOf foaf:Agent .
+
+<http://schema.org/Product>
+    :qlabel "schema:Product" ;
+    a owl:Class ;
+    rdfs:isDefinedBy <http://schema.org> .
+
+<http://schema.org/PublicationIssue>
+    :qlabel "schema:PublicationIssue" ;
+    a owl:Class ;
+    rdfs:isDefinedBy <http://schema.org> ;
+    rdfs:subClassOf <http://schema.org/CreativeWork> .
+
+<http://schema.org/PublicationVolume>
+    :qlabel "schema:PublicationVolume" ;
+    a owl:Class ;
+    rdfs:isDefinedBy <http://schema.org> ;
+    rdfs:subClassOf <http://schema.org/CreativeWork> .
+
+<http://schema.org/VisualArtwork>
+    a owl:Class ;
+    rdfs:isDefinedBy <http://schema.org> ;
+    rdfs:subClassOf <http://schema.org/CreativeWork> .
+
+<http://schema.org/contributor>
+    dc:description "Used to associate a contributor with any creative work."@en ;
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy <http://schema.org> .
+
+<http://schema.org/creator>
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy <http://schema.org> .
+
+<http://schema.org/isbn>
+    a owl:DatatypeProperty ;
+    rdfs:isDefinedBy <http://schema.org> ;
+    rdfs:range rdfs:Literal .
+
+<http://schema.org/issn>
+    a owl:DatatypeProperty ;
+    rdfs:domain <http://schema.org/Periodical> ;
+    rdfs:isDefinedBy <http://schema.org> ;
+    rdfs:range rdfs:Literal .
+
+<http://schema.org/name>
+    dc:description "Used to describe the name of an agent."@en ;
+    a owl:DatatypeProperty ;
+    rdfs:comment "A name."@en ;
+    rdfs:domain foaf:Agent ;
+    rdfs:isDefinedBy <http://schema.org> ;
+    rdfs:range rdfs:Literal .
+
+<http://schema.org/publisher>
+    a owl:ObjectProperty ;
+    rdfs:isDefinedBy <http://schema.org> .
+
+<http://schema.org/sku>
+    dc:description "The SKU of a comics product."@en ;
+    a owl:DatatypeProperty ;
+    rdfs:domain <http://schema.org/Product> ;
+    rdfs:isDefinedBy <http://schema.org> ;
+    rdfs:label "SKU"@en ;
+    rdfs:range rdfs:Literal .
+
+<http://schema.org/url>
+    dc:description "Used to indicate web content related to a resource."@en ;
+    a owl:DatatypeProperty ;
+    rdfs:comment "A URL."@en ;
+    rdfs:isDefinedBy <http://schema.org> ;
+    rdfs:range rdfs:Literal .
+
+rdfs:label
+    :qlabel "rdfs:label" .
+
+owl:Thing
+    rdfs:label "Thing"@en .
+
+vs:term_status
+    :qlabel "vs:term_status"@en ;
+    a owl:AnnotationProperty ;
+    rdfs:comment "The status of a vocabulary term, expressed as a short symbolic string; known values include 'unstable','testing', 'stable' and 'archaic'."@en ;
+    rdfs:isDefinedBy <http://www.w3.org/2003/06/sw-vocab-status/ns> .
+
+skos:definition
+    a owl:AnnotationProperty .
+
+skos:example
+    a owl:AnnotationProperty .
+
+skos:note
+    a owl:AnnotationProperty .
+
+foaf:Agent
+    :qlabel "foaf:Agent" ;
+    a owl:Class ;
+    rdfs:comment "An agent."@en ;
+    rdfs:isDefinedBy <http://purl.org/dc/terms> .
+
+<https://bib.schema.org/variantCover>
+    a owl:DatatypeProperty ;
+    rdfs:isDefinedBy <https://bib.schema.org> ;
+    rdfs:subPropertyOf :variance .
+
+<https://sean.petiya.com/#me>
+    a owl:NamedIndividual ;
+    rdfs:label "Sean Petiya" .

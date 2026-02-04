@@ -11,8 +11,8 @@ def register_python_converters() -> List[Converter]:
 
         ConverterFromLinkMl(target_language=SchemaLanguage.JsonSchema),
         ConverterFromLinkMl(target_language=SchemaLanguage.Protobuf),
-        ConverterFromLinkMl(target_language=SchemaLanguage.Owl),
-        ConverterFromLinkMl(target_language=SchemaLanguage.SHACL),
+        ConverterFromLinkMl(target_language=SchemaLanguage.Owl_TTL),
+        ConverterFromLinkMl(target_language=SchemaLanguage.SHACL_TTL),
         ConverterFromLinkMl(target_language=SchemaLanguage.GraphQL),
         ConverterFromLinkMl(target_language=SchemaLanguage.SqlAlchemy),
         ConverterFromLinkMl(target_language=SchemaLanguage.Shex),
@@ -25,7 +25,7 @@ def register_python_converters() -> List[Converter]:
         ConverterFromMdModels(target_language=SchemaLanguage.JsonSchema),
         ConverterFromMdModels(target_language=SchemaLanguage.GraphQL),
         ConverterFromMdModels(target_language=SchemaLanguage.Mermaid),
-        ConverterFromMdModels(target_language=SchemaLanguage.SHACL),
+        ConverterFromMdModels(target_language=SchemaLanguage.SHACL_TTL),
         ConverterFromMdModels(target_language=SchemaLanguage.Shex),
 
         ConverterJsonSchemaToMdModels(),
