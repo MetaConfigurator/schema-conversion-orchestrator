@@ -1,5 +1,6 @@
 import json
 import os
+import shutil
 import subprocess
 from typing import List, Dict
 
@@ -138,5 +139,23 @@ def register_external_converters() -> List[Converter]:
         print(f"Registered Robot converters for OWL TTL, OFN, and OBO formats.")
     else:
         print(f"Robot converter not found at: {robot_jar}")
+
+    # shacl-bridge service
+    # check if 'shacl-bridge' command is available
+    if shutil.which("shacl-bridge") is not None:
+        print(f"Found shacl-bridge converter.")
+        converter_shacl_ttl_json_schema = ConverterExternalGeneric(
+            name="shacl-bridge",
+            executable_path=f"shacl-bridge",
+            source_language=SchemaLanguage.SHACL_TTL,
+            target_language=SchemaLanguage.JsonSchema,
+            converter_type="shacl-bridge",
+            input_file_raw_suffix=".ttl",
+            output_file_raw_suffix=".schema.json"
+        )
+        converters.append(converter_shacl_ttl_json_schema)
+        print(f"Registered shacl-bridge converters from SHACL to JSON schema.")
+    else:
+        print(f"Shacl-bridge command not available.")
 
     return converters

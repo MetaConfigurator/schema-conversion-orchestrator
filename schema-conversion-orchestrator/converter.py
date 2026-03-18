@@ -28,7 +28,6 @@ class Converter:
         raise NotImplementedError("This method should be overridden by subclasses")
 
 
-
 class ConverterInternal(Converter):
     """
     Internal converter that performs conversion using built-in logic, in Python
@@ -113,6 +112,9 @@ class ConverterExternalGeneric(ConverterInternal):
 
             elif self.converter_type == "robot":
                 cmd = self.executable_path.split() + ["convert", "-i", input_file_path, "-o", output_file_path]
+
+            elif self.converter_type == "shacl-bridge":
+                cmd = self.executable_path.split() + ["-i", input_file_path, "-o", output_file_path]
 
             else:
                 cmd = self.executable_path.split() + ["convert", input_file_path]

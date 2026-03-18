@@ -1,6 +1,7 @@
 from typing import List
 from ConvertersLinkMl import ConverterFromLinkMl, ConverterJsonSchemaToLinkMl, ConverterOwlToLinkMl
 from ConvertersMdModels import ConverterFromMdModels, ConverterJsonSchemaToMdModels
+from ConvertersRdfLib import ConverterTtlToJsonLd
 
 from converter import Converter
 from schema_types import SchemaLanguage
@@ -19,6 +20,8 @@ def register_python_converters() -> List[Converter]:
 
         ConverterJsonSchemaToLinkMl(),
         ConverterOwlToLinkMl(),
+
+        ConverterTtlToJsonLd(SchemaLanguage.SHACL_TTL, SchemaLanguage.SHACL_JSON_LD),
 
         ConverterFromMdModels(target_language=SchemaLanguage.Protobuf),
         ConverterFromMdModels(target_language=SchemaLanguage.Xsd),

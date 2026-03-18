@@ -10,6 +10,7 @@ import org.logende.converter.ConverterService;
 public class XsdToJsonSchemaConverter implements ConverterService.Converter {
 
     private static final String JSONIX_JAR_NAME = "jsonix-schema-compiler-full-2.3.9.jar";
+    private static final String ACTIVATION_JAR_NAME = "activation-1.1.1.jar";
     private static final int TIMEOUT_SECONDS = 30;
 
     @Override
@@ -30,16 +31,22 @@ public class XsdToJsonSchemaConverter implements ConverterService.Converter {
 
     @Override
     public String convert(String schema) throws Exception {
-        // Resolve Jsonix JAR path relative to this JAR’s directory
+        // Get paths
         String jarDir = getOwnJarDir();
         String jsonixJar = Paths.get(jarDir, "lib", JSONIX_JAR_NAME).toString();
+        String activationJar = Paths.get(jarDir, "lib", ACTIVATION_JAR_NAME).toString();  // Add this
 
-        // Validate JAR exists
+        // Validate both JARs exist
         Path jarPath = Paths.get(jsonixJar);
+        Path activationPath = Paths.get(activationJar);  // Add this
         if (!Files.exists(jarPath)) {
-            throw new RuntimeException("Jsonix JAR not found at: " + jarPath.toAbsolutePath() +
-                ". Please download and place it in the lib directory.");
+            throw new RuntimeException("Jsonix JAR not found at: " + jarPath.toAbsolutePath());
         }
+        if (!Files.exists(activationPath)) {  // Add this
+            throw new RuntimeException("Activation JAR not found at: " + activationPath.toAbsolutePath() +
+                ". Download from https://repo1.maven.org/maven2/javax/activation/activation/1.1.1/activation-1.1.1.jar");
+        }
+
 
         // Write input XSD to a temp file
         Path tempDir = Files.createTempDirectory("xsd2jsonschema");
@@ -50,15 +57,22 @@ public class XsdToJsonSchemaConverter implements ConverterService.Converter {
         Path outDir = tempDir.resolve("out");
         Files.createDirectories(outDir);
 
+        // Build command: classpath + main class
+        List<String> command = Arrays.asList(
+            "java",
+            // Add these 3 lines for Java 17+ compatibility
+            "--add-opens", "java.base/java.lang=ALL-UNNAMED",
+            "--add-opens", "java.base/jdk.internal.loader=ALL-UNNAMED",
+            "--add-opens", "java.base/java.util=ALL-UNNAMED",
+            "-cp", jsonixJar + File.pathSeparator + activationJar,
+            "org.hisrc.jsonix.JsonixMain",
+            "-generateJsonSchema",
+            "-d", outDir.toString(),
+            xsdFile.toString()
+        );
+
+
         try {
-            // Build command to execute Jsonix JAR
-            List<String> command = Arrays.asList(
-                "java",
-                "-jar", jarPath.toAbsolutePath().toString(),
-                "-generateJsonSchema",
-                "-d", outDir.toString(),
-                xsdFile.toString()
-            );
 
             // Execute the command
             ProcessBuilder pb = new ProcessBuilder(command);
@@ -109,28 +123,29 @@ public class XsdToJsonSchemaConverter implements ConverterService.Converter {
         throw new RuntimeException("No JSON Schema produced by Jsonix.");
     }
 
+
     private String findJsonSchemaFile(Path outDir) throws IOException {
-        // Look for .json files in the output directory
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(outDir, "*.json")) {
-            for (Path file : stream) {
+        // Walk entire tree for .jsonschema first (primary target)
+        try (var walk = Files.walk(outDir)) {
+            for (var file : walk.filter(p ->
+                p.getFileName().toString().endsWith(".jsonschema"))) {
+                System.out.println("DEBUG: Found schema: " + file);  // Optional log
                 return Files.readString(file);
             }
         }
 
-        // Also check subdirectories (Jsonix sometimes creates nested structure)
-        try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(outDir,
-                path -> Files.isDirectory(path))) {
-            for (Path subDir : dirStream) {
-                try (DirectoryStream<Path> jsonStream = Files.newDirectoryStream(subDir, "*.json")) {
-                    for (Path file : jsonStream) {
-                        return Files.readString(file);
-                    }
-                }
+        // Fallback: any .json (in case no .jsonschema)
+        try (var walk = Files.walk(outDir)) {
+            for (var file : walk.filter(p ->
+                p.getFileName().toString().endsWith(".json"))) {
+                System.out.println("DEBUG: Found json: " + file);  // Optional log
+                return Files.readString(file);
             }
         }
 
         return null;
     }
+
 
     private void cleanupTempFiles(Path tempDir) {
         try {

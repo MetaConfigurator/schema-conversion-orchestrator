@@ -4,9 +4,9 @@ from pathlib import Path
 
 # --- Configuration ---
 SERVER_URL = "http://localhost:5002/convert"
-SOURCE_LANGUAGE = "Owl_TTL"
+SOURCE_LANGUAGE = "LinkMl"
 TARGET_LANGUAGE = "JsonSchema"
-SCHEMA_FILE = Path("schemas/owl.ttl")
+SCHEMA_FILE = Path("schemas/linkml.yaml")
 
 
 def main():

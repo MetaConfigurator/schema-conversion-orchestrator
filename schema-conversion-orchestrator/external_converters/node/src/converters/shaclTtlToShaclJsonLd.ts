@@ -1,7 +1,7 @@
 import {Converter, SchemaLanguage} from "../dataStructures.js";
 
 import {Parser, Store, Writer} from "n3";
-import * as jsonld from "jsonld";
+import jsonld from "jsonld";
 
 export const converter: Converter = {
   name: "n3 and rdf-ext",

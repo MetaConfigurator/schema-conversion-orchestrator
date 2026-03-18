@@ -11,7 +11,6 @@ export enum SchemaLanguage {
   Owl_OFN = "Owl_OFN",
   Protobuf = "Protobuf",
   GraphQL = "GraphQL",
-  JsonLD = "JsonLD",
   SHACL_TTL = "SHACL_TTL",
   SHACL_JSON_LD = "SHACL_JSON_LD",
   Mermaid = "Mermaid",

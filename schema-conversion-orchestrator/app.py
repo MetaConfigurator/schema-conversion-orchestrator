@@ -59,6 +59,8 @@ def convert():
         rank_with_strategy_least_character_loss(results)
     else:
         return {"error": "Unknown conversion strategy: " + RANKING_STRATEGY}, 500
+    # after ranking by strategy, also sort by success (successful conversions first, without messing up prior sorting)
+    results = sorted(results, key=lambda x: x[0], reverse=True)
 
     print_conversion_results(results)
 

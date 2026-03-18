@@ -7,7 +7,8 @@ import seaborn as sns
 import requests
 
 SERVER_URL = "http://localhost:5002/convert"
-SCHEMA_LANGUAGES = ["JsonSchema", "Xsd", "Dtd", "Shacl_TTL", "Owl_TTL"]
+SOURCE_LANGUAGES = ["JsonSchema", "Xsd", "Shacl_TTL", "Owl_TTL", "LinkML"]
+TARGET_LANGUAGES = ["JsonSchema", "Xsd", "Shacl_TTL", "Owl_TTL", "LinkML", "GraphQL", "Protobuf"]
 
 
 def send_conversion_request(source_language: str, target_language: str, schema: str) -> any | Tuple[int, str]:
@@ -48,16 +49,16 @@ def load_golden_schemas(schema_languages: list[str]) -> dict[str, str]:
     return golden_schemas
 
 
-def request_conversion_results(schema_languages: list[str], golden_schemas: dict[str, str]) -> dict[str, dict[str, any]]:
+def request_conversion_results(source_languages: list[str], target_languages: list[str], golden_schemas: dict[str, str]) -> dict[str, dict[str, any]]:
     results = {}  # multi-dimensional map [source_language][target_language] = result_schema
     successes = 0
     errors = 0
-    for source_language in schema_languages:
+    for source_language in source_languages:
 
         input_schema = golden_schemas[source_language]
 
         source_language_results = {}
-        for target_language in schema_languages:
+        for target_language in target_languages:
             if source_language == target_language:
                 continue
 
@@ -94,7 +95,7 @@ def request_conversion_results(schema_languages: list[str], golden_schemas: dict
             results[source_language] = source_language_results
         else:
             results[source_language] = {
-                target_language: [] for target_language in schema_languages if target_language != source_language
+                target_language: [] for target_language in target_languages if target_language != source_language
             }
     print(f"Conversions completed: {successes} successful conversions, {errors} errors.")
     return results
@@ -104,6 +105,15 @@ def store_conversion_results(results: dict[str, dict[str, any]]) -> None:
     # Store result schemas in output_schemas/source_language/target_language/attempt_<attempt>_<success>_
     # <conversion_path>.txt
     output_base_folder = "output_schemas"
+
+    # First clear the output folder if it already exists
+    if os.path.exists(output_base_folder):
+        for root, dirs, files in os.walk(output_base_folder, topdown=False):
+            for name in files:
+                os.remove(os.path.join(root, name))
+            for name in dirs:
+                os.rmdir(os.path.join(root, name))
+
     for source_language, target_language_results in results.items():
         for target_language, result_entries in target_language_results.items():
             output_folder = os.path.join(output_base_folder, source_language, target_language)
@@ -145,10 +155,10 @@ def evaluate():
     # List of all relevant schema languages
 
     # Extract golden schema (source schema) for each schema language.
-    golden_schemas = load_golden_schemas(SCHEMA_LANGUAGES)
+    golden_schemas = load_golden_schemas(SOURCE_LANGUAGES)
 
     # Go through each combination of source language and target language
-    results = request_conversion_results(SCHEMA_LANGUAGES, golden_schemas)
+    results = request_conversion_results(SOURCE_LANGUAGES, TARGET_LANGUAGES, golden_schemas)
 
     # Store result schemas
     store_conversion_results(results)
