@@ -174,7 +174,7 @@ export const converter: Converter = {
 
       return JSON.stringify(rootSchema, null, 2);
     } catch (error: any) {
-      throw new Error(`SHACL to JSON Schema conversion failed: ${error.message}`);
+      throw new Error(`SHACL JSON-LD to JSON Schema conversion failed: ${error.message}`);
     }
   }
 };

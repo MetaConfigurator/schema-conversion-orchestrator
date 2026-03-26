@@ -127,19 +127,19 @@ public class XsdToJsonSchemaConverter implements ConverterService.Converter {
     private String findJsonSchemaFile(Path outDir) throws IOException {
         // Walk entire tree for .jsonschema first (primary target)
         try (var walk = Files.walk(outDir)) {
-            for (var file : walk.filter(p ->
-                p.getFileName().toString().endsWith(".jsonschema"))) {
-                System.out.println("DEBUG: Found schema: " + file);  // Optional log
-                return Files.readString(file);
+            var found = walk.filter(p -> p.getFileName().toString().endsWith(".jsonschema")).findFirst();
+            if (found.isPresent()) {
+                System.out.println("DEBUG: Found schema: " + found.get());
+                return Files.readString(found.get());
             }
         }
 
         // Fallback: any .json (in case no .jsonschema)
         try (var walk = Files.walk(outDir)) {
-            for (var file : walk.filter(p ->
-                p.getFileName().toString().endsWith(".json"))) {
-                System.out.println("DEBUG: Found json: " + file);  // Optional log
-                return Files.readString(file);
+            var found = walk.filter(p -> p.getFileName().toString().endsWith(".json")).findFirst();
+            if (found.isPresent()) {
+                System.out.println("DEBUG: Found json: " + found.get());
+                return Files.readString(found.get());
             }
         }
 

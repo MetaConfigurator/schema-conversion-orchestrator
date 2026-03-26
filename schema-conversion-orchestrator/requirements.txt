@@ -6,3 +6,5 @@ schema_automator
 strenum
 Werkzeug
 xmlschema
+matplotlib
+seaborn

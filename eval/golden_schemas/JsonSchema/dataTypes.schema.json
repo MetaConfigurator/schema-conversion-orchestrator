@@ -1,0 +1,98 @@
+{
+  "definitions": {
+    "object": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "age": {
+          "type": "number"
+        }
+      }
+    },
+    "array": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "string": {
+      "type": "string"
+    },
+    "reference": {
+      "$ref": "#/definitions/object"
+    }
+  },
+  "$defs": {
+        "object": {
+        "type": "object",
+        "properties": {
+            "name": {
+            "type": "string"
+            },
+            "age": {
+            "type": "number"
+            }
+        }
+        },
+        "array": {
+        "type": "array",
+        "items": {
+            "type": "string"
+        }
+        },
+        "string": {
+        "type": "string"
+        },
+        "reference": {
+        "$ref": "#/$defs/object"
+        }
+  },
+  "type": "object,",
+  "properties": {
+    "dataTypes": {
+      "type": "object",
+        "properties": {
+            "n_string": {
+            "type": "string"
+            },
+            "n_number": {
+            "type": "number"
+            },
+            "n_boolean": {
+            "type": "boolean"
+            },
+            "n_integer": {
+            "type": "integer"
+            },
+            "n_null": {
+            "type": "null"
+            },
+            "n_array": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        }
+    }
+  },
+    "references": {
+        "type": "object",
+        "properties": {
+            "objectRefDefinitions": {
+            "$ref": "#/definitions/object"
+            },
+            "arrayRefDefinitions": {
+            "$ref": "#/definitions/array"
+            },
+            "stringRefDefinitions": {
+            "$ref": "#/definitions/string"
+            },
+            "referenceRefDefinitions": {
+            "$ref": "#/definitions/reference"
+            }
+        }
+    }
+  }
+}

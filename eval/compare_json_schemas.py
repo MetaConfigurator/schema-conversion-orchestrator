@@ -9,7 +9,7 @@ def resolve_refs(schema):
     return jsonref.JsonRef.replace_refs(schema)
 
 
-def semantic_normalize_schema(gen_schema, gt_schema, threshold=0.6):
+def semantic_normalize_schema(gen_schema, reference_schema, threshold=0.6):
     """Recursively align property names in generated schema to ground truth."""
     # Load embedding model
     model = SentenceTransformer("paraphrase-MiniLM-L6-v2")
@@ -21,11 +21,11 @@ def semantic_normalize_schema(gen_schema, gt_schema, threshold=0.6):
     if (
             isinstance(gen_schema, dict)
             and "properties" in gen_schema
-            and isinstance(gt_schema, dict)
-            and "properties" in gt_schema
+            and isinstance(reference_schema, dict)
+            and "properties" in reference_schema
     ):
         gen_props = list(gen_schema["properties"].keys())
-        gt_props = list(gt_schema["properties"].keys())
+        gt_props = list(reference_schema["properties"].keys())
 
         if gen_props and gt_props:
             # Encode all property names once
@@ -54,11 +54,11 @@ def semantic_normalize_schema(gen_schema, gt_schema, threshold=0.6):
         # Recurse into each sub-property
         for prop_key, sub_schema in list(gen_schema["properties"].items()):
             if (
-                    prop_key in gt_schema.get("properties", {})
+                    prop_key in reference_schema.get("properties", {})
                     and isinstance(sub_schema, dict)
             ):
                 gen_schema["properties"][prop_key] = semantic_normalize_schema(
-                    sub_schema, gt_schema["properties"][prop_key], threshold
+                    sub_schema, reference_schema["properties"][prop_key], threshold
                 )
 
     return gen_schema
@@ -224,17 +224,17 @@ if __name__ == "__main__":
 
         # Print results in human-readable format
         print("\nEvaluation Metrics:")
-        print(f"Precision: {result['precision']:.2f}")
-        print(f"Recall: {result['recall']:.2f}")
-        print(f"F1 Score: {result['f1_score']:.2f}")
-        print(f"True Positives: {len(result['true_positives'])}")
-        print(f"False Positives: {len(result['false_positives'])}")
-        print(f"False Negatives: {len(result['false_negatives'])}")
-        print(f"Mismatches: {len(result['mismatches'])}")
+        print(f"Precision: {result.precision:.2f}")
+        print(f"Recall: {result.recall:.2f}")
+        print(f"F1 Score: {result.f1_score:.2f}")
+        print(f"True Positives: {len(result.true_positives)}")
+        print(f"False Positives: {len(result.false_positives)}")
+        print(f"False Negatives: {len(result.false_negatives)}")
+        print(f"Mismatches: {len(result.mismatches)}")
 
-        TP_total = sum(r["tp"] for r in results)
-        FP_total = sum(r["fp"] for r in results)
-        FN_total = sum(r["fn"] for r in results)
+        TP_total = sum(r.true_positives for r in results)
+        FP_total = sum(r.false_positives for r in results)
+        FN_total = sum(r.false_negatives for r in results)
 
         precision_micro = TP_total / (TP_total + FP_total)
         recall_micro = TP_total / (TP_total + FN_total)
