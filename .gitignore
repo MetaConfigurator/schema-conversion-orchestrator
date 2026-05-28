@@ -216,3 +216,8 @@ schema-conversion-orchestrator/external_converters/node/node_modules/
 
 # IDEs
 .idea/
+/outputs/*
+/schema-conversion-orchestrator/external_converters/java/original-converter.jar
+/schema-conversion-orchestrator/external_converters/java/dependency-reduced-pom.xml
+/eval/conversion_matrix.png
+/schema-conversion-orchestrator/external_converters/java/converter.jar

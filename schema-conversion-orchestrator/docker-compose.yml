@@ -1,24 +1,19 @@
-version: '3.8'
+# Local Docker deployment of the schema-converter (no HTTPS, no reverse proxy).
+#
+# Reachable at http://localhost:${SCHEMA_CONVERTER_PORT:-5002}.
+#
+# For the HTTPS / standalone variant see docker-compose.https.yml.
+# For the MetaConfigurator multi-service joint deployment see
+# meta-configurator/backend/docker-compose.yml.
+#
+# Deploy:
+#   docker compose up -d --build
+#   curl http://localhost:5002/health   # → {"status":"ok"}
 
 services:
   schema-converter:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    container_name: schema_converter
+    build: .
     ports:
-      - "5002:5002"
-    environment:
-      - FLASK_ENV=production
-      - PYTHONPATH=/app
+      - "${SCHEMA_CONVERTER_PORT:-5002}:5002"
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5002/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-
-
-networks:
-  default:
-    driver: bridge

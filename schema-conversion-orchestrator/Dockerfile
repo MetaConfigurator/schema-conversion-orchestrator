@@ -1,43 +1,37 @@
 FROM python:3.11-slim
 
-# Install Node.js and Java
+# Install Node.js 18 and Java 21 JRE
 RUN apt-get update && apt-get install -y \
     curl \
-    openjdk-21-jdk-headless \
+    openjdk-21-jre-headless \
     && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
 WORKDIR /app
 
-# Copy Python requirements and install
+# Install Python dependencies first (layer-cached separately from app code)
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy Python application
 COPY *.py ./
 
-
-# Copy external converters
+# Copy external converters (JARs, compiled Node dist, robot.jar)
 COPY external_converters/ ./external_converters/
 
-# Make converters executable
-RUN chmod +x external_converters/java/converter.jar
-
-# Install Node.js dependencies (if any runtime deps are needed)
+# Install Node.js runtime dependencies
 WORKDIR /app/external_converters/node
-RUN if [ -f package.json ]; then npm install --only=production; fi
+RUN if [ -f package.json ]; then npm install --omit=dev; fi
 
 WORKDIR /app
 
-# Expose port
 EXPOSE 5002
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+# Allow up to 120 s for the first startup (LinkML + converter discovery take time)
+HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=3 \
     CMD curl -f http://localhost:5002/health || exit 1
 
-# Run the application
-CMD ["python", "app.py"]
+# Use gunicorn with a single sync worker; 120 s timeout covers slow conversions
+CMD ["gunicorn", "--bind", "0.0.0.0:5002", "--workers", "1", "--timeout", "120", "wsgi:application"]

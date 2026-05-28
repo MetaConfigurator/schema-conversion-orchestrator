@@ -4,7 +4,7 @@ import { ShaclReader } from 'shacl-bridge';
 
 export const converter: Converter = {
   name: "shacl-bridge",
-  sourceLanguage: SchemaLanguage.SHACL_TTL,
+  sourceLanguage: SchemaLanguage.SHACL_JSON_LD,
   targetLanguage: SchemaLanguage.JsonSchema,
 
   async convert(jsonLdString: string): Promise<string> {

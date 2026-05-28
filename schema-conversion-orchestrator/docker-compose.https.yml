@@ -1,0 +1,69 @@
+# Standalone HTTPS deployment for the schema-converter.
+# A dedicated nginx-proxy + acme-companion handles TLS for this single service.
+#
+# Required env vars (place in .env next to this file):
+#   BASE_DOMAIN       — public hostname, e.g. convert.example.com
+#   LETSENCRYPT_EMAIL — contact address for Let's Encrypt
+#
+# The service is reachable at https://${BASE_DOMAIN}/schema-converter/
+# (nginx strips the path prefix before forwarding, so Flask sees /health, /convert, etc.)
+#
+# Deploy:
+#   cp .env.example .env    # edit BASE_DOMAIN and LETSENCRYPT_EMAIL
+#   docker compose -f docker-compose.https.yml up -d --build
+
+services:
+  schema-converter:
+    container_name: schema_converter
+    build: .
+    expose:
+      - "5002"
+    restart: unless-stopped
+    networks:
+      - backend-network
+    environment:
+      VIRTUAL_HOST: ${BASE_DOMAIN:?BASE_DOMAIN is not set}
+      VIRTUAL_PATH: /schema-converter/
+      VIRTUAL_DEST: /
+      VIRTUAL_PORT: 5002
+      LETSENCRYPT_HOST: ${BASE_DOMAIN}
+      LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL:?LETSENCRYPT_EMAIL is not set}
+
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy:latest
+    container_name: schema-converter-nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/nginx/vhost.d
+      - acme-challenges:/usr/share/nginx/html
+      - ./certs:/etc/nginx/certs
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    networks:
+      - backend-network
+    restart: unless-stopped
+
+  letsencrypt:
+    image: nginxproxy/acme-companion:latest
+    container_name: schema-converter-nginx-letsencrypt
+    depends_on:
+      - nginx-proxy
+    environment:
+      NGINX_PROXY_CONTAINER: schema-converter-nginx-proxy
+      DEFAULT_EMAIL: ${LETSENCRYPT_EMAIL}
+    volumes:
+      - ./certs:/etc/nginx/certs
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/nginx/vhost.d
+      - acme-challenges:/usr/share/nginx/html
+    networks:
+      - backend-network
+    restart: unless-stopped
+
+networks:
+  backend-network:
+    driver: bridge
+
+volumes:
+  acme-challenges:

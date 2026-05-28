@@ -1,71 +1,69 @@
-from ranking_strategies import RankingStrategy, \
-    rank_with_strategy_least_character_loss
+from flask import Flask, request
+from typing import List, Dict, Optional
+import json
+
+from ranking_strategies import RankingStrategy, rank_with_strategy_least_character_loss
 from attempt_conversions import attempt_all_conversion_paths
-from converter import (Converter)
+from converter import Converter
 from print_conversion_results import print_conversion_results
 from serialize_conversion_results import serialize_conversion_results
 from schema_types import schema_language_from_string
 from logic import build_conversion_graph, find_paths
-from register_converters import register_converters
-from flask import Flask, request
-from typing import List, Dict
-import json
-
-app = Flask(__name__)
 
 RANKING_STRATEGY = RankingStrategy.LeastCharacterLoss
 
-converters: List[Converter] = register_converters()
-conversion_graph: Dict[str, List[Converter]] = build_conversion_graph(converters)
 
-print("Started Schema Conversion Orchestrator with the following converters:")
-for conv in converters:
-    print(f"- {conv.name}: {conv.source_language} -> {conv.target_language} at {conv.service_address}")
+def create_app(converters: Optional[List[Converter]] = None) -> Flask:
+    if converters is None:
+        from register_converters import register_converters
+        converters = register_converters()
 
+    conversion_graph: Dict[str, List[Converter]] = build_conversion_graph(converters)
 
-@app.route("/health", methods=["GET"])
-def health():
-    return {"status": "ok"}, 200
+    print("Started Schema Conversion Orchestrator with the following converters:")
+    for conv in converters:
+        print(f"- {conv.name}: {conv.source_language} -> {conv.target_language} at {conv.service_address}")
 
+    app = Flask(__name__)
 
-@app.route("/convert", methods=["POST"])
-def convert():
-    """
-    REST POST Request to convert a schema from sourceLanguage to targetLanguage.
-    :return: a JSON array as a list of all attempted paths and their results.
-    """
-    data = request.json
-    source = data["sourceLanguage"]
-    target = data["targetLanguage"]
-    schema = data["schema"]
+    @app.route("/health", methods=["GET"])
+    def health():
+        return {"status": "ok"}, 200
 
-    try:
-        source = schema_language_from_string(source)
-        target = schema_language_from_string(target)
-    except ValueError as e:
-        return {"error": str(e)}, 400
+    @app.route("/convert", methods=["POST"])
+    def convert():
+        data = request.json
+        source = data["sourceLanguage"]
+        target = data["targetLanguage"]
+        schema = data["schema"]
 
-    # if schema is an object, convert it to string
-    if isinstance(schema, dict):
-        schema = json.dumps(schema)
+        try:
+            source = schema_language_from_string(source)
+            target = schema_language_from_string(target)
+        except ValueError as e:
+            return {"error": str(e)}, 400
 
-    all_paths = find_paths(source, target, conversion_graph)
-    if not all_paths:
-        return {"error": "No path found for conversion from source " + source + " to target " + target + "."}, 400
+        if isinstance(schema, dict):
+            schema = json.dumps(schema)
 
-    results = attempt_all_conversion_paths(source, target, schema, all_paths)
+        all_paths = find_paths(source, target, conversion_graph)
+        if not all_paths:
+            return {"error": f"No path found for conversion from source {source} to target {target}."}, 400
 
-    if RANKING_STRATEGY == RANKING_STRATEGY.LeastCharacterLoss:
-        rank_with_strategy_least_character_loss(results)
-    else:
-        return {"error": "Unknown conversion strategy: " + RANKING_STRATEGY}, 500
-    # after ranking by strategy, also sort by success (successful conversions first, without messing up prior sorting)
-    results = sorted(results, key=lambda x: x[0], reverse=True)
+        results = attempt_all_conversion_paths(source, target, schema, all_paths)
 
-    print_conversion_results(results)
+        if RANKING_STRATEGY == RankingStrategy.LeastCharacterLoss:
+            rank_with_strategy_least_character_loss(results)
+        else:
+            return {"error": "Unknown conversion strategy: " + RANKING_STRATEGY}, 500
+        results = sorted(results, key=lambda x: x[0], reverse=True)
 
-    return {"results": serialize_conversion_results(results)}, 200
+        print_conversion_results(results)
+
+        return {"results": serialize_conversion_results(results)}, 200
+
+    return app
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5002)
+    create_app().run(host="0.0.0.0", port=5002)

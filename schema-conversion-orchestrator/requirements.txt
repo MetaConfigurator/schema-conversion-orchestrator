@@ -1,4 +1,6 @@
 Flask
+gunicorn
+gevent
 linkml
 mdmodels
 mdmodels_core
