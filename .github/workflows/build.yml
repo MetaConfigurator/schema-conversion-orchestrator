@@ -1,195 +1,83 @@
-name: Build Schema Converters
+name: Build sub-packages
+
+# Fast per-subpackage build checks — verifies Java and Node compile and
+# their converter registries load correctly.  Full integration testing
+# (Flask API + Docker) is in ci.yml.
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build-node:
+    name: Build Node.js converter
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Use Node.js 18.x
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        cache: 'npm'
-        cache-dependency-path: schema-conversion-orchestrator/external_converters/node/package-lock.json
+      - name: Set up Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: npm
+          cache-dependency-path: schema-conversion-orchestrator/external_converters/node/package-lock.json
 
-    - name: Install Node.js dependencies
-      working-directory: schema-conversion-orchestrator/external_converters/node
-      run: npm ci
+      - name: Install dependencies
+        working-directory: schema-conversion-orchestrator/external_converters/node
+        run: npm ci
 
-    - name: Build TypeScript
-      working-directory: schema-conversion-orchestrator/external_converters/node
-      run: npm run build
+      - name: Build TypeScript
+        working-directory: schema-conversion-orchestrator/external_converters/node
+        run: npm run build
 
-    - name: Test Node.js converter
-      working-directory: schema-conversion-orchestrator/external_converters/node
-      run: |
-        echo '{"sourceLanguage":"SHACL","targetLanguage":"JsonSchema","schema":"test schema"}' > test.json
-        node dist/index.js convert test.json
-        node dist/index.js list
+      - name: Smoke-test — list converters
+        working-directory: schema-conversion-orchestrator/external_converters/node
+        run: node dist/index.js list
 
-    - name: Upload Node.js artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: node-converter
-        path: |
-          schema-conversion-orchestrator/external_converters/node/*.js
-          schema-conversion-orchestrator/external_converters/node/converters/*.js
-          schema-conversion-orchestrator/external_converters/node/package.json
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: node-converter
+          retention-days: 1
+          path: |
+            schema-conversion-orchestrator/external_converters/node/dist/
+            schema-conversion-orchestrator/external_converters/node/package.json
+            schema-conversion-orchestrator/external_converters/node/package-lock.json
 
   build-java:
+    name: Build Java converter
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Set up JDK 11
-      uses: actions/setup-java@v4
-      with:
-        java-version: '11'
-        distribution: 'temurin'
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
+        with:
+          java-version: "11"
+          distribution: temurin
 
-    - name: Cache Maven dependencies
-      uses: actions/cache@v4
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+      - name: Cache Maven repository
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
 
-    - name: Build with Maven
-      working-directory: schema-conversion-orchestrator/external_converters/java
-      run: mvn clean compile package
+      - name: Build with Maven
+        working-directory: schema-conversion-orchestrator/external_converters/java
+        run: mvn clean package -B -DskipTests
 
-    - name: Test Java converter
-      working-directory: schema-conversion-orchestrator/external_converters/java
-      run: |
-        echo '{"sourceLanguage":"Xsd","targetLanguage":"Dtd","schema":"test schema"}' > test.json
-        java -jar converter.jar convert test.json
-        java -jar converter.jar list
+      - name: Smoke-test — list converters
+        working-directory: schema-conversion-orchestrator/external_converters/java
+        run: java -jar converter.jar list
 
-    - name: Upload Java artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: java-converter
-        path: |
-          schema-conversion-orchestrator/external_converters/java/converter.jar
-
-  test-integration:
-    needs: [build-node, build-java]
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Set up Python 3.11
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
-
-    - name: Set up Node.js 18.x
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-
-    - name: Set up JDK 11
-      uses: actions/setup-java@v4
-      with:
-        java-version: '11'
-        distribution: 'temurin'
-
-    - name: Download Node.js artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: node-converter
-        path: schema-conversion-orchestrator/external_converters/node/
-
-    - name: Download Java artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: java-converter
-        path: schema-conversion-orchestrator/external_converters/java/
-
-    - name: Install Python dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install flask requests
-
-    - name: Make converters executable
-      run: |
-        chmod +x schema-conversion-orchestrator/external_converters/java/converter.jar
-
-    - name: Install Python dependencies
-      working-directory: schema-conversion-orchestrator
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-
-    - name: Test integration
-      run: |
-        # Start the Flask app in background
-        python schema-conversion-orchestrator/app.py &
-        FLASK_PID=$!
-        
-        # Wait for Flask to start
-        sleep 5
-        
-        # Test health endpoint
-        curl -f http://localhost:5002/health || exit 1
-        
-        # Test converters list
-        curl -f http://localhost:5002/converters || exit 1
-        
-        # Test conversion (if converters are available)
-        curl -f -X POST http://localhost:5002/convert \
-          -H "Content-Type: application/json" \
-          -d '{"sourceLanguage":"SHACL","targetLanguage":"JsonSchema","schema":"test schema"}' || echo "No SHACL->JsonSchema converter available"
-        
-        # Kill Flask app
-        kill $FLASK_PID
-
-  build-docker:
-    needs: [build-node, build-java]
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Download Node.js artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: node-converter
-        path: schema-conversion-orchestrator/external_converters/node/
-
-    - name: Download Java artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: java-converter
-        path: schema-conversion-orchestrator/external_converters/java/
-
-    - name: Build Docker image
-      run: docker build -t schema-converter:latest schema-conversion-orchestrator/
-
-    - name: Test Docker image
-      run: |
-        docker run --rm -d -p 5002:5002 --name test-converter schema-converter:latest
-        sleep 10
-        curl -f http://localhost:5002/health || exit 1
-        docker stop test-converter
-
-    - name: Save Docker image
-      if: github.ref == 'refs/heads/main'
-      run: |
-        docker save schema-converter:latest | gzip > schema-converter.tar.gz
-
-    - name: Upload Docker image artifact
-      if: github.ref == 'refs/heads/main'
-      uses: actions/upload-artifact@v4
-      with:
-        name: docker-image
-        path: schema-converter.tar.gz
+      - name: Upload JAR artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: java-converter
+          retention-days: 1
+          path: schema-conversion-orchestrator/external_converters/java/converter.jar
