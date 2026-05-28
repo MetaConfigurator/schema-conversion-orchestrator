@@ -1,2 +1,10 @@
+# Test runner
 pytest
 pytest-cov
+# Lightweight runtime deps needed for unit tests.
+# Intentionally excludes heavy converters (linkml, mdmodels, schema_automator)
+# because the test suite uses mock converters and register_converters is a
+# lazy import in create_app().
+Flask>=2.0
+Werkzeug>=2.0
+strenum>=0.4.0
