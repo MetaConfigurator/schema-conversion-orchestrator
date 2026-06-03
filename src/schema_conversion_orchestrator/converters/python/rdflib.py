@@ -1,6 +1,6 @@
 from rdflib import Graph
 
-from schema_conversion_orchestrator.converters.base import ConverterInternal
+from schema_conversion_orchestrator.converters.base import ConverterInternal, get_package_version
 from schema_conversion_orchestrator.domain.schema_types import SchemaLanguage
 
 import rdflib
@@ -14,6 +14,9 @@ class ConverterTtlToJsonLd(ConverterInternal):
             service_name="FlaskApp",
             source_language=source_language,
             target_language=target_language,
+            library="rdflib",
+            library_version=get_package_version("rdflib"),
+            library_url="https://github.com/RDFLib/rdflib",
         )
 
     def converter_logic(self, schema: str) -> str:

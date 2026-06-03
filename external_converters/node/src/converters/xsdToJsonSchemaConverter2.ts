@@ -9,6 +9,8 @@ export const converter: Converter = {
   name: "xsd-json-converter (xjc)",
   sourceLanguage: SchemaLanguage.Xsd,
   targetLanguage: SchemaLanguage.JsonSchema,
+  library: "xsd-json-converter",
+  libraryUrl: "https://www.npmjs.com/package/xsd-json-converter",
 
   async convert(schema: string): Promise<string> {
       console.debug(`xsd-json-converter (xjc) processing schema: ${schema.substring(0, 100)}...`);

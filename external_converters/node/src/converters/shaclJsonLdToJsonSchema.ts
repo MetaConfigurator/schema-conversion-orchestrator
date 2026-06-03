@@ -130,6 +130,8 @@ export const converter: Converter = {
   name: "@comake/shacl-to-json-schema",
   sourceLanguage: SchemaLanguage.SHACL_JSON_LD,
   targetLanguage: SchemaLanguage.JsonSchema,
+  library: "@comake/shacl-to-json-schema",
+  libraryUrl: "https://www.npmjs.com/package/@comake/shacl-to-json-schema",
 
   async convert(schema: string): Promise<string> {
     try {

@@ -26,6 +26,14 @@ class ConversionStrategy(StrEnum):
     LeastCharacterLoss = "LeastCharacterLoss"
 
 
+class ConversionPathError(Exception):
+    """Raised when a conversion path fails, carrying the index of the failing step."""
+
+    def __init__(self, message: str, failed_step_index: int | None) -> None:
+        super().__init__(message)
+        self.failed_step_index = failed_step_index
+
+
 def attempt_all_conversion_paths(source: SchemaLanguage, target: SchemaLanguage, schema: str,
                                  paths: ConversionPaths) -> ConversionResults:
     """ Attempts all conversion paths without any ranking or selection. Returns all results as is."""
@@ -38,9 +46,9 @@ def attempt_all_conversion_paths(source: SchemaLanguage, target: SchemaLanguage,
             conversions_cache = conversions_cache_update
 
             if not result_schema:
-                all_attempts.append((False, "Conversion resulted in 'None' schema.", path))
+                all_attempts.append((False, "Conversion resulted in 'None' schema.", path, None))
             else:
-                all_attempts.append((True, result_schema, path))
+                all_attempts.append((True, result_schema, path, None))
         except Exception as e:
             error_output = str(e)
             if DETAILED_ERROR_OUTPUT:
@@ -49,7 +57,8 @@ def attempt_all_conversion_paths(source: SchemaLanguage, target: SchemaLanguage,
             if ERROR_OUTPUT_INCLUDE_PREVIOUS_RUNS:
                 previous_runs_info = collect_previous_step_results_for_debug(path, conversions_cache)
                 error_output += f"\n\n\n\n\nPrevious steps results for this path:\n{previous_runs_info}"
-            all_attempts.append((False, error_output, path))
+            failed_step_index = getattr(e, "failed_step_index", None)
+            all_attempts.append((False, error_output, path, failed_step_index))
     return all_attempts
 
 
@@ -76,10 +85,12 @@ def attempt_conversion_path(source: str, target: str, path: List[Converter], sch
     print_conversion_path(source, target, path)
     current_schema = schema
     current_converter = None
+    current_step_index = None
     conversion_sub_path = []
     try:
-        for conv in path:
+        for step_index, conv in enumerate(path):
             current_converter = conv
+            current_step_index = step_index
             conversion_sub_path.append(conv)
 
             # check cache
@@ -113,8 +124,9 @@ def attempt_conversion_path(source: str, target: str, path: List[Converter], sch
                 "Conversion failed at step from " + current_converter.source_language + " to " + current_converter.target_language + " via " + current_converter.service_name + " because of error: " + str(
                     e) + ".")
             print("With intermediate schema: " + current_schema)
-        raise Exception(
-            f"Conversion failed at step from {current_converter.source_language} to {current_converter.target_language} via {current_converter.service_name} because of error: {str(e)}.")
+        raise ConversionPathError(
+            f"Conversion failed at step from {current_converter.source_language} to {current_converter.target_language} via {current_converter.service_name} because of error: {str(e)}.",
+            failed_step_index=current_step_index)
 
 
 def print_conversion_path(source: str, target: str, path: List[Converter]) -> None:

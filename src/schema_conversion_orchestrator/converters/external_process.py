@@ -19,8 +19,20 @@ class ConverterExternalGeneric(ConverterInternal):
         converter_type: str,
         input_file_raw_suffix: str = None,
         output_file_raw_suffix: str = None,
+        library: str = None,
+        library_version: str = None,
+        library_url: str = None,
     ) -> None:
-        super().__init__(name, executable_path, converter_type, source_language, target_language)
+        super().__init__(
+            name,
+            executable_path,
+            converter_type,
+            source_language,
+            target_language,
+            library=library,
+            library_version=library_version,
+            library_url=library_url,
+        )
         self.executable_path = executable_path
         self.converter_type = converter_type
         self.input_file_raw_suffix = input_file_raw_suffix

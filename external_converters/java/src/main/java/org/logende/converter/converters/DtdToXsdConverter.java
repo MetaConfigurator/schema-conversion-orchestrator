@@ -25,6 +25,21 @@ public class DtdToXsdConverter implements ConverterService.Converter {
     }
 
     @Override
+    public String getLibrary() {
+        return "trang";
+    }
+
+    @Override
+    public String getLibraryVersion() {
+        return "20091111";
+    }
+
+    @Override
+    public String getLibraryUrl() {
+        return "https://relaxng.org/jclark/trang.html";
+    }
+
+    @Override
     public String convert(String schema) throws Exception {
         // Write DTD schema to temp file
         File inputFile = File.createTempFile("schema", ".dtd");

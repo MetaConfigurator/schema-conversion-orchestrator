@@ -47,13 +47,23 @@ public class ConverterService {
         public String sourceLanguage;
         public String targetLanguage;
         public List<String> supportedFeatures;
+        // Underlying library that performs the conversion, surfaced so the
+        // frontend can attribute a (failed) step to a specific library + version.
+        public String library;
+        public String libraryVersion;
+        public String libraryUrl;
     }
-    
+
     public interface Converter {
         String getName();
         String getSourceLanguage();
         String getTargetLanguage();
         String convert(String schema) throws Exception;
+
+        // Underlying library metadata; null by default for converters that don't declare it.
+        default String getLibrary() { return null; }
+        default String getLibraryVersion() { return null; }
+        default String getLibraryUrl() { return null; }
     }
     
     public ConverterService() {
@@ -88,6 +98,9 @@ public class ConverterService {
             info.name = converter.getName();
             info.sourceLanguage = converter.getSourceLanguage();
             info.targetLanguage = converter.getTargetLanguage();
+            info.library = converter.getLibrary();
+            info.libraryVersion = converter.getLibraryVersion();
+            info.libraryUrl = converter.getLibraryUrl();
             infos.add(info);
         }
         

@@ -28,6 +28,21 @@ public class XsdToJsonSchemaConverter implements ConverterService.Converter {
         return "JsonSchema";
     }
 
+    @Override
+    public String getLibrary() {
+        return "jsonix-schema-compiler";
+    }
+
+    @Override
+    public String getLibraryVersion() {
+        return "2.3.9";
+    }
+
+    @Override
+    public String getLibraryUrl() {
+        return "https://github.com/highsource/jsonix";
+    }
+
 
     @Override
     public String convert(String schema) throws Exception {

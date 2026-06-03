@@ -6,6 +6,8 @@ export const converter: Converter = {
   name: "shacl-bridge",
   sourceLanguage: SchemaLanguage.JsonSchema,
   targetLanguage: SchemaLanguage.SHACL_TTL,
+  library: "shacl-bridge",
+  libraryUrl: "https://www.npmjs.com/package/shacl-bridge",
 
   async convert(jsonSchemaString: string): Promise<string> {
     try {

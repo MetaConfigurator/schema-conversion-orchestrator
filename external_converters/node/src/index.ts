@@ -4,6 +4,19 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { Converter} from './dataStructures.js';
 import {fileURLToPath, pathToFileURL} from "url";
+import { createRequire } from "module";
+
+const require = createRequire(import.meta.url);
+
+/** Resolve the installed version of an npm package from its package.json, or null. */
+function resolveLibraryVersion(library?: string): string | null {
+  if (!library) return null;
+  try {
+    return require(`${library}/package.json`).version ?? null;
+  } catch {
+    return null;
+  }
+}
 
 const DEBUG_MODE = false;
 
@@ -120,6 +133,9 @@ async function main() {
         name: c.name,
         sourceLanguage: c.sourceLanguage,
         targetLanguage: c.targetLanguage,
+        library: c.library ?? null,
+        libraryVersion: resolveLibraryVersion(c.library),
+        libraryUrl: c.libraryUrl ?? null,
       }))
     }, null, 2));
     return;

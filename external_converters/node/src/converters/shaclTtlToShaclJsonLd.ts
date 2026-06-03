@@ -7,6 +7,8 @@ export const converter: Converter = {
   name: "n3 and rdf-ext",
   sourceLanguage: SchemaLanguage.SHACL_TTL,
   targetLanguage: SchemaLanguage.SHACL_JSON_LD,
+  library: "n3",
+  libraryUrl: "https://www.npmjs.com/package/n3",
 
   async convert(schema: string): Promise<string> {
 

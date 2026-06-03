@@ -62,7 +62,10 @@ def register_external_converters() -> List[Converter]:
                     executable_path=f"node {node_executable}",
                     source_language=SchemaLanguage(info['sourceLanguage']),
                     target_language=SchemaLanguage(info['targetLanguage']),
-                    converter_type="node"
+                    converter_type="node",
+                    library=info.get('library'),
+                    library_version=info.get('libraryVersion'),
+                    library_url=info.get('libraryUrl'),
                 )
                 converters.append(converter_node)
                 print(
@@ -85,7 +88,10 @@ def register_external_converters() -> List[Converter]:
                     executable_path=f"java -jar {java_jar}",
                     source_language=SchemaLanguage(info['sourceLanguage']),
                     target_language=SchemaLanguage(info['targetLanguage']),
-                    converter_type="java"
+                    converter_type="java",
+                    library=info.get('library'),
+                    library_version=info.get('libraryVersion'),
+                    library_url=info.get('libraryUrl'),
                 )
                 converters.append(converter_java)
                 print(
@@ -106,7 +112,9 @@ def register_external_converters() -> List[Converter]:
             target_language=SchemaLanguage.Owl_OFN,
             converter_type="robot",
             input_file_raw_suffix=".ttl",
-            output_file_raw_suffix=".ofn"
+            output_file_raw_suffix=".ofn",
+            library="ROBOT",
+            library_url="http://robot.obolibrary.org/",
         )
         converter_robot_ttl_to_obo = ConverterExternalGeneric(
             name="ROBOT OWL TTL TO OWL OBO",
@@ -115,7 +123,9 @@ def register_external_converters() -> List[Converter]:
             target_language=SchemaLanguage.OWL_OBO,
             converter_type="robot",
             input_file_raw_suffix=".ttl",
-            output_file_raw_suffix=".obo"
+            output_file_raw_suffix=".obo",
+            library="ROBOT",
+            library_url="http://robot.obolibrary.org/",
         )
         converter_robot_ofn_to_ttl = ConverterExternalGeneric(
             name="ROBOT OWL OFN TO OWL TTL",
@@ -124,7 +134,9 @@ def register_external_converters() -> List[Converter]:
             target_language=SchemaLanguage.Owl_TTL,
             converter_type="robot",
             input_file_raw_suffix=".ofn",
-            output_file_raw_suffix=".ttl"
+            output_file_raw_suffix=".ttl",
+            library="ROBOT",
+            library_url="http://robot.obolibrary.org/",
         )
         converter_robot_obo_to_ttl = ConverterExternalGeneric(
             name="ROBOT OWL Obo TO OWL TTL",
@@ -133,7 +145,9 @@ def register_external_converters() -> List[Converter]:
             target_language=SchemaLanguage.Owl_TTL,
             converter_type="robot",
             input_file_raw_suffix=".obo",
-            output_file_raw_suffix=".ttl"
+            output_file_raw_suffix=".ttl",
+            library="ROBOT",
+            library_url="http://robot.obolibrary.org/",
         )
         converters.append(converter_robot_ttl_to_ofn)
         converters.append(converter_robot_ttl_to_obo)

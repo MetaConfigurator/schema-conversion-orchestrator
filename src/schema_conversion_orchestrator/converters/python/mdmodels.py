@@ -1,6 +1,6 @@
 import json
 
-from schema_conversion_orchestrator.converters.base import ConverterInternal
+from schema_conversion_orchestrator.converters.base import ConverterInternal, get_package_version
 from schema_conversion_orchestrator.domain.schema_types import SchemaLanguage
 
 from mdmodels_core import DataModel, Templates
@@ -14,6 +14,9 @@ class ConverterFromMdModels(ConverterInternal):
             service_name="FlaskApp",
             source_language=SchemaLanguage.MdModels,
             target_language=target_language,
+            library="mdmodels-core",
+            library_version=get_package_version("mdmodels-core"),
+            library_url="https://pypi.org/project/mdmodels-core/",
         )
 
     def converter_logic(self, schema: str) -> str:
@@ -63,6 +66,9 @@ class ConverterJsonSchemaToMdModels(ConverterInternal):
             service_name="FlaskApp",
             source_language=SchemaLanguage.JsonSchema,
             target_language=SchemaLanguage.MdModels,
+            library="mdmodels-core",
+            library_version=get_package_version("mdmodels-core"),
+            library_url="https://pypi.org/project/mdmodels-core/",
         )
 
     def converter_logic(self, schema: str) -> str:

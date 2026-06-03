@@ -183,7 +183,7 @@ class TestConversionPathToString:
 class TestRanking:
     def _make_results(self, entries):
         """entries: list of (success, schema_or_error) — path can be []"""
-        return [(success, content, []) for success, content in entries]
+        return [(success, content, [], None) for success, content in entries]
 
     def test_successful_before_failed(self):
         results = self._make_results([(False, "err"), (True, "ok")])
@@ -211,7 +211,7 @@ class TestRanking:
 class TestSerializeConversionResults:
     def test_structure(self):
         conv = _MockConverter(SchemaLanguage.JsonSchema, SchemaLanguage.LinkMl)
-        results = [(True, "output", [conv])]
+        results = [(True, "output", [conv], None)]
         serialized = serialize_conversion_results(results)
         assert len(serialized) == 1
         entry = serialized[0]
@@ -223,10 +223,11 @@ class TestSerializeConversionResults:
         assert step["targetLanguage"] == "LinkMl"
 
     def test_failed_result(self):
-        results = [(False, "some error", [])]
+        results = [(False, "some error", [], 0)]
         serialized = serialize_conversion_results(results)
         assert serialized[0]["success"] is False
         assert serialized[0]["result"] == "some error"
+        assert serialized[0]["failedStepIndex"] == 0
 
     def test_empty(self):
         assert serialize_conversion_results([]) == []
@@ -234,7 +235,7 @@ class TestSerializeConversionResults:
     def test_multiple_steps_in_path(self):
         c1 = _MockConverter(SchemaLanguage.JsonSchema, SchemaLanguage.LinkMl)
         c2 = _MockConverter(SchemaLanguage.LinkMl, SchemaLanguage.Xsd)
-        results = [(True, "output", [c1, c2])]
+        results = [(True, "output", [c1, c2], None)]
         serialized = serialize_conversion_results(results)
         assert len(serialized[0]["conversionPath"]) == 2
 
@@ -251,9 +252,10 @@ class TestAttemptAllConversionPaths:
             SchemaLanguage.JsonSchema, SchemaLanguage.LinkMl, "input", paths
         )
         assert len(results) == 1
-        success, schema, path = results[0]
+        success, schema, path, failed_step_index = results[0]
         assert success is True
         assert schema == "result_schema"
+        assert failed_step_index is None
 
     def test_failing_conversion_recorded(self):
         conv = _FailingConverter(SchemaLanguage.JsonSchema, SchemaLanguage.LinkMl)
@@ -262,9 +264,22 @@ class TestAttemptAllConversionPaths:
             SchemaLanguage.JsonSchema, SchemaLanguage.LinkMl, "input", paths
         )
         assert len(results) == 1
-        success, error_msg, _ = results[0]
+        success, error_msg, _, failed_step_index = results[0]
         assert success is False
         assert "intentional failure" in error_msg
+        assert failed_step_index == 0
+
+    def test_failed_step_index_points_at_failing_step(self):
+        # First step succeeds, second step fails -> failed_step_index should be 1
+        c_ok = _MockConverter(SchemaLanguage.JsonSchema, SchemaLanguage.LinkMl, result="linkml")
+        c_fail = _FailingConverter(SchemaLanguage.LinkMl, SchemaLanguage.Xsd)
+        paths = [[c_ok, c_fail]]
+        results = attempt_all_conversion_paths(
+            SchemaLanguage.JsonSchema, SchemaLanguage.Xsd, "input", paths
+        )
+        success, _error_msg, _path, failed_step_index = results[0]
+        assert success is False
+        assert failed_step_index == 1
 
     def test_multiple_paths_attempted(self):
         # Use two-step paths so that each path has a distinct cache key

@@ -8,6 +8,8 @@ export const converter: Converter = {
   name: "xsd2jsonschema",
   sourceLanguage: SchemaLanguage.Xsd,
   targetLanguage: SchemaLanguage.JsonSchema,
+  library: "xsd2jsonschema",
+  libraryUrl: "https://www.npmjs.com/package/xsd2jsonschema",
 
   async convert(schema: string): Promise<string> {
 

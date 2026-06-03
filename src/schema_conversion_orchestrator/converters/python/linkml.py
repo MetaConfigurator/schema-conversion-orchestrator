@@ -5,7 +5,7 @@ from typing import Dict, Type
 import schema_automator
 from linkml.utils.generator import Generator
 
-from schema_conversion_orchestrator.converters.base import ConverterInternal
+from schema_conversion_orchestrator.converters.base import ConverterInternal, get_package_version
 from schema_conversion_orchestrator.domain.schema_types import SchemaLanguage
 from schema_conversion_orchestrator.utils import simple_cname_convert
 
@@ -31,6 +31,9 @@ class ConverterFromLinkMl(ConverterInternal):
             service_name="FlaskApp",
             source_language=SchemaLanguage.LinkMl,
             target_language=target_language,
+            library="linkml",
+            library_version=get_package_version("linkml"),
+            library_url="https://github.com/linkml/linkml",
         )
 
     def converter_logic(self, schema: str) -> str:
@@ -80,6 +83,9 @@ class ConverterJsonSchemaToLinkMl(ConverterInternal):
             service_name="FlaskApp",
             source_language=SchemaLanguage.JsonSchema,
             target_language=SchemaLanguage.LinkMl,
+            library="schema-automator",
+            library_version=get_package_version("schema-automator"),
+            library_url="https://github.com/linkml/schema-automator",
         )
 
     def converter_logic(self, schema: str) -> str:
@@ -119,6 +125,9 @@ class ConverterOwlToLinkMl(ConverterInternal):
             service_name="FlaskApp",
             source_language=SchemaLanguage.Owl_OFN,
             target_language=SchemaLanguage.LinkMl,
+            library="schema-automator",
+            library_version=get_package_version("schema-automator"),
+            library_url="https://github.com/linkml/schema-automator",
         )
 
     def converter_logic(self, schema: str) -> str:

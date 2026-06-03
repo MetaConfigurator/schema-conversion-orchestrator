@@ -7,7 +7,7 @@ def print_conversion_results(results: ConversionResults):
     failure_count = len(results) - success_count
     print(f"Conversion attempts completed: {success_count} succeeded, {failure_count} failed.")
     for i, attempt in enumerate(results):
-        success, result_schema_or_error, path = attempt
+        success, result_schema_or_error, path, _failed_step_index = attempt
         if success:
             print(
                 f"- Attempt {i + 1} ({conversion_path_to_string(path)}): Success, Resulting schema length: {len(result_schema_or_error)} characters.")
