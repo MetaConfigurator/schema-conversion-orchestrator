@@ -1,6 +1,8 @@
 from flask import Flask, request
+from flask_cors import CORS
 from typing import List, Dict, Optional
 import json
+import os
 
 from ranking_strategies import RankingStrategy, rank_with_strategy_least_character_loss
 from attempt_conversions import attempt_all_conversion_paths
@@ -25,6 +27,28 @@ def create_app(converters: Optional[List[Converter]] = None) -> Flask:
         print(f"- {conv.name}: {conv.source_language} -> {conv.target_language} at {conv.service_address}")
 
     app = Flask(__name__)
+
+    # CORS: required when the frontend (e.g. MetaConfigurator) is served from a
+    # different origin than this service. In the joint production deployment the
+    # service sits behind the same reverse proxy (same origin), so CORS is not
+    # strictly needed there, but it is harmless. For local development the MC dev
+    # server (http://localhost:5173) talks cross-origin to this service, so the
+    # default allowlist includes it. Override with the CORS_ALLOWED_ORIGINS env
+    # var (comma-separated list, or "*" to allow any origin).
+    cors_origins_raw = os.environ.get(
+        "CORS_ALLOWED_ORIGINS",
+        "http://localhost:5173,"
+        "https://metaconfigurator.github.io,"
+        "https://logende.github.io,"
+        "https://www.metaconfigurator.org,"
+        "https://metaconfigurator.org,"
+        "https://metaconfigurator.informatik.uni-stuttgart.de",
+    ).strip()
+    if cors_origins_raw == "*":
+        CORS(app)
+    else:
+        origins = [o.strip() for o in cors_origins_raw.split(",") if o.strip()]
+        CORS(app, resources={r"/*": {"origins": origins}})
 
     @app.route("/health", methods=["GET"])
     def health():

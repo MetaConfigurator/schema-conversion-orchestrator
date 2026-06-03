@@ -6,5 +6,6 @@ pytest-cov
 # because the test suite uses mock converters and register_converters is a
 # lazy import in create_app().
 Flask>=2.0
+Flask-Cors>=4.0
 Werkzeug>=2.0
 strenum>=0.4.0
