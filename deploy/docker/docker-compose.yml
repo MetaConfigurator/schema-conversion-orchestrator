@@ -1,0 +1,21 @@
+# Local Docker deployment of the schema-converter (no HTTPS, no reverse proxy).
+#
+# Reachable at http://localhost:${SCHEMA_CONVERTER_PORT:-5002}.
+#
+# For the HTTPS / standalone variant see docker-compose.https.yml.
+# For the MetaConfigurator multi-service joint deployment see
+# meta-configurator/backend/docker-compose.yml.
+#
+# Deploy:
+#   docker compose -f deploy/docker/docker-compose.yml up -d --build
+#   curl http://localhost:5002/health   # → {"status":"ok"}
+
+services:
+  schema-converter:
+    container_name: schema_converter
+    build:
+      context: ../..
+      dockerfile: deploy/docker/Dockerfile
+    ports:
+      - "${SCHEMA_CONVERTER_PORT:-5002}:5002"
+    restart: unless-stopped

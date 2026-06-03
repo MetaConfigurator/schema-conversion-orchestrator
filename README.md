@@ -30,8 +30,7 @@ cd universal-schema-converter
 #### Java
 
 ```bash
-cd schema-conversion-orchestrator/external_converters/java
-mvn clean package
+mvn -f external_converters/java/pom.xml clean package
 ```
 
 Result: `target/converter.jar`
@@ -39,9 +38,8 @@ Result: `target/converter.jar`
 #### Node
 
 ```bash
-cd schema-conversion-orchestrator/external_converters/node
-npm install
-npm run build
+npm --prefix external_converters/node install
+npm --prefix external_converters/node run build
 ```
 
 Result: `dist/index.js`
@@ -49,9 +47,15 @@ Result: `dist/index.js`
 ### 3. Build and Run the Orchestrator
 
 ```bash
-cd schema-conversion-orchestrator
-pip install -r requirements.txt
-python3 app.py
+pip install -r requirements/runtime.txt
+PYTHONPATH=src python3 -m schema_conversion_orchestrator.app
+```
+
+From the repository root, use:
+
+```bash
+scripts/build.sh
+scripts/run.sh
 ```
 
 ### 3. Test the System
@@ -106,3 +110,6 @@ If a path fails due to a certain edge, remove all paths which include this edge 
 ## 📜 License
 
 MIT License — feel free to use, contribute, and share.
+
+Third-party dependency and bundled converter notices are documented in
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

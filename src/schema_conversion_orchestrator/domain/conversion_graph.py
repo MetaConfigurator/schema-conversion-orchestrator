@@ -1,0 +1,40 @@
+from typing import List, Set, Dict
+from schema_conversion_orchestrator.converters.base import Converter
+from schema_conversion_orchestrator.domain.conversion_types import ConversionGraph, ConversionPaths
+from schema_conversion_orchestrator.domain.schema_types import SchemaLanguage
+
+
+# Builds a schema conversion graph from the list of registered converters, connecting source languages to target
+# languages with the edges being converters.
+def build_conversion_graph(converters: List[Converter]) -> Dict[str, List[Converter]]:
+    conversion_graph = {}
+    for conv in converters:
+        if conv.source_language not in conversion_graph:
+            conversion_graph[conv.source_language] = []
+        conversion_graph[conv.source_language].append(conv)
+    return conversion_graph
+
+
+def find_paths(source: SchemaLanguage, target: SchemaLanguage, conversion_graph: ConversionGraph,
+               path: ConversionPaths | None = None, visited: Set[SchemaLanguage] | None = None) -> ConversionPaths:
+    if path is None:
+        path = []
+    if visited is None:
+        visited = set()
+
+    if source == target:
+        return [path]
+
+    if source not in conversion_graph:
+        return []
+
+    visited.add(source)
+    paths = []
+
+    for conv in conversion_graph[source]:
+        if conv.target_language not in visited:
+            new_path = path + [conv]
+            sub_paths = find_paths(conv.target_language, target, conversion_graph, new_path, visited.copy())
+            paths.extend(sub_paths)
+
+    return paths

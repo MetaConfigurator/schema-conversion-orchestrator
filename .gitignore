@@ -208,16 +208,17 @@ __marimo__/
 
 # Node modules
 /node-converter/node_modules/
-/schema-conversion-orchestrator/node_modules/
+/node_modules/
 
 # Project-specific
+.DS_Store
 eval/output_schemas/
-schema-conversion-orchestrator/external_converters/node/node_modules/
+external_converters/node/node_modules/
+external_converters/java/dependency-reduced-pom.xml
+external_converters/java/original-converter.jar
+external_converters/java/converter.jar
 
 # IDEs
 .idea/
-/outputs/*
-/schema-conversion-orchestrator/external_converters/java/original-converter.jar
-/schema-conversion-orchestrator/external_converters/java/dependency-reduced-pom.xml
+/artifacts/
 /eval/conversion_matrix.png
-/schema-conversion-orchestrator/external_converters/java/converter.jar

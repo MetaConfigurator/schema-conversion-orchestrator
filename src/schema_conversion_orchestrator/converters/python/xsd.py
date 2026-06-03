@@ -1,0 +1,30 @@
+from schema_conversion_orchestrator.converters.base import ConverterInternal
+from schema_conversion_orchestrator.domain.schema_types import SchemaLanguage
+
+import xmlschema
+import json
+
+
+class ConverterXsdToJsonSchema(ConverterInternal):
+    def __init__(self):
+        super().__init__(
+            name="XmlSchema to JsonSchema Converter",
+            service_address="internal",
+            service_name="FlaskApp",
+            source_language=SchemaLanguage.Xsd,
+            target_language=SchemaLanguage.JsonSchema,
+        )
+
+    def converter_logic(self, schema: str) -> str:
+        xs = xmlschema.XMLSchema(schema)
+        json_schema = xs.converter()
+        print(json.dumps(json_schema, indent=2))
+        return json_schema
+
+    def validate_input(self, schema: str) -> bool:
+        # Implement validation logic for LinkML schema
+        return True
+
+    def validate_output(self, schema: str) -> bool:
+        # Implement validation logic for JSON Schema
+        return True
