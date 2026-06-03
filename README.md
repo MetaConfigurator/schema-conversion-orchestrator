@@ -1,7 +1,7 @@
 # Schema Conversion Orchestrator
 
-Schema Conversion Orchestrator is a Flask-based schema conversion service. It
-builds a conversion graph across multiple schema languages and can route
+Schema Conversion Orchestrator is a Flask-based schema conversion service.
+It builds a conversion graph across multiple schema languages and can route
 conversions through built-in Python converters plus external Java, Node.js, and
 ROBOT converter subprocesses.
 
