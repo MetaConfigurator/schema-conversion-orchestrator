@@ -9,7 +9,7 @@ on:
 jobs:
   # ---------------------------------------------------------------------------
   # Unit tests — pure Python, no external processes, no Docker.
-  # Only installs requirements-dev.txt (Flask + strenum + pytest) — the heavy
+  # Only installs requirements/dev.txt (Flask + strenum + pytest) — the heavy
   # converter packages (linkml, mdmodels, …) are not needed because the tests
   # inject mock converters and register_converters is a lazy import.
   # ---------------------------------------------------------------------------
@@ -25,13 +25,13 @@ jobs:
         with:
           python-version: "3.11"
           cache: pip
-          cache-dependency-path: schema-conversion-orchestrator/requirements-dev.txt
+          cache-dependency-path: requirements/dev.txt
 
       - name: Install test dependencies
-        run: pip install -r schema-conversion-orchestrator/requirements-dev.txt
+        run: pip install -r requirements/dev.txt
 
       - name: Run unit tests
-        run: pytest schema-conversion-orchestrator/tests/ -v --tb=short
+        run: python -m pytest tests/ -v --tb=short
 
   # ---------------------------------------------------------------------------
   # Build sub-packages (Java JAR + TypeScript dist)
@@ -61,10 +61,10 @@ jobs:
         with:
           node-version: "18"
           cache: npm
-          cache-dependency-path: schema-conversion-orchestrator/external_converters/node/package-lock.json
+          cache-dependency-path: external_converters/node/package-lock.json
 
       - name: Build sub-packages
-        run: bash build_subpackages.sh
+        run: bash scripts/build_subpackages.sh
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v6
@@ -72,8 +72,8 @@ jobs:
           name: converter-artifacts
           retention-days: 1
           path: |
-            schema-conversion-orchestrator/external_converters/java/converter.jar
-            schema-conversion-orchestrator/external_converters/node/dist/
+            external_converters/java/converter.jar
+            external_converters/node/dist/
 
   # ---------------------------------------------------------------------------
   # Docker integration test — build image, start service, hit real endpoints
@@ -90,6 +90,7 @@ jobs:
         uses: actions/download-artifact@v7
         with:
           name: converter-artifacts
+          path: external_converters
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
@@ -97,8 +98,8 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v7
         with:
-          context: schema-conversion-orchestrator
-          file: schema-conversion-orchestrator/Dockerfile
+          context: .
+          file: deploy/docker/Dockerfile
           push: false
           load: true
           tags: schema-converter:ci
@@ -182,6 +183,7 @@ jobs:
         uses: actions/download-artifact@v7
         with:
           name: converter-artifacts
+          path: external_converters
 
       - name: Set lowercase image name
         run: |
@@ -200,8 +202,8 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v7
         with:
-          context: schema-conversion-orchestrator
-          file: schema-conversion-orchestrator/Dockerfile
+          context: .
+          file: deploy/docker/Dockerfile
           push: true
           tags: |
             ${{ env.IMAGE }}:latest

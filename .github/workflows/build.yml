@@ -23,18 +23,18 @@ jobs:
         with:
           node-version: "18"
           cache: npm
-          cache-dependency-path: schema-conversion-orchestrator/external_converters/node/package-lock.json
+          cache-dependency-path: external_converters/node/package-lock.json
 
       - name: Install dependencies
-        working-directory: schema-conversion-orchestrator/external_converters/node
+        working-directory: external_converters/node
         run: npm ci
 
       - name: Build TypeScript
-        working-directory: schema-conversion-orchestrator/external_converters/node
+        working-directory: external_converters/node
         run: npm run build
 
       - name: Smoke-test — list converters
-        working-directory: schema-conversion-orchestrator/external_converters/node
+        working-directory: external_converters/node
         run: node dist/index.js list
 
       - name: Upload dist artifact
@@ -43,9 +43,9 @@ jobs:
           name: node-converter
           retention-days: 1
           path: |
-            schema-conversion-orchestrator/external_converters/node/dist/
-            schema-conversion-orchestrator/external_converters/node/package.json
-            schema-conversion-orchestrator/external_converters/node/package-lock.json
+            external_converters/node/dist/
+            external_converters/node/package.json
+            external_converters/node/package-lock.json
 
   build-java:
     name: Build Java converter
@@ -68,11 +68,11 @@ jobs:
           restore-keys: ${{ runner.os }}-maven-
 
       - name: Build with Maven
-        working-directory: schema-conversion-orchestrator/external_converters/java
+        working-directory: external_converters/java
         run: mvn clean package -B -DskipTests
 
       - name: Smoke-test — list converters
-        working-directory: schema-conversion-orchestrator/external_converters/java
+        working-directory: external_converters/java
         run: java -jar converter.jar list
 
       - name: Upload JAR artifact
@@ -80,4 +80,4 @@ jobs:
         with:
           name: java-converter
           retention-days: 1
-          path: schema-conversion-orchestrator/external_converters/java/converter.jar
+          path: external_converters/java/converter.jar
