@@ -1,0 +1,34 @@
+{
+  "SHACL_TTL->JsonSchema": {
+    "SHACL_TTL:JsonSchema:shacl-bridge": {
+      "f1": 0.9281,
+      "jaccard": 0.89,
+      "cases": 39,
+      "successes": 39
+    },
+    "SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema": {
+      "f1": 0.4265,
+      "jaccard": 0.2897,
+      "cases": 39,
+      "successes": 35
+    },
+    "SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge": {
+      "f1": 0.4983,
+      "jaccard": 0.3581,
+      "cases": 39,
+      "successes": 38
+    },
+    "SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema": {
+      "f1": 0.4265,
+      "jaccard": 0.2897,
+      "cases": 39,
+      "successes": 35
+    },
+    "SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge": {
+      "f1": 0.524,
+      "jaccard": 0.3837,
+      "cases": 39,
+      "successes": 39
+    }
+  }
+}

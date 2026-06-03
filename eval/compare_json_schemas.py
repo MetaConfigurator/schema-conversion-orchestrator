@@ -1,34 +1,88 @@
-from sentence_transformers import SentenceTransformer, util
-import jsonref
+"""Structural comparison of two JSON Schemas.
+
+This mirrors the comparison used by the shacl-bridge benchmark
+(``benchmark/runner/compare-json-schemas.ts``) so that the Schema Conversion
+Orchestrator evaluation reports the same F1 / Jaccard metrics as the
+shacl-bridge thesis. Both schemas are ``$ref``-resolved, flattened into a set of
+``dotted.path -> value`` entries (metadata keys ignored by default), and then
+compared key-by-key:
+
+* true positive  — key present in both, with equal value
+* false positive — key only in the predicted schema
+* false negative — key only in the reference schema
+* mismatch       — key present in both but with differing value (counts as both
+  a false positive and a false negative)
+
+From these, precision, recall, F1 and the Jaccard index are derived.
+
+Optional semantic property-name normalization (via sentence-transformers) is
+available but disabled by default; it is only needed when generated and
+reference property names differ lexically. The heavy import is therefore lazy.
+"""
 import copy
-from typing import Dict, Set, Any
 import json
+from typing import Any, Dict, Set
 
 
-def resolve_refs(schema):
-    return jsonref.JsonRef.replace_refs(schema)
+def resolve_refs(schema: Any, root: Any = None) -> Any:
+    """Resolve local ``#/...`` JSON ``$ref`` pointers in-place (returns a copy).
+
+    Sibling keys alongside a ``$ref`` are merged with the resolved target
+    (the target taking precedence), matching the benchmark's TypeScript
+    implementation. Non-local refs are left untouched.
+    """
+    if root is None:
+        root = schema
+
+    if isinstance(schema, list):
+        return [resolve_refs(item, root) for item in schema]
+
+    if isinstance(schema, dict):
+        ref = schema.get("$ref")
+        if isinstance(ref, str) and ref.startswith("#/"):
+            target: Any = root
+            for part in ref[2:].split("/"):
+                if isinstance(target, dict):
+                    target = target.get(part)
+                else:
+                    return schema  # unresolvable -> leave as is
+            resolved = resolve_refs(target, root)
+            siblings = {
+                k: resolve_refs(v, root)
+                for k, v in schema.items()
+                if k not in ("$ref", "$defs")
+            }
+            if isinstance(resolved, dict):
+                return {**siblings, **resolved}
+            return resolved
+        return {k: resolve_refs(v, root) for k, v in schema.items()}
+
+    return schema
 
 
 def semantic_normalize_schema(gen_schema, reference_schema, threshold=0.6):
-    """Recursively align property names in generated schema to ground truth."""
-    # Load embedding model
-    model = SentenceTransformer("paraphrase-MiniLM-L6-v2")
-    semantic_mapped_df = []
+    """Recursively align property names in the generated schema to the ground
+    truth using sentence-transformer embeddings.
 
+    Only needed when property names differ lexically between generated and
+    reference schemas; ``sentence-transformers`` is imported lazily so the rest
+    of this module works without it installed.
+    """
+    from sentence_transformers import SentenceTransformer, util  # lazy, heavy
+
+    model = SentenceTransformer("paraphrase-MiniLM-L6-v2")
     gen_schema = copy.deepcopy(gen_schema)  # to avoid modifying original
 
-    # Only compare if both are objects with properties
     if (
-            isinstance(gen_schema, dict)
-            and "properties" in gen_schema
-            and isinstance(reference_schema, dict)
-            and "properties" in reference_schema
+        isinstance(gen_schema, dict)
+        and "properties" in gen_schema
+        and isinstance(reference_schema, dict)
+        and "properties" in reference_schema
     ):
         gen_props = list(gen_schema["properties"].keys())
         gt_props = list(reference_schema["properties"].keys())
 
         if gen_props and gt_props:
-            # Encode all property names once
             gen_emb = model.encode(gen_props, convert_to_tensor=True)
             gt_emb = model.encode(gt_props, convert_to_tensor=True)
             sim_matrix = util.cos_sim(gen_emb, gt_emb)
@@ -37,26 +91,12 @@ def semantic_normalize_schema(gen_schema, reference_schema, threshold=0.6):
                 j = sim_matrix[index].argmax().item()
                 best_gt = gt_props[j]
                 score = sim_matrix[index][j].item()
-
-                # Record the result
-                semantic_mapped_df.append({
-                    "Generated Property": g_key,
-                    "Best Match in GT": best_gt,
-                    "Similarity": round(score, 2),
-                    "Renamed": "Yes" if score >= threshold and g_key != best_gt else "No"
-                })
-
                 if score >= threshold and g_key != best_gt:
-                    # Rename property in generated schema
                     gen_schema["properties"][best_gt] = gen_schema["properties"].pop(g_key)
-                    print(f"Renamed '{g_key}' → '{best_gt}' (sim={score:.2f})")
+                    print(f"Renamed '{g_key}' -> '{best_gt}' (sim={score:.2f})")
 
-        # Recurse into each sub-property
         for prop_key, sub_schema in list(gen_schema["properties"].items()):
-            if (
-                    prop_key in reference_schema.get("properties", {})
-                    and isinstance(sub_schema, dict)
-            ):
+            if prop_key in reference_schema.get("properties", {}) and isinstance(sub_schema, dict):
                 gen_schema["properties"][prop_key] = semantic_normalize_schema(
                     sub_schema, reference_schema["properties"][prop_key], threshold
                 )
@@ -66,7 +106,7 @@ def semantic_normalize_schema(gen_schema, reference_schema, threshold=0.6):
 
 def load_json_schema(schema_path):
     """Load a JSON schema from a file."""
-    with open(schema_path, 'r') as file:
+    with open(schema_path, "r") as file:
         try:
             return json.load(file)
         except json.JSONDecodeError as e:
@@ -75,12 +115,13 @@ def load_json_schema(schema_path):
 
 
 class SchemaComparisonResult:
-    def __init__(self, precision: float, recall: float, f1_score: float,
+    def __init__(self, precision: float, recall: float, f1_score: float, jaccard: float,
                  true_positives: Set[str], false_positives: Set[str], false_negatives: Set[str],
                  mismatches: Set[str]):
         self.precision = precision
         self.recall = recall
         self.f1_score = f1_score
+        self.jaccard = jaccard
         self.true_positives = true_positives
         self.false_positives = false_positives
         self.false_negatives = false_negatives
@@ -89,11 +130,9 @@ class SchemaComparisonResult:
 
 def _equal_values(v1: Any, v2: Any) -> bool:
     if isinstance(v1, list) and isinstance(v2, list):
-        norm1 = [normalize_value(i) for i in v1]
-        norm2 = [normalize_value(i) for i in v2]
-        norm1_sorted = sorted(norm1, key=lambda x: json.dumps(x, sort_keys=True))
-        norm2_sorted = sorted(norm2, key=lambda x: json.dumps(x, sort_keys=True))
-        return norm1_sorted == norm2_sorted
+        norm1 = sorted((normalize_value(i) for i in v1), key=lambda x: json.dumps(x, sort_keys=True))
+        norm2 = sorted((normalize_value(i) for i in v2), key=lambda x: json.dumps(x, sort_keys=True))
+        return norm1 == norm2
     return normalize_value(v1) == normalize_value(v2)
 
 
@@ -109,21 +148,30 @@ def normalize_value(v: Any) -> Any:
     return v
 
 
+# Metadata keys ignored when ignore_metadata is set (mirrors the benchmark).
+METADATA_KEYS = {"title", "description", "examples", "$id", "$schema", "x-shacl-prefixes"}
+
+# Keys whose presence with their default value is semantically equivalent to
+# absence, so they are dropped before comparison (mirrors the benchmark).
+JSON_SCHEMA_DEFAULTS = {"additionalProperties": True}
+
+
 def flatten_schema(schema: Any, ignore_metadata: bool, path: str = "") -> Dict[str, Any]:
     flattened_schema = {}
 
     if isinstance(schema, dict):
         for key, value in schema.items():
-            if key in {"title", "description", "examples", "$id", "$schema"} and ignore_metadata:
+            if key in METADATA_KEYS and ignore_metadata:
                 continue  # ignore metadata
-
+            if key in JSON_SCHEMA_DEFAULTS and value == JSON_SCHEMA_DEFAULTS[key]:
+                continue  # default value == absence
             new_path = f"{path}.{key}" if path else key
             flattened_schema.update(flatten_schema(value, ignore_metadata, new_path))
 
     elif isinstance(schema, list):
-        normalized = [flatten_schema(item, ignore_metadata) if isinstance(item, (dict, list)) else item for item in
-                      schema]
-        normalized.sort(key=lambda x: json.dumps(x, sort_keys=True))  # sort normalized list
+        normalized = [flatten_schema(item, ignore_metadata) if isinstance(item, (dict, list)) else item
+                      for item in schema]
+        normalized.sort(key=lambda x: json.dumps(x, sort_keys=True))
         flattened_schema[path] = normalized
     else:
         flattened_schema[path] = schema
@@ -131,21 +179,16 @@ def flatten_schema(schema: Any, ignore_metadata: bool, path: str = "") -> Dict[s
     return flattened_schema
 
 
-def normalize_schema(schema: Any, reference_for_semantic_normalization: any | None) \
-        -> Dict[str, Any]:
-    """Resolves references in the schema. If referenceForSemanticNormalization is provided, also applies
-    semantic normalization to align property names. Finally, it flattens the schema for easier comparison."""
+def normalize_schema(schema: Any, reference_for_semantic_normalization: Any | None) -> Dict[str, Any]:
+    """Resolve references and (optionally) semantically align property names."""
     resolved = resolve_refs(schema)
     if reference_for_semantic_normalization:
         resolved = semantic_normalize_schema(resolved, reference_for_semantic_normalization)
     return resolved
 
 
-def compare_flattened_schemas(
-        reference: Dict[str, Any],
-        predicted: Dict[str, Any],
-        compare_pattern: bool
-) -> SchemaComparisonResult:
+def compare_flattened_schemas(reference: Dict[str, Any], predicted: Dict[str, Any],
+                              compare_pattern: bool) -> SchemaComparisonResult:
     ref_keys = set(reference.keys())
     pred_keys = set(predicted.keys())
 
@@ -155,18 +198,15 @@ def compare_flattened_schemas(
     false_negatives = ref_keys - pred_keys
 
     for key in ref_keys & pred_keys:
-        val1 = reference[key]
-        val2 = predicted[key]
-        # do not compare values for the '*.pattern' key
-        if key.endswith('.pattern') and not compare_pattern:
+        # do not compare values for the '*.pattern' key (regex dialects differ)
+        if key.endswith(".pattern") and not compare_pattern:
             true_positives.add(key)
             continue
-        if _equal_values(val1, val2):
+        if _equal_values(reference[key], predicted[key]):
             true_positives.add(key)
         else:
             value_mismatches.add(key)
 
-    # Count value mismatches as FP and FN
     tp = len(true_positives)
     fp = len(false_positives) + len(value_mismatches)
     fn = len(false_negatives) + len(value_mismatches)
@@ -175,73 +215,17 @@ def compare_flattened_schemas(
     recall = tp / (tp + fn) if (tp + fn) else 0.0
     f1 = 2 * precision * recall / (precision + recall) if (precision + recall) else 0.0
 
-    return SchemaComparisonResult(precision, recall, f1, true_positives, false_positives, false_negatives,
-                                  value_mismatches)
+    union_size = len(true_positives) + len(false_positives) + len(false_negatives) + len(value_mismatches)
+    jaccard = len(true_positives) / union_size if union_size else 0.0
+
+    return SchemaComparisonResult(precision, recall, f1, jaccard, true_positives, false_positives,
+                                  false_negatives, value_mismatches)
 
 
-def compare_schemas(reference, predicted, semantic_normalization: bool, compare_metadata_and_pattern: bool) \
-        -> SchemaComparisonResult:
+def compare_schemas(reference, predicted, semantic_normalization: bool,
+                    compare_metadata_and_pattern: bool) -> SchemaComparisonResult:
     reference_normalized = normalize_schema(reference, None)
     predicted_normalized = normalize_schema(predicted, reference_normalized if semantic_normalization else None)
     flat1 = flatten_schema(reference_normalized, ignore_metadata=not compare_metadata_and_pattern)
     flat2 = flatten_schema(predicted_normalized, ignore_metadata=not compare_metadata_and_pattern)
     return compare_flattened_schemas(flat1, flat2, compare_metadata_and_pattern)
-
-
-if __name__ == "__main__":
-
-    TP_total = 0
-    FP_total = 0
-    FN_total = 0
-
-    results = []
-
-    for i in range(1, 3):
-        # gt_schema = f"schema_{i}_expected.json"
-        # generated_schema = f"schema_{i}_generated.json"
-
-        with open(f"expected/schema_{i}_expected.json", "r") as f:
-            gt_schema = json.load(f)
-
-        with open(f"generated_baseline/generated_{i}.json", "r") as f:
-            generated_schema = json.load(f)
-
-        print(gt_schema)
-        print(generated_schema)
-
-        gt_schema_ref_resolved = resolve_refs(gt_schema)
-        generated_schema_ref_resolved = resolve_refs(generated_schema)
-
-        semantic_normalized_gen_schema = semantic_normalize_schema(generated_schema_ref_resolved,
-                                                                   gt_schema_ref_resolved,
-                                                                   threshold=0.8)
-
-        print(f"{i} : Comparing Generated Schema with Ground Truth...")
-
-        # Compare the schemas
-        result = compare_schemas(gt_schema_ref_resolved, semantic_normalized_gen_schema, True, True)
-        results.append(result)
-
-        # Print results in human-readable format
-        print("\nEvaluation Metrics:")
-        print(f"Precision: {result.precision:.2f}")
-        print(f"Recall: {result.recall:.2f}")
-        print(f"F1 Score: {result.f1_score:.2f}")
-        print(f"True Positives: {len(result.true_positives)}")
-        print(f"False Positives: {len(result.false_positives)}")
-        print(f"False Negatives: {len(result.false_negatives)}")
-        print(f"Mismatches: {len(result.mismatches)}")
-
-        TP_total = sum(r.true_positives for r in results)
-        FP_total = sum(r.false_positives for r in results)
-        FN_total = sum(r.false_negatives for r in results)
-
-        precision_micro = TP_total / (TP_total + FP_total)
-        recall_micro = TP_total / (TP_total + FN_total)
-        f1_micro = 2 * precision_micro * recall_micro / (precision_micro + recall_micro)
-
-        # accuracy_union = TP_total / (TP_total + FP_total + FN_total)
-    print('\n----- FINAL METRICS (MICRO)--------')
-    print(f'PRECISION : {precision_micro}')
-    print(f'RECALL : {recall_micro}')
-    print(f'F1_MICRO : {f1_micro}')

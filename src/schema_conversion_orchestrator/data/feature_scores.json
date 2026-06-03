@@ -1,0 +1,62 @@
+{
+  "SHACL_TTL->JsonSchema": {
+    "SHACL_TTL:JsonSchema:shacl-bridge": {
+      "f1": 0.9281,
+      "jaccard": 0.89,
+      "score": 0.9281,
+      "cases": 39,
+      "successes": 39
+    },
+    "SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema": {
+      "f1": 0.4265,
+      "jaccard": 0.2897,
+      "score": 0.4265,
+      "cases": 39,
+      "successes": 35
+    },
+    "SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge": {
+      "f1": 0.4983,
+      "jaccard": 0.3581,
+      "score": 0.4983,
+      "cases": 39,
+      "successes": 38
+    },
+    "SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema": {
+      "f1": 0.4265,
+      "jaccard": 0.2897,
+      "score": 0.4265,
+      "cases": 39,
+      "successes": 35
+    },
+    "SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge": {
+      "f1": 0.524,
+      "jaccard": 0.3837,
+      "score": 0.524,
+      "cases": 39,
+      "successes": 39
+    }
+  },
+  "JsonSchema->SHACL_TTL": {
+    "JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator": {
+      "f1": 0.0065,
+      "jaccard": 0.0034,
+      "score": 0.0065,
+      "cases": 88,
+      "successes": 87
+    },
+    "JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL": {
+      "f1": 0.0,
+      "jaccard": 0.0,
+      "score": 0.0,
+      "cases": 88,
+      "successes": 0
+    },
+    "JsonSchema:SHACL_TTL:shacl-bridge": {
+      "f1": 0.9841,
+      "jaccard": 0.9754,
+      "score": 0.9841,
+      "cases": 88,
+      "successes": 88
+    }
+  }
+}

@@ -4,8 +4,10 @@ from schema_conversion_orchestrator.application.attempt_conversions import attem
 from schema_conversion_orchestrator.converters.base import Converter
 from schema_conversion_orchestrator.domain.conversion_graph import build_conversion_graph, find_paths
 from schema_conversion_orchestrator.domain.conversion_types import ConversionGraph, ConversionResults
+from schema_conversion_orchestrator.domain.feature_scores import has_benchmark
 from schema_conversion_orchestrator.domain.ranking import (
     RankingStrategy,
+    rank_with_strategy_feature_based,
     rank_with_strategy_least_character_loss,
 )
 from schema_conversion_orchestrator.domain.schema_types import SchemaLanguage
@@ -33,12 +35,23 @@ class ConversionService:
             )
 
         results = attempt_all_conversion_paths(source, target, schema, paths)
-        self._rank_results(results)
+        self._rank_results(results, source, target)
         return sorted(results, key=lambda x: x[0], reverse=True)
 
-    def _rank_results(self, results: ConversionResults) -> None:
+    def _rank_results(self, results: ConversionResults, source: SchemaLanguage, target: SchemaLanguage) -> None:
+        # Prefer the benchmark-based ranking whenever offline feature scores
+        # exist for this source -> target task; otherwise fall back to the
+        # configured (naive) strategy.
+        if has_benchmark(source.value, target.value):
+            rank_with_strategy_feature_based(results, source.value, target.value)
+            return
+
         if self.ranking_strategy == RankingStrategy.LeastCharacterLoss:
             rank_with_strategy_least_character_loss(results)
+            return
+
+        if self.ranking_strategy == RankingStrategy.FeatureBased:
+            rank_with_strategy_feature_based(results, source.value, target.value)
             return
 
         raise ValueError(f"Unknown conversion strategy: {self.ranking_strategy}")
