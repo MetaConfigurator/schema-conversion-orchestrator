@@ -1,115 +1,175 @@
 # Schema Conversion Orchestrator
 
-This project provides a schema conversion platform that supports converting between various data modeling formats (like JSON Schema, LinkML, XSD, DTD, RDF, etc.) using a software architecture that supports different programming languages due to subprocess calling. It consists of:
-
-* 🐍 A central **Flask Orchestrator** (main API + smart pathfinding + schema feature matching + converters in Python)
-* ☕ **Java** converters
-* 🪦 **Node.js TypeScript** converters
-
+Schema Conversion Orchestrator is a Flask-based schema conversion service. It
+builds a conversion graph across multiple schema languages and can route
+conversions through built-in Python converters plus external Java, Node.js, and
+ROBOT converter subprocesses.
 
 ## Features
 
-* Builds a dynamic conversion graph
-* Smartly selects the best conversion path based on schema features
-* Supports recursive multi-step conversions (e.g. JSONSchema → LinkML → RDF)
-* Easily extendable: add new converters in any language
+- Dynamic conversion graph and multi-hop path discovery
+- Python, Java, Node.js, and ROBOT-based converters
+- HTTP API for schema conversion
+- Diagram/report generation for available conversion paths
+- Unit tests that run without heavy external converter dependencies
 
----
+## Repository Layout
 
-## 🔧 Setup and Run
-
-### 1. Clone the repo
-
-```bash
-git clone https://github.com/Logende/schema-conversion-orchestrator.git
-cd universal-schema-converter
+```text
+src/schema_conversion_orchestrator/   Python package
+external_converters/                  Java, Node.js, and ROBOT converter assets
+deploy/docker/                        Dockerfile and compose files
+requirements/                         Python runtime and test requirements
+scripts/                              Build, run, test, and utility scripts
+tests/                                Pytest suite and fixtures
+eval/                                 Evaluation schemas and generated eval outputs
+artifacts/                            Ignored generated diagrams/reports
 ```
 
-### 2. Build the sub-packages
+## Setup
 
-#### Java
-
-```bash
-mvn -f external_converters/java/pom.xml clean package
-```
-
-Result: `target/converter.jar`
-
-#### Node
-
-```bash
-npm --prefix external_converters/node install
-npm --prefix external_converters/node run build
-```
-
-Result: `dist/index.js`
-
-### 3. Build and Run the Orchestrator
+Install Python runtime dependencies:
 
 ```bash
 pip install -r requirements/runtime.txt
-PYTHONPATH=src python3 -m schema_conversion_orchestrator.app
 ```
 
-From the repository root, use:
+Install lightweight test dependencies:
 
 ```bash
-scripts/build.sh
+pip install -r requirements/dev.txt
+```
+
+## Build External Converters
+
+Build all external converter subpackages:
+
+```bash
+scripts/build_subpackages.sh
+```
+
+Expected build outputs:
+
+```text
+external_converters/java/converter.jar
+external_converters/node/dist/index.js
+```
+
+## Run Locally
+
+```bash
 scripts/run.sh
 ```
 
-### 3. Test the System
+The service listens on `http://localhost:5002`.
 
-Run the included client test script:
+Health check:
 
 ```bash
-python3 test_clients.py
+curl http://localhost:5002/health
 ```
 
-This will:
+## Test
 
-* Register multiple converters with the orchestrator
-* Request a full conversion from JSON Schema to RDF
-* Print the converted result
+Run unit tests:
 
----
+```bash
+python3 -m pytest
+```
 
-## 🪩 Supported Formats (Enum)
+Run a manual conversion request against a running local service:
 
-* `JsonSchema`
-* `LinkMl`
-* `MdModels`
-* `Xsd`
-* `Dtd`
-* `OntologyRdf`
+```bash
+python3 scripts/send_test_request.py
+```
 
-## 🧮 Supported Features (Enum)
+Run the local Docker integration check:
 
-* `Comments`
-* `Hierarchy`
-* `References`
-* `Conditions`
-* `Constraints`
-* `Properties`
-* `Attributes`
-* `Composition`
-* `Negation`
+```bash
+scripts/run_local_docker_test.sh --down
+```
 
----
+## Docker
 
-## 🔌 Add Your Own Converter
+Build and run with compose:
 
-TODO
+```bash
+docker compose -f deploy/docker/docker-compose.yml up -d --build
+```
 
-## TODO
+Standalone HTTPS deployment is defined in:
 
-If a path fails due to a certain edge, remove all paths which include this edge as an optimization.
+```text
+deploy/docker/docker-compose.https.yml
+```
 
----
+The Docker image uses the repo root as build context and
+`deploy/docker/Dockerfile` as the Dockerfile.
 
-## 📜 License
+## Generate Diagrams
 
-MIT License — feel free to use, contribute, and share.
+```bash
+scripts/generate_diagrams.sh
+```
 
-Third-party dependency and bundled converter notices are documented in
+Generated files are written to ignored artifact directories:
+
+```text
+artifacts/diagrams/core/
+artifacts/diagrams/full/
+```
+
+## Supported Formats
+
+Currently modeled schema language enum values include:
+
+- `JsonSchema`
+- `LinkMl`
+- `MdModels`
+- `Dtd`
+- `Xsd`
+- `SHACL_TTL`
+- `SHACL_JSON_LD`
+- `Owl_TTL`
+- `Owl_XML`
+- `Owl_OFN`
+- `OWL_OBO`
+- `OntologyRdf`
+- `GraphQL`
+- `Protobuf`
+- `Shex`
+- `Mermaid`
+- `SqlAlchemy`
+
+## Add a Converter
+
+Python converters live under:
+
+```text
+src/schema_conversion_orchestrator/converters/python/
+```
+
+Register Python converters in:
+
+```text
+src/schema_conversion_orchestrator/converters/python_registry.py
+```
+
+External converter registration lives in:
+
+```text
+src/schema_conversion_orchestrator/converters/external_registry.py
+```
+
+External converter source/assets live under:
+
+```text
+external_converters/
+```
+
+## License
+
+This project is licensed under [LICENSE](LICENSE).
+
+Third-party bundled artifact notices are documented in
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

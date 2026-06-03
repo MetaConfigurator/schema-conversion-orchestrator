@@ -3,9 +3,9 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "universal-schema-converter"
+name = "schema-conversion-orchestrator"
 version = "0.1.0"
-description = "Schema conversion orchestrator and converter registry"
+description = "Schema Conversion Orchestrator and converter registry"
 requires-python = ">=3.10"
 
 [tool.setuptools.packages.find]
