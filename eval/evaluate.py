@@ -15,6 +15,7 @@ Input corpus layout:
       Xsd/
       SHACL_TTL/
       LinkMl/
+      MdModels/
 
 Output layout:
 
@@ -68,6 +69,7 @@ SOURCE_LANGUAGES = [
     SchemaLanguage.Xsd,
     SchemaLanguage.SHACL_TTL,
     SchemaLanguage.LinkMl,
+    SchemaLanguage.MdModels,
 ]
 
 TARGET_LANGUAGES = [
@@ -75,8 +77,7 @@ TARGET_LANGUAGES = [
     SchemaLanguage.Xsd,
     SchemaLanguage.SHACL_TTL,
     SchemaLanguage.LinkMl,
-    SchemaLanguage.GraphQL,
-    SchemaLanguage.Protobuf,
+    SchemaLanguage.MdModels,
 ]
 
 INPUT_DIR = EVAL_DIR / "real_world_inputs"
@@ -89,11 +90,6 @@ LANGUAGE_EXTENSIONS = {
     SchemaLanguage.SHACL_JSON_LD.value: ".jsonld",
     SchemaLanguage.LinkMl.value: ".yaml",
     SchemaLanguage.MdModels.value: ".md",
-    SchemaLanguage.GraphQL.value: ".graphql",
-    SchemaLanguage.Protobuf.value: ".proto",
-    SchemaLanguage.Shex.value: ".shex",
-    SchemaLanguage.Mermaid.value: ".mmd",
-    SchemaLanguage.SqlAlchemy.value: ".py",
 }
 
 REVIEW_FIELDS = [
@@ -117,6 +113,7 @@ EDGE_REVIEW_FIELDS = [
     "target_language",
     "input_file",
     "path_id",
+    "path_signature",
     "step_index",
     "edge_signature",
     "edge_source_language",
@@ -125,6 +122,22 @@ EDGE_REVIEW_FIELDS = [
     "library",
     "output_path",
     "notes",
+]
+
+FINAL_REVIEW_KEY_FIELDS = [
+    "source_language",
+    "target_language",
+    "input_file",
+    "path_signature",
+]
+
+EDGE_REVIEW_KEY_FIELDS = [
+    "source_language",
+    "target_language",
+    "input_file",
+    "path_id",
+    "step_index",
+    "edge_signature",
 ]
 
 
@@ -217,12 +230,6 @@ def validate_output(schema: str | None, language: str) -> bool:
                 return bool(schema.strip())
             Graph().parse(data=schema, format="turtle")
             return True
-
-        if language == SchemaLanguage.GraphQL.value:
-            return "type " in schema or "schema " in schema or "interface " in schema
-
-        if language == SchemaLanguage.Protobuf.value:
-            return "syntax" in schema or "message " in schema
 
         return bool(schema.strip())
     except Exception:
@@ -347,6 +354,14 @@ def run_evaluation(input_dir: Path, output_dir: Path, run_id: str, only_core_lan
     review_dir = output_dir / "review"
     run_dir.mkdir(parents=True, exist_ok=True)
     review_dir.mkdir(parents=True, exist_ok=True)
+    previous_final_reviews = load_review_annotations(
+        review_dir / "final_outputs.csv",
+        FINAL_REVIEW_KEY_FIELDS,
+    )
+    previous_edge_reviews = load_review_annotations(
+        review_dir / "edge_outputs.csv",
+        EDGE_REVIEW_KEY_FIELDS,
+    )
 
     service = ConversionService(register_converters(only_core_languages=only_core_languages))
     inputs = discover_inputs(input_dir, SOURCE_LANGUAGES)
@@ -445,6 +460,7 @@ def run_evaluation(input_dir: Path, output_dir: Path, run_id: str, only_core_lan
                             "target_language": attempt.target_language,
                             "input_file": attempt.input_file,
                             "path_id": attempt.path_id,
+                            "path_signature": attempt.path_signature,
                             "step_index": step.step_index,
                             "edge_signature": f"{step.source_language}:{step.target_language}:{step.converter_name}",
                             "edge_source_language": step.source_language,
@@ -455,11 +471,49 @@ def run_evaluation(input_dir: Path, output_dir: Path, run_id: str, only_core_lan
                             "notes": "",
                         })
 
+    carry_forward_review_annotations(final_review_rows, previous_final_reviews, FINAL_REVIEW_KEY_FIELDS)
+    carry_forward_review_annotations(edge_review_rows, previous_edge_reviews, EDGE_REVIEW_KEY_FIELDS)
+    run_review_dir = run_dir / "review"
+    write_review_csv(run_review_dir / "final_outputs.csv", REVIEW_FIELDS, final_review_rows)
+    write_review_csv(run_review_dir / "edge_outputs.csv", EDGE_REVIEW_FIELDS, edge_review_rows)
     write_review_csv(review_dir / "final_outputs.csv", REVIEW_FIELDS, final_review_rows)
     write_review_csv(review_dir / "edge_outputs.csv", EDGE_REVIEW_FIELDS, edge_review_rows)
     (run_dir / "all_metadata.json").write_text(json.dumps(all_metadata, indent=2) + "\n", encoding="utf-8")
     (output_dir / "latest_run.txt").write_text(run_id + "\n", encoding="utf-8")
     return run_dir
+
+
+def review_key(row: dict, key_fields: list[str]) -> tuple[str, ...]:
+    return tuple(str(row.get(field, "")) for field in key_fields)
+
+
+def load_review_annotations(path: Path, key_fields: list[str]) -> dict[tuple[str, ...], tuple[str, str]]:
+    if not path.exists():
+        return {}
+    with path.open(newline="", encoding="utf-8") as handle:
+        reader = csv.DictReader(handle)
+        annotations: dict[tuple[str, ...], tuple[str, str]] = {}
+        for row in reader:
+            status = (row.get("status") or "").strip()
+            notes = row.get("notes") or ""
+            if status:
+                annotations[review_key(row, key_fields)] = (status, notes)
+        return annotations
+
+
+def carry_forward_review_annotations(
+    rows: list[dict],
+    previous_annotations: dict[tuple[str, ...], tuple[str, str]],
+    key_fields: list[str],
+) -> None:
+    for row in rows:
+        previous = previous_annotations.get(review_key(row, key_fields))
+        if previous is None:
+            continue
+        previous_status, previous_notes = previous
+        if previous_status:
+            row["status"] = previous_status
+            row["notes"] = previous_notes
 
 
 def write_review_csv(path: Path, fields: list[str], rows: list[dict]) -> None:

@@ -1,0 +1,603 @@
+id: enzml
+name: EnzymeML V2
+title: EnzymeML V2
+prefixes:
+  OBO: http://purl.obolibrary.org/obo/
+  schema: https://schema.org/
+default_prefix: enzml
+default_range: string
+imports:
+- linkml:types
+classes:
+  EnzymeMLDocument:
+    description: The EnzymeMLDocument is the root object that serves as a container for all components of an enzymatic experiment. It includes essential metadata about the document itself, such as its title and creation/modification dates, as well as references to related publications and databases. Additionally, it contains comprehensive information about the experimental setup, including reaction vessels, proteins, complexes, small molecules, reactions, measurements, equations, and parameters.
+    tree_root: true
+    slot_usage:
+      version:
+        pattern: '"^(\d+)\.\d+$"'
+    attributes:
+      name:
+        description: Title of the EnzymeML Document.
+        slot_uri: schema:title
+        required: true
+      version:
+        description: The version of the EnzymeML Document.
+        required: true
+      description:
+        description: Description of the EnzymeML Document.
+      created:
+        description: Date the EnzymeML Document was created.
+        slot_uri: schema:dateCreated
+      modified:
+        description: Date the EnzymeML Document was modified.
+        slot_uri: schema:dateModified
+      creators:
+        description: Contains descriptions of all authors that are part of the experiment.
+        slot_uri: schema:creator
+        required: true
+        range: Creator
+        multivalued: true
+      vessels:
+        description: Contains descriptions of all vessels that are part of the experiment.
+        required: true
+        range: Vessel
+        multivalued: true
+      proteins:
+        description: Contains descriptions of all proteins that are part of the experiment that may be referenced in reactions, measurements, and equations.
+        range: Protein
+        multivalued: true
+      complexes:
+        description: Contains descriptions of all complexes that are part of the experiment that may be referenced in reactions, measurements, and equations.
+        range: Complex
+        multivalued: true
+      small_molecules:
+        description: Contains descriptions of all reactants that are part of the experiment that may be referenced in reactions, measurements, and equations.
+        range: SmallMolecule
+        multivalued: true
+      reactions:
+        description: Contains descriptions of all reactions that are part of the experiment.
+        range: Reaction
+        multivalued: true
+      measurements:
+        description: Contains descriptions of all measurements that are part of the experiment.
+        range: Measurement
+        multivalued: true
+      equations:
+        description: Contains descriptions of all equations that are part of the experiment.
+        range: Equation
+        multivalued: true
+      parameters:
+        description: Contains descriptions of all parameters that are part of the experiment and may be used in equations.
+        range: Parameter
+        multivalued: true
+      references:
+        description: Contains references to publications, databases, and arbitrary links to the web.
+        slot_uri: schema:citation
+        identifier: true
+        multivalued: true
+  Creator:
+    description: The Creator object represents an individual author or contributor who has participated in creating or modifying the EnzymeML Document. It captures essential personal information such as their name and contact details, allowing proper attribution and enabling communication with the document's creators.
+    class_uri: schema:person
+    is_a: schema:person
+    attributes:
+      given_name:
+        description: Given name of the author or contributor.
+        slot_uri: schema:givenName
+        required: true
+      family_name:
+        description: Family name of the author or contributor.
+        slot_uri: schema:familyName
+        required: true
+      mail:
+        description: Email address of the author or contributor.
+        slot_uri: schema:email
+        required: true
+  Vessel:
+    description: The Vessel object represents containers used to conduct experiments, such as reaction vessels, microplates, or bioreactors. It captures key properties like volume and whether the volume remains constant during the experiment.
+    class_uri: OBO:OBI_0400081
+    is_a: OBO:OBI_0400081
+    attributes:
+      id:
+        description: Unique identifier of the vessel.
+        slot_uri: schema:identifier
+        identifier: true
+        required: true
+      name:
+        description: Name of the used vessel.
+        slot_uri: schema:name
+        required: true
+      volume:
+        description: Volumetric value of the vessel.
+        slot_uri: OBO:OBI_0002139
+        required: true
+        range: float
+      unit:
+        description: Volumetric unit of the vessel.
+        required: true
+        range: UnitDefinition
+      constant:
+        description: Whether the volume of the vessel is constant or not. Default is True.
+        required: true
+        range: boolean
+  Protein:
+    description: The Protein object represents enzymes and other proteins involved in the experiment.
+    class_uri: OBO:PR_000000001
+    is_a: OBO:PR_000000001
+    attributes:
+      id:
+        description: Identifier of the protein, such as a UniProt ID, or a custom identifier.
+        slot_uri: schema:identifier
+        identifier: true
+        required: true
+      name:
+        description: Name of the protein.
+        slot_uri: schema:name
+        required: true
+      constant:
+        description: Whether the concentration of the protein is constant through the experiment or not. Default is True.
+        required: true
+        range: boolean
+      sequence:
+        description: Amino acid sequence of the protein
+        slot_uri: OBO:GSSO_007262
+      vessel_id:
+        description: Identifier of the vessel this protein has been applied to.
+        slot_uri: schema:identifier
+        identifier: true
+      ecnumber:
+        description: EC number of the protein.
+      organism:
+        description: Expression host organism of the protein.
+        slot_uri: OBO:OBI_0100026
+      organism_tax_id:
+        description: Taxonomy identifier of the expression host.
+        identifier: true
+      references:
+        description: List of references to publications, database entries, etc. that describe or reference the protein.
+        slot_uri: schema:citation
+        identifier: true
+        multivalued: true
+  Complex:
+    description: The Complex object allows the grouping of multiple species using their . This enables the representation of protein-small molecule complexes (e.g., enzyme-substrate complexes) as well as buffer or solvent mixtures (combinations of SmallMolecule species).
+    attributes:
+      id:
+        description: Unique identifier of the complex.
+        slot_uri: schema:identifier
+        identifier: true
+        required: true
+      name:
+        description: Name of the complex.
+        slot_uri: schema:name
+        required: true
+      constant:
+        description: Whether the concentration of the complex is constant through the experiment or not. Default is False.
+        required: true
+        range: boolean
+      vessel_id:
+        description: Unique identifier of the vessel this complex has been used in.
+        slot_uri: schema:identifier
+        identifier: true
+      participants:
+        description: Array of IDs the complex contains
+        identifier: true
+        multivalued: true
+  SmallMolecule:
+    description: The SmallMolecule object represents small chemical compounds that participate in the experiment as substrates, products, or modifiers. It captures key molecular identifiers like SMILES and InChI.
+    attributes:
+      id:
+        description: Identifier of the small molecule, such as a Pubchem ID, ChEBI ID, or a custom identifier.
+        slot_uri: schema:identifier
+        identifier: true
+        required: true
+      name:
+        description: Name of the small molecule.
+        slot_uri: schema:name
+        required: true
+      constant:
+        description: Whether the concentration of the small molecule is constant through the experiment or not. Default is False.
+        required: true
+        range: boolean
+      vessel_id:
+        description: Identifier of the vessel this small molecule has been used in.
+        slot_uri: schema:identifier
+        identifier: true
+      canonical_smiles:
+        description: Canonical Simplified Molecular-Input Line-Entry System (SMILES) encoding of the small molecule.
+      inchi:
+        description: International Chemical Identifier (InChI) encoding of the small molecule.
+      inchikey:
+        description: Hashed International Chemical Identifier (InChIKey) encoding of the small molecule.
+      synonymous_names:
+        description: List of synonymous names for the small molecule.
+        multivalued: true
+      references:
+        description: List of references to publications, database entries, etc. that describe or reference the small molecule.
+        slot_uri: schema:citation
+        identifier: true
+        multivalued: true
+  Reaction:
+    description: The Reaction object represents a chemical or enzymatic reaction and holds the different species and modifiers that are part of the reaction.
+    attributes:
+      id:
+        description: Unique identifier of the reaction.
+        slot_uri: schema:identifier
+        identifier: true
+        required: true
+      name:
+        description: Name of the reaction.
+        required: true
+      reversible:
+        description: Whether the reaction is reversible or irreversible. Default is False.
+        required: true
+        range: boolean
+      kinetic_law:
+        description: Mathematical expression of the reaction.
+        range: Equation
+      reactants:
+        description: List of reactants that are part of the reaction.
+        range: ReactionElement
+        multivalued: true
+      products:
+        description: List of products that are part of the reaction.
+        range: ReactionElement
+        multivalued: true
+      modifiers:
+        description: List of reaction elements that are not part of the reaction but influence it.
+        range: ModifierElement
+        multivalued: true
+  ReactionElement:
+    description: This object is part of the object and describes a species (SmallMolecule, Protein, Complex) participating in the reaction. The stochiometry is of the species is specified in the field, whereas negative values indicate that the species is a reactant and positive values indicate that the species is a product of the reaction.
+    attributes:
+      species_id:
+        description: Internal identifier to either a protein or reactant defined in the EnzymeML Document.
+        slot_uri: schema:identifier
+        identifier: true
+        required: true
+      stoichiometry:
+        description: Float number representing the associated stoichiometry.
+        required: true
+        range: float
+  ModifierElement:
+    description: The ModifierElement object represents a species that is not part of the reaction but influences it.
+    attributes:
+      species_id:
+        description: Internal identifier to either a protein or reactant defined in the EnzymeML Document.
+        slot_uri: schema:identifier
+        identifier: true
+        required: true
+      role:
+        description: Role of the modifier in the reaction.
+        required: true
+        range: ModifierRole
+  Equation:
+    description: The Equation object describes a mathematical equation used to model parts of a reaction system.
+    attributes:
+      species_id:
+        description: Identifier of a defined species (SmallMolecule, Protein, Complex). Represents the left hand side of the equation.
+        slot_uri: schema:identifier
+        identifier: true
+        required: true
+      equation:
+        description: Mathematical expression of the equation. Represents the right hand side of the equation.
+        required: true
+      equation_type:
+        description: Type of the equation.
+        required: true
+        range: EquationType
+      variables:
+        description: List of variables that are part of the equation
+        range: Variable
+        multivalued: true
+  Variable:
+    description: This object describes a variable that is part of an equation. Variables can represent species concentrations, time, or other quantities that appear in mathematical expressions. Each variable must have a unique identifier, name, and symbol that is used in equations.
+    attributes:
+      id:
+        description: Identifier of the variable.
+        slot_uri: schema:identifier
+        identifier: true
+        required: true
+      name:
+        description: Name of the variable.
+        required: true
+      symbol:
+        description: Equation symbol of the variable.
+        required: true
+  Parameter:
+    description: This object describes parameters used in kinetic models, including estimated values, bounds, and associated uncertainties. Parameters can represent rate constants, binding constants, or other numerical values that appear in rate equations or other mathematical expressions.
+    attributes:
+      id:
+        description: Identifier of the parameter.
+        slot_uri: schema:identifier
+        identifier: true
+        required: true
+      name:
+        description: Name of the parameter.
+        required: true
+      symbol:
+        description: Equation symbol of the parameter.
+        required: true
+      value:
+        description: Numerical value of the estimated parameter.
+        range: float
+      unit:
+        description: Unit of the estimated parameter.
+        range: UnitDefinition
+      initial_value:
+        description: Initial value that was used for the parameter estimation.
+        range: float
+      upper_bound:
+        description: Upper bound for the parameter value that was used for the parameter estimation
+        range: float
+      lower_bound:
+        description: Lower bound for the parameter value that was used for the parameter estimation
+        range: float
+      fit:
+        description: Whether this parameter should be varied or not in the context of an optimization.
+        range: boolean
+      stderr:
+        description: Standard error of the estimated parameter.
+        range: float
+      constant:
+        description: Specifies if this parameter is constant. Default is True.
+        range: boolean
+  Measurement:
+    description: This object describes a single measurement, which includes time course data of any type defined in DataTypes. It contains initial concentrations and measurement data for all species involved in the experiment. Multiple measurements can be grouped together using the group_id field to indicate they are part of the same experimental series.
+    attributes:
+      id:
+        description: Unique identifier of the measurement.
+        slot_uri: schema:identifier
+        identifier: true
+        required: true
+      name:
+        description: Name of the measurement
+        required: true
+      species_data:
+        description: Measurement data of all species that were part of the measurement. A species refers to a Protein, Complex, or SmallMolecule.
+        range: MeasurementData
+        multivalued: true
+      group_id:
+        description: User-defined group ID to signal relationships between measurements.
+        identifier: true
+      ph:
+        description: pH value of the measurement.
+        range: float
+        minimum_value: 0
+        maximum_value: 14
+      temperature:
+        description: Temperature of the measurement.
+        range: float
+      temperature_unit:
+        description: Unit of the temperature of the measurement.
+        range: UnitDefinition
+  MeasurementData:
+    description: This object describes a single entity of a measurement, which corresponds to one species (Protein, Complex, SmallMolecule). It contains time course data for that species, including the initial amount, prepared amount, and measured data points over time. Endpoint data is treated as a time course data point with only one data point.
+    attributes:
+      species_id:
+        description: The identifier for the described reactant.
+        identifier: true
+        required: true
+      prepared:
+        description: Amount of the the species before starting the measurement. This field can be used for specifying the prepared amount of a species in the reaction mix. Not to be confused with , specifying the concentration of a species at the first data point from the  array.
+        range: float
+      initial:
+        description: Initial amount of the measurement data. This must be the same as the first data point in the  array.
+        range: float
+      data_unit:
+        description: SI unit of the data that was measured.
+        range: UnitDefinition
+      data:
+        description: Data that was measured.
+        range: float
+        multivalued: true
+      time:
+        description: Corresponding time points of the .
+        range: float
+        multivalued: true
+      time_unit:
+        description: Unit of the time points of the .
+        range: UnitDefinition
+      data_type:
+        description: Type of data that was measured (e.g. concentration, absorbance, etc.)
+        range: DataTypes
+      is_simulated:
+        description: Whether or not the data has been generated by simulation. Default is False.
+        range: boolean
+  UnitDefinition:
+    description: Represents a unit definition that is based on the SI unit system.
+    attributes:
+      id:
+        description: Unique identifier of the unit definition.
+      name:
+        description: Common name of the unit definition.
+      base_units:
+        description: Base units that define the unit.
+        range: BaseUnit
+        multivalued: true
+  BaseUnit:
+    description: Represents a base unit in the unit definition.
+    attributes:
+      kind:
+        description: Kind of the base unit (e.g., meter, kilogram, second).
+        required: true
+        range: UnitType
+      exponent:
+        description: Exponent of the base unit in the unit definition.
+        required: true
+        range: integer
+      multiplier:
+        description: Multiplier of the base unit in the unit definition.
+        range: float
+      scale:
+        description: Scale of the base unit in the unit definition.
+        range: float
+enums:
+  ModifierRole:
+    permissible_values:
+      ACTIVATOR:
+        meaning: activator
+        description: activator
+      ADDITIVE:
+        meaning: additive
+        description: additive
+      BIOCATALYST:
+        meaning: biocatalyst
+        description: biocatalyst
+      BUFFER:
+        meaning: buffer
+        description: buffer
+      CATALYST:
+        meaning: catalyst
+        description: catalyst
+      INHIBITOR:
+        meaning: inhibitor
+        description: inhibitor
+      SOLVENT:
+        meaning: solvent
+        description: solvent
+  EquationType:
+    permissible_values:
+      ASSIGNMENT:
+        meaning: assignment
+        description: assignment
+      INITIAL_ASSIGNMENT:
+        meaning: initialAssignment
+        description: initialAssignment
+      ODE:
+        meaning: ode
+        description: ode
+      RATE_LAW:
+        meaning: rateLaw
+        description: rateLaw
+  DataTypes:
+    permissible_values:
+      ABSORBANCE:
+        meaning: absorbance
+        description: absorbance
+      AMOUNT:
+        meaning: amount
+        description: amount
+      CONCENTRATION:
+        meaning: concentration
+        description: concentration
+      CONVERSION:
+        meaning: conversion
+        description: conversion
+      FLUORESCENCE:
+        meaning: fluorescence
+        description: fluorescence
+      PEAK_AREA:
+        meaning: peakarea
+        description: peakarea
+      TRANSMITTANCE:
+        meaning: transmittance
+        description: transmittance
+      TURNOVER:
+        meaning: turnover
+        description: turnover
+      YIELD:
+        meaning: yield
+        description: yield
+  UnitType:
+    permissible_values:
+      AMPERE:
+        meaning: ampere
+        description: ampere
+      AVOGADRO:
+        meaning: avogadro
+        description: avogadro
+      BECQUEREL:
+        meaning: becquerel
+        description: becquerel
+      CANDELA:
+        meaning: candela
+        description: candela
+      CELSIUS:
+        meaning: celsius
+        description: celsius
+      COULOMB:
+        meaning: coulomb
+        description: coulomb
+      DIMENSIONLESS:
+        meaning: dimensionless
+        description: dimensionless
+      FARAD:
+        meaning: farad
+        description: farad
+      GRAM:
+        meaning: gram
+        description: gram
+      GRAY:
+        meaning: gray
+        description: gray
+      HENRY:
+        meaning: henry
+        description: henry
+      HERTZ:
+        meaning: hertz
+        description: hertz
+      ITEM:
+        meaning: item
+        description: item
+      JOULE:
+        meaning: joule
+        description: joule
+      KATAL:
+        meaning: katal
+        description: katal
+      KELVIN:
+        meaning: kelvin
+        description: kelvin
+      KILOGRAM:
+        meaning: kilogram
+        description: kilogram
+      LITRE:
+        meaning: litre
+        description: litre
+      LUMEN:
+        meaning: lumen
+        description: lumen
+      LUX:
+        meaning: lux
+        description: lux
+      METRE:
+        meaning: metre
+        description: metre
+      MOLE:
+        meaning: mole
+        description: mole
+      NEWTON:
+        meaning: newton
+        description: newton
+      OHM:
+        meaning: ohm
+        description: ohm
+      PASCAL:
+        meaning: pascal
+        description: pascal
+      RADIAN:
+        meaning: radian
+        description: radian
+      SECOND:
+        meaning: second
+        description: second
+      SIEMENS:
+        meaning: siemens
+        description: siemens
+      SIEVERT:
+        meaning: sievert
+        description: sievert
+      STERADIAN:
+        meaning: steradian
+        description: steradian
+      TESLA:
+        meaning: tesla
+        description: tesla
+      VOLT:
+        meaning: volt
+        description: volt
+      WATT:
+        meaning: watt
+        description: watt
+      WEBER:
+        meaning: weber
+        description: weber

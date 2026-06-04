@@ -144,6 +144,7 @@ def _draw_edge(
     pos: dict[str, tuple[float, float]],
     show_label: bool,
     color: str,
+    label_shift: float = 0.0,
 ) -> None:
     x1, y1 = pos[src]
     x2, y2 = pos[tgt]
@@ -166,13 +167,17 @@ def _draw_edge(
         mid_x = (x1 + x2) / 2
         mid_y = (y1 + y2) / 2
         angle = atan2(y2 - y1, x2 - x1)
+        tangent_x = cos(angle)
+        tangent_y = sin(angle)
         normal_x = -sin(angle)
         normal_y = cos(angle)
-        label_offset = 0.36 + abs(rad) * 2.3
-        sign = 1 if rad >= 0 else -1
+        distance = ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** 0.5
+        curve_offset = rad * distance * 0.5
+        clearance = 0.09 if rad == 0 else 0.04
+        clearance *= 1 if rad >= 0 else -1
         ax.text(
-            mid_x + normal_x * label_offset * sign,
-            mid_y + normal_y * label_offset * sign,
+            mid_x + tangent_x * label_shift + normal_x * (curve_offset + clearance),
+            mid_y + tangent_y * label_shift + normal_y * (curve_offset + clearance),
             label,
             ha="center",
             va="center",
@@ -233,10 +238,24 @@ def visualize_conversion_graph_with_metrics(
             radii = base_radii[reverse_count:]
         else:
             radii = _edge_radii(len(edge_entries))
-        for (label, signature), rad in zip(edge_entries, radii):
+        label_shifts = [
+            (index - (len(edge_entries) - 1) / 2) * 0.38
+            for index in range(len(edge_entries))
+        ]
+        for (label, signature), rad, label_shift in zip(edge_entries, radii, label_shifts):
             score = edge_scores.get(signature) if edge_scores else None
             color = cmap(norm(score)) if score is not None else "#5F6B76"
-            _draw_edge(ax, src, tgt, label, rad, pos, show_label=show_edge_labels, color=color)
+            _draw_edge(
+                ax,
+                src,
+                tgt,
+                label,
+                rad,
+                pos,
+                show_label=show_edge_labels,
+                color=color,
+                label_shift=label_shift,
+            )
 
     for node, (x, y) in pos.items():
         group = NODE_GROUPS.get(node, "generated")

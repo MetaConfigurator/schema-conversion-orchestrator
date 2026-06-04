@@ -1,0 +1,11 @@
+{
+  "languages_in_graph": 5,
+  "ordered_pairs_total": 20,
+  "ordered_pairs_reachable": 20,
+  "total_paths": 75,
+  "max_paths": 13,
+  "max_paths_pair": "MdModels -> SHACL_TTL",
+  "avg_paths_over_all_pairs": 3.75,
+  "avg_paths_over_reachable_pairs": 3.75,
+  "graph": "core"
+}

@@ -80,7 +80,6 @@ def plot_path_count_matrix(matrix: pd.DataFrame, output_path: str | None = None)
         linewidths=0.5,
         linecolor="gray",
     )
-    plt.title("Schema Conversion Path Matrix", fontsize=16)
     plt.xticks(rotation=45, ha="right")
     plt.yticks(rotation=0)
     plt.tight_layout()
@@ -170,11 +169,18 @@ def plot_orchestrator_result_matrix(
         linewidths=0.8,
         linecolor="white",
         cbar_kws={"label": "Best-result quality score: (G + 0.5L) / total"},
-        annot_kws={"fontsize": 9},
+        annot_kws={"fontsize": 12, "fontweight": "semibold"},
     )
-    plt.title("Orchestrator Evaluation Matrix", fontsize=16)
     plt.xticks(rotation=45, ha="right")
     plt.yticks(rotation=0)
+    plt.gcf().text(
+        0.5,
+        0.02,
+        "G = good, L = lacking, I = invalid",
+        ha="center",
+        va="center",
+        fontsize=11,
+    )
     plt.tight_layout()
 
     if output_path:

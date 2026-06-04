@@ -1,0 +1,480 @@
+---
+repo: "http://www.enzymeml.org/v2/"
+prefix: "enzml"
+prefixes:
+  schema: "https://schema.org/"
+  OBO: "http://purl.obolibrary.org/obo/"
+---
+
+# EnzymeML V2
+
+EnzymeML is a data exchange format that supports the comprehensive documentation of enzymatic data by describing reaction conditions, time courses of substrate and product concentrations, the kinetic model, and the estimated kinetic constants. EnzymeML is based on the Systems Biology Markup Language, which was extended by implementing the STRENDA Guidelines. An EnzymeML Document serves as a container to transfer data between experimental platforms, modeling tools, and databases. EnzymeML supports the scientific community by introducing a standardized data exchange format to make enzymatic data findable, accessible, interoperable, and reusable according to the FAIR data principles.
+
+## Root object
+
+### EnzymeMLDocument
+
+The EnzymeMLDocument is the root object that serves as a container for all components of an enzymatic experiment. It includes essential metadata about the document itself, such as its title and creation/modification dates, as well as references to related publications and databases. Additionally, it contains comprehensive information about the experimental setup, including reaction vessels, proteins, complexes, small molecules, reactions, measurements, equations, and parameters.
+
+- version
+  - Type: string
+  - Description: The version of the EnzymeML Document.
+  - Pattern: "^(\\d+)\\.\\d+$"
+  - Default: "2.0"
+- description
+  - Type: string
+  - Description: Description of the EnzymeML Document.
+- name
+  - Type: string
+  - Description: Title of the EnzymeML Document.
+  - Term: schema:title
+- created
+  - Type: string
+  - Description: Date the EnzymeML Document was created.
+  - Term: schema:dateCreated
+- modified
+  - Type: string
+  - Description: Date the EnzymeML Document was modified.
+  - Term: schema:dateModified
+- creators
+  - Type: Creator[]
+  - Description: Contains descriptions of all authors that are part of the experiment.
+  - Term: schema:creator
+- vessels
+  - Type: Vessel[]
+  - Description: Contains descriptions of all vessels that are part of the experiment.
+- proteins
+  - Type: Protein[]
+  - Description: Contains descriptions of all proteins that are part of the experiment that may be referenced in reactions, measurements, and equations.
+- complexes
+  - Type: Complex[]
+  - Description: Contains descriptions of all complexes that are part of the experiment that may be referenced in reactions, measurements, and equations.
+- small_molecules
+  - Type: SmallMolecule[]
+  - Description: Contains descriptions of all reactants that are part of the experiment that may be referenced in reactions, measurements, and equations.
+- reactions
+  - Type: Reaction[]
+  - Description: Contains descriptions of all reactions that are part of the experiment.
+- measurements
+  - Type: Measurement[]
+  - Description: Contains descriptions of all measurements that are part of the experiment.
+- equations
+  - Type: Equation[]
+  - Description: Contains descriptions of all equations that are part of the experiment.
+- parameters
+  - Type: Parameter[]
+  - Description: Contains descriptions of all parameters that are part of the experiment and may be used in equations.
+- references
+  - Type: Identifier[]
+  - Description: Contains references to publications, databases, and arbitrary links to the web.
+  - Term: schema:citation
+
+## General information
+
+### Creator (schema:person)
+
+The Creator object represents an individual author or contributor who has participated in creating or modifying the EnzymeML Document. It captures essential personal information such as their name and contact details, allowing proper attribution and enabling communication with the document's creators.
+
+- given_name
+  - Type: string
+  - Description: Given name of the author or contributor.
+  - Term: schema:givenName
+- family_name
+  - Type: string
+  - Description: Family name of the author or contributor.
+  - Term: schema:familyName
+- mail
+  - Type: string
+  - Description: Email address of the author or contributor.
+  - Term: schema:email
+
+## Species
+
+The Species section contains objects that describe the different types of molecular species involved in enzymatic reactions. This includes vessels where reactions take place, proteins that catalyze reactions, complexes, and small molecules. Each species type has specific attributes to capture its unique properties and roles in the experimental system.
+
+The **Species** section describes the different molecular species involved in enzymatic reactions. This includes **vessels** (where reactions occur), **proteins** (catalysts), **complexes** (groups of proteins and small molecules), and **small molecules** (substrates, cofactors, inhibitors).
+
+| **Species Type**   | **Description**                                                  | **Example**                                                                                |
+| ------------------ | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| **Vessel**         | A container where reactions take place.                          | Microtiter plate well, Eppendorf tube, etc.                                                |
+| **Protein**        | A macromolecule that catalyzes reactions.                        | Alcohol Dehydrogenase (ADH1), Lactate Dehydrogenase (LDH), etc.                            |
+| **Small Molecule** | A low-molecular-weight compound, often a reactant or product.    | ATP (Adenosine Triphosphate), Glucose                                                      |
+| **Complex**        | Allows to group multiple species together by their `species_id`. | Enzyme-substrate (combine SmallMolecule and Protein), Buffer (combine SmallMolecule), etc. |
+
+### Vessel (OBO:OBI_0400081)
+
+The Vessel object represents containers used to conduct experiments, such as reaction vessels, microplates, or bioreactors. It captures key properties like volume and whether the volume remains constant during the experiment.
+
+- id
+  - Type: Identifier
+  - Description: Unique identifier of the vessel.
+  - Term: schema:identifier
+- name
+  - Type: string
+  - Description: Name of the used vessel.
+  - Term: schema:name
+- volume
+  - Type: float
+  - Description: Volumetric value of the vessel.
+  - Term: OBO:OBI_0002139
+- unit
+  - Type: UnitDefinition
+  - Description: Volumetric unit of the vessel.
+- constant
+  - Type: boolean
+  - Description: Whether the volume of the vessel is constant or not. Default is True.
+  - Default: True
+
+### Protein (OBO:PR_000000001)
+
+The Protein object represents enzymes and other proteins involved in the experiment.
+
+- id
+  - Type: Identifier
+  - Description: Identifier of the protein, such as a UniProt ID, or a custom identifier.
+  - Term: schema:identifier
+- name
+  - Type: string
+  - Description: Name of the protein.
+  - Term: schema:name
+- constant
+  - Type: boolean
+  - Description: Whether the concentration of the protein is constant through the experiment or not. Default is True.
+  - Default: True
+- sequence
+  - Type: string
+  - Description: Amino acid sequence of the protein
+  - Term: OBO:GSSO_007262
+- vessel_id
+  - Type: Identifier
+  - Description: Identifier of the vessel this protein has been applied to.
+  - Term: schema:identifier
+- ecnumber
+  - Type: string
+  - Description: EC number of the protein.
+- organism
+  - Type: string
+  - Description: Expression host organism of the protein.
+  - Term: OBO:OBI_0100026
+- organism_tax_id
+  - Type: Identifier
+  - Description: Taxonomy identifier of the expression host.
+- references
+  - Type: Identifier[]
+  - Description: List of references to publications, database entries, etc. that describe or reference the protein.
+  - Term: schema:citation
+
+### Complex
+
+The Complex object allows the grouping of multiple species using their `species_id`. This enables the representation of protein-small molecule complexes (e.g., enzyme-substrate complexes) as well as buffer or solvent mixtures (combinations of SmallMolecule species).
+
+- id
+  - Type: Identifier
+  - Description: Unique identifier of the complex.
+  - Term: schema:identifier
+- name
+  - Type: string
+  - Description: Name of the complex.
+  - Term: schema:name
+- constant
+  - Type: boolean
+  - Description: Whether the concentration of the complex is constant through the experiment or not. Default is False.
+  - Default: False
+- vessel_id
+  - Type: Identifier
+  - Description: Unique identifier of the vessel this complex has been used in.
+  - Term: schema:identifier
+- participants
+  - Type: Identifier[]
+  - Description: Array of IDs the complex contains
+
+### SmallMolecule
+
+The SmallMolecule object represents small chemical compounds that participate in the experiment as substrates, products, or modifiers. It captures key molecular identifiers like SMILES and InChI.
+
+- id
+  - Type: Identifier
+  - Description: Identifier of the small molecule, such as a Pubchem ID, ChEBI ID, or a custom identifier.
+  - Term: schema:identifier
+- name
+  - Type: string
+  - Description: Name of the small molecule.
+  - Term: schema:name
+- constant
+  - Type: boolean
+  - Description: Whether the concentration of the small molecule is constant through the experiment or not. Default is False.
+  - Default: False
+- vessel_id
+  - Type: Identifier
+  - Description: Identifier of the vessel this small molecule has been used in.
+  - Term: schema:identifier
+- canonical_smiles
+  - Type: string
+  - Description: Canonical Simplified Molecular-Input Line-Entry System (SMILES) encoding of the small molecule.
+- inchi
+  - Type: string
+  - Description: International Chemical Identifier (InChI) encoding of the small molecule.
+- inchikey
+  - Type: string
+  - Description: Hashed International Chemical Identifier (InChIKey) encoding of the small molecule.
+- synonymous_names
+  - Type: string[]
+  - Description: List of synonymous names for the small molecule.
+- references
+  - Type: Identifier[]
+  - Description: List of references to publications, database entries, etc. that describe or reference the small molecule.
+  - Term: schema:citation
+
+## Enzyme Reaction
+
+The EnzymeReaction section contains objects that describe the chemical or enzymatic reactions that were investigated over the course of the experiment. Elements of the reaction are defined via `ReactionElement` and `ModifierElement` objects.
+
+### Reaction
+
+The Reaction object represents a chemical or enzymatic reaction and holds the different species and modifiers that are part of the reaction.
+
+- id
+  - Type: Identifier
+  - Description: Unique identifier of the reaction.
+  - Term: schema:identifier
+- name
+  - Type: string
+  - Description: Name of the reaction.
+- reversible
+  - Type: boolean
+  - Description: Whether the reaction is reversible or irreversible. Default is False.
+  - Default: False
+- kinetic_law
+  - Type: Equation
+  - Description: Mathematical expression of the reaction.
+- reactants
+  - Type: ReactionElement[]
+  - Description: List of reactants that are part of the reaction.
+- products
+  - Type: ReactionElement[]
+  - Description: List of products that are part of the reaction.
+- modifiers
+  - Type: ModifierElement[]
+  - Description: List of reaction elements that are not part of the reaction but influence it.
+
+### ReactionElement
+
+This object is part of the `Reaction` object and describes a species (SmallMolecule, Protein, Complex) participating in the reaction. The stochiometry is of the species is specified in the `stoichiometry` field, whereas negative values indicate that the species is a reactant and positive values indicate that the species is a product of the reaction.
+
+- species_id
+  - Type: Identifier
+  - Description: Internal identifier to either a protein or reactant defined in the EnzymeML Document.
+  - Term: schema:identifier
+- stoichiometry
+  - Type: float
+  - Description: Float number representing the associated stoichiometry.
+  - Default: 1.0
+  - ExclusiveMinimum: 0
+
+### ModifierElement
+
+The ModifierElement object represents a species that is not part of the reaction but influences it.
+
+- species_id
+  - Type: Identifier
+  - Description: Internal identifier to either a protein or reactant defined in the EnzymeML Document.
+  - Term: schema:identifier
+- role
+  - Type: ModifierRole
+  - Description: Role of the modifier in the reaction.
+
+## Modelling
+
+The Modelling section contains objects that describe the mathematical models used to analyze the experimental data. This includes equations, variables, and parameters that define the kinetic models used to describe the reactions. There are multiple types of equations that can be used to describe a reaction. In the following is a table that describes the different types of equations and their usage:
+
+| **Equation Type**                  | **Description**                                                       | **Example**           |
+| ---------------------------------- | --------------------------------------------------------------------- | --------------------- |
+| **Ordinary Differential Equation** | Defines how the value of a species changes over time.                 | `-k1 * s0`            |
+| **Rate Law**                       | Specifies the reaction velocity based on reactant concentrations.     | `k * s0 * s1`         |
+| **Assignment**                     | Expresses a variable as an algebraic function of other variables.     | `total - product`     |
+| **Initial Assignment**             | Similar to an assignment, but is constant throughout the integration. | `product + substrate` |
+
+The `equation_type` field determines the type of equation.
+
+### Equation
+
+The **Equation** object describes a mathematical equation used to model parts of a reaction system.
+
+- species_id
+  - Type: Identifier
+  - Description: Identifier of a defined species (SmallMolecule, Protein, Complex). Represents the left hand side of the equation.
+  - Term: schema:identifier
+- equation
+  - Type: string
+  - Description: Mathematical expression of the equation. Represents the right hand side of the equation.
+- equation_type
+  - Type: EquationType
+  - Description: Type of the equation.
+- variables
+  - Type: Variable[]
+  - Description: List of variables that are part of the equation
+
+### Variable
+
+This object describes a variable that is part of an equation. Variables can represent species concentrations, time, or other quantities that appear in mathematical expressions. Each variable must have a unique identifier, name, and symbol that is used in equations.
+
+- id
+  - Type: Identifier
+  - Description: Identifier of the variable.
+  - Term: schema:identifier
+- name
+  - Type: string
+  - Description: Name of the variable.
+- symbol
+  - Type: string
+  - Description: Equation symbol of the variable.
+
+### Parameter
+
+This object describes parameters used in kinetic models, including estimated values, bounds, and associated uncertainties. Parameters can represent rate constants, binding constants, or other numerical values that appear in rate equations or other mathematical expressions.
+
+- id
+  - Type: Identifier
+  - Description: Identifier of the parameter.
+  - Term: schema:identifier
+- name
+  - Type: string
+  - Description: Name of the parameter.
+- symbol
+  - Type: string
+  - Description: Equation symbol of the parameter.
+- value
+  - Type: float
+  - Description: Numerical value of the estimated parameter.
+- unit
+  - Type: UnitDefinition
+  - Description: Unit of the estimated parameter.
+- initial_value
+  - Type: float
+  - Description: Initial value that was used for the parameter estimation.
+- upper_bound
+  - Type: float
+  - Description: Upper bound for the parameter value that was used for the parameter estimation
+- lower_bound
+  - Type: float
+  - Description: Lower bound for the parameter value that was used for the parameter estimation
+- fit
+  - Type: boolean
+  - Description: Whether this parameter should be varied or not in the context of an optimization.
+  - Default: True
+- stderr
+  - Type: float
+  - Description: Standard error of the estimated parameter.
+- constant
+  - Type: boolean
+  - Description: Specifies if this parameter is constant. Default is True.
+  - Default: True
+
+## Data handling
+
+The Data handling section contains objects that describe the data that was measured, which includes time course or endpoint data of any type defined in DataTypes. It includes initial concentrations of all species used in a single measurement.
+
+### Measurement
+
+This object describes a single measurement, which includes time course data of any type defined in DataTypes. It contains initial concentrations and measurement data for all species involved in the experiment. Multiple measurements can be grouped together using the group_id field to indicate they are part of the same experimental series.
+
+- id
+  - Type: Identifier
+  - Description: Unique identifier of the measurement.
+  - Term: schema:identifier
+- name
+  - Type: string
+  - Description: Name of the measurement
+- species_data
+  - Type: MeasurementData[]
+  - Description: Measurement data of all species that were part of the measurement. A species refers to a Protein, Complex, or SmallMolecule.
+- group_id
+  - Type: Identifier
+  - Description: User-defined group ID to signal relationships between measurements.
+- ph
+  - Type: float
+  - Description: pH value of the measurement.
+  - Minimum: 0
+  - Maximum: 14
+- temperature
+  - Type: float
+  - Description: Temperature of the measurement.
+- temperature_unit
+  - Type: UnitDefinition
+  - Description: Unit of the temperature of the measurement.
+
+### MeasurementData
+
+This object describes a single entity of a measurement, which corresponds to one species (Protein, Complex, SmallMolecule). It contains time course data for that species, including the initial amount, prepared amount, and measured data points over time. Endpoint data is treated as a time course data point with only one data point.
+
+- species_id
+  - Type: Identifier
+  - Description: The identifier for the described reactant.
+- prepared
+  - Type: float
+  - Description: Amount of the the species before starting the measurement. This field can be used for specifying the prepared amount of a species in the reaction mix. Not to be confused with `initial`, specifying the concentration of a species at the first data point from the `data` array.
+- initial
+  - Type: float
+  - Description: Initial amount of the measurement data. This must be the same as the first data point in the `data` array.
+- data_unit
+  - Type: UnitDefinition
+  - Description: SI unit of the data that was measured.
+- data
+  - Type: float[]
+  - Description: Data that was measured.
+- time
+  - Type: float[]
+  - Description: Corresponding time points of the `data`.
+- time_unit
+  - Type: UnitDefinition
+  - Description: Unit of the time points of the `data`.
+- data_type
+  - Type: DataTypes
+  - Description: Type of data that was measured (e.g. concentration, absorbance, etc.)
+- is_simulated
+  - Type: boolean
+  - Description: Whether or not the data has been generated by simulation. Default is False.
+  - Default: False
+
+## Enumerations
+
+### ModifierRole
+
+These values are used to determine the role of a modifier in a reaction.
+
+```python
+SOLVENT = "solvent"
+BIOCATALYST = "biocatalyst"
+CATALYST = "catalyst"
+BUFFER = "buffer"
+ADDITIVE = "additive"
+INHIBITOR = "inhibitor"
+ACTIVATOR = "activator"
+```
+
+### EquationType
+
+These values are used to determine the type of equation. ODE equations describe the rate of change of species over time, assignment equations define algebraic relationships between variables, initial assignments set starting values, and rate laws define reaction kinetics.
+
+```python
+ODE = "ode"
+ASSIGNMENT = "assignment"
+INITIAL_ASSIGNMENT = "initialAssignment"
+RATE_LAW = "rateLaw"
+```
+
+### DataTypes
+
+These values are used to determine the type of time course data.
+
+```python
+ABSORBANCE = "absorbance"
+CONCENTRATION = "concentration"
+CONVERSION = "conversion"
+PEAK_AREA = "peakarea"
+TRANSMITTANCE = "transmittance"
+FLUORESCENCE = "fluorescence"
+AMOUNT = "amount"
+YIELD = "yield"
+TURNOVER = "turnover"
+```

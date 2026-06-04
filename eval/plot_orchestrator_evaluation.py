@@ -33,8 +33,7 @@ EVALUATION_LANGUAGES = {
     "Xsd",
     "SHACL_TTL",
     "LinkMl",
-    "GraphQL",
-    "Protobuf",
+    "MdModels",
 }
 
 
@@ -103,8 +102,20 @@ def main() -> None:
         include_languages=EVALUATION_LANGUAGES,
     )
 
+    full_graph_path = plots_dir / "conversion_graph_all_languages.png"
+    full_converters = register_converters(only_core_languages=False)
+    full_conversion_graph = build_conversion_graph(full_converters)
+    visualize_conversion_graph_with_metrics(
+        full_conversion_graph,
+        output_path=str(full_graph_path),
+        show_edge_labels=True,
+        edge_scores=None,
+        include_languages=None,
+    )
+
     print(f"Wrote {matrix_path}")
     print(f"Wrote {graph_path}")
+    print(f"Wrote {full_graph_path}")
 
 
 if __name__ == "__main__":

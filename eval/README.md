@@ -22,11 +22,12 @@ eval/real_world_inputs/
   Xsd/
   SHACL_TTL/
   LinkMl/
+  MdModels/
 ```
 
-Use 3 files per source language for the paper run where possible: one simple, one medium-complexity, and one complex schema. The current broad evaluation deliberately excludes OWL to keep the manual inspection effort manageable.
+Use 3 files per source language for the paper run where possible: one simple, one medium-complexity, and one complex schema.
 
-The source languages are JSON Schema, XSD, SHACL TTL, and LinkML. The target languages are JSON Schema, XSD, SHACL TTL, LinkML, GraphQL, and Protobuf.
+The source and target languages for the broad paper evaluation are JSON Schema, XSD, SHACL TTL, LinkML, and MdModels. OWL and generated target languages such as GraphQL and Protobuf are intentionally excluded from this system-level matrix because they are not connected enough for the current evaluation corpus.
 
 The local corpus and source provenance are documented in:
 
@@ -55,6 +56,8 @@ Outputs are written to:
 ```text
 eval/orchestrator_outputs/
   runs/<run_id>/
+    review/final_outputs.csv
+    review/edge_outputs.csv
   review/final_outputs.csv
   review/edge_outputs.csv
   latest_run.txt
@@ -97,6 +100,7 @@ Generated plots:
 ```text
 eval/orchestrator_outputs/plots/orchestrator_result_matrix.png
 eval/orchestrator_outputs/plots/conversion_graph_edge_quality.png
+eval/orchestrator_outputs/plots/conversion_graph_all_languages.png
 ```
 
 The matrix cell format is:
@@ -121,6 +125,8 @@ The edge graph labels each edge with a short library name and colors it by:
 ```
 
 using only edge-local annotations from `edge_outputs.csv`.
+
+`conversion_graph_all_languages.png` shows the complete registered conversion graph with neutral edge coloring. It is topology-only, because the broad evaluation does not cover every registered language.
 
 ## Accuracy-Based Ranking Benchmarks
 

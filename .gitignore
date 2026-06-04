@@ -222,3 +222,4 @@ external_converters/java/converter.jar
 .idea/
 /artifacts/
 /eval/conversion_matrix.png
+/eval/orchestrator_outputs/

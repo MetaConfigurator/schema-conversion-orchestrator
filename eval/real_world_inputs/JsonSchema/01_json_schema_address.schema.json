@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/address.schema.json",
+  "title": "Address",
+  "type": "object",
+  "required": ["streetAddress", "locality", "postalCode", "countryName"],
+  "properties": {
+    "streetAddress": {
+      "type": "string"
+    },
+    "locality": {
+      "type": "string"
+    },
+    "region": {
+      "type": "string"
+    },
+    "postalCode": {
+      "type": "string",
+      "pattern": "^[0-9A-Za-z -]+$"
+    },
+    "countryName": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}
