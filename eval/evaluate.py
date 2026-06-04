@@ -1,242 +1,492 @@
-import os
-from typing import Tuple
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
+"""Run the broad real-world orchestrator evaluation.
 
-import requests
+This evaluation is separate from the SHACL/JSON accuracy benchmarks used for
+accuracy-based ranking. It measures the orchestrator as a system over a corpus
+of real-world input schemas: for each source language, each input file, and each
+target language, every discovered conversion path is executed once. The runner
+stores final and intermediate outputs and creates review CSV files for human
+annotation.
 
-SERVER_URL = "http://localhost:5002/convert"
-SOURCE_LANGUAGES = ["JsonSchema", "Xsd", "Shacl_TTL", "Owl_TTL", "LinkML"]
-TARGET_LANGUAGES = ["JsonSchema", "Xsd", "Shacl_TTL", "Owl_TTL", "LinkML", "GraphQL", "Protobuf"]
+Input corpus layout:
+
+    eval/real_world_inputs/
+      JsonSchema/
+        example_01.schema.json
+      Xsd/
+      SHACL_TTL/
+      LinkMl/
+
+Output layout:
+
+    eval/orchestrator_outputs/
+      runs/<run_id>/<source>/<input_stem>/<target>/path_001/
+        metadata.json
+        final_output.<ext> | error.txt
+        steps/step_01_output.<ext>
+      review/
+        final_outputs.csv
+        edge_outputs.csv
+
+Human annotation:
+    Fill the ``status`` column in both review CSVs with:
+      G = good, L = lacking, I = invalid.
+    The runner pre-fills I for failed/invalid outputs and leaves valid outputs
+    blank for human inspection.
+"""
+from __future__ import annotations
+
+import argparse
+import csv
+import json
+import re
+import sys
+import time
+import traceback
+from dataclasses import asdict, dataclass
+from datetime import datetime
+from pathlib import Path
+from typing import Iterable
+from xml.etree import ElementTree
+
+import yaml
+
+EVAL_DIR = Path(__file__).resolve().parent
+REPO_ROOT = EVAL_DIR.parent
+SRC_DIR = REPO_ROOT / "src"
+sys.path.insert(0, str(SRC_DIR))
+
+from schema_conversion_orchestrator.application.conversion_service import ConversionService  # noqa: E402
+from schema_conversion_orchestrator.converters.base import Converter  # noqa: E402
+from schema_conversion_orchestrator.converters.registry import register_converters  # noqa: E402
+from schema_conversion_orchestrator.domain.conversion_graph import find_paths  # noqa: E402
+from schema_conversion_orchestrator.domain.conversion_types import ConversionPath, ConversionResult  # noqa: E402
+from schema_conversion_orchestrator.domain.schema_types import SchemaLanguage  # noqa: E402
 
 
-def send_conversion_request(source_language: str, target_language: str, schema: str) -> any | Tuple[int, str]:
-    # Build payload
-    payload = {
-        "sourceLanguage": source_language,
-        "targetLanguage": target_language,
-        "schema": schema
-    }
+SOURCE_LANGUAGES = [
+    SchemaLanguage.JsonSchema,
+    SchemaLanguage.Xsd,
+    SchemaLanguage.SHACL_TTL,
+    SchemaLanguage.LinkMl,
+]
 
-    # Send request
-    print(f"Sending conversion request {source_language} → {target_language} ...")
-    resp = requests.post(SERVER_URL, json=payload)
+TARGET_LANGUAGES = [
+    SchemaLanguage.JsonSchema,
+    SchemaLanguage.Xsd,
+    SchemaLanguage.SHACL_TTL,
+    SchemaLanguage.LinkMl,
+    SchemaLanguage.GraphQL,
+    SchemaLanguage.Protobuf,
+]
 
-    # Handle response
-    if resp.status_code == 200:
-        result = resp.json()
-        return result
+INPUT_DIR = EVAL_DIR / "real_world_inputs"
+OUTPUT_DIR = EVAL_DIR / "orchestrator_outputs"
+
+LANGUAGE_EXTENSIONS = {
+    SchemaLanguage.JsonSchema.value: ".schema.json",
+    SchemaLanguage.Xsd.value: ".xsd",
+    SchemaLanguage.SHACL_TTL.value: ".ttl",
+    SchemaLanguage.SHACL_JSON_LD.value: ".jsonld",
+    SchemaLanguage.LinkMl.value: ".yaml",
+    SchemaLanguage.MdModels.value: ".md",
+    SchemaLanguage.GraphQL.value: ".graphql",
+    SchemaLanguage.Protobuf.value: ".proto",
+    SchemaLanguage.Shex.value: ".shex",
+    SchemaLanguage.Mermaid.value: ".mmd",
+    SchemaLanguage.SqlAlchemy.value: ".py",
+}
+
+REVIEW_FIELDS = [
+    "status",
+    "automatic_valid",
+    "source_language",
+    "target_language",
+    "input_file",
+    "path_id",
+    "path_rank",
+    "path_count",
+    "path_signature",
+    "output_path",
+    "notes",
+]
+
+EDGE_REVIEW_FIELDS = [
+    "status",
+    "automatic_valid",
+    "source_language",
+    "target_language",
+    "input_file",
+    "path_id",
+    "step_index",
+    "edge_signature",
+    "edge_source_language",
+    "edge_target_language",
+    "converter_name",
+    "library",
+    "output_path",
+    "notes",
+]
+
+
+@dataclass
+class StepRecord:
+    step_index: int
+    source_language: str
+    target_language: str
+    converter_name: str
+    service_name: str
+    library: str | None
+    library_version: str | None
+    library_url: str | None
+    success: bool
+    automatic_valid: bool
+    output_path: str | None
+    error: str | None
+    duration_seconds: float
+
+
+@dataclass
+class AttemptRecord:
+    source_language: str
+    target_language: str
+    input_file: str
+    path_id: str
+    path_rank: int | None
+    path_count: int
+    path_signature: str
+    success: bool
+    automatic_valid: bool
+    final_output_path: str | None
+    error_path: str | None
+    failed_step_index: int | None
+    duration_seconds: float
+    steps: list[StepRecord]
+
+
+def language_from_dir(name: str) -> SchemaLanguage:
+    for language in SchemaLanguage:
+        if language.value.lower() == name.lower():
+            return language
+    raise ValueError(f"Unknown schema-language directory: {name}")
+
+
+def safe_name(value: str) -> str:
+    return re.sub(r"[^A-Za-z0-9_.-]+", "_", value).strip("_")
+
+
+def output_extension(language: str) -> str:
+    return LANGUAGE_EXTENSIONS.get(language, ".txt")
+
+
+def path_signature(path: ConversionPath) -> str:
+    return " -> ".join(
+        f"{conv.source_language.value}:{conv.target_language.value}:{conv.name}"
+        for conv in path
+    )
+
+
+def edge_signature(converter: Converter) -> str:
+    return f"{converter.source_language.value}:{converter.target_language.value}:{converter.name}"
+
+
+def converter_library(converter: Converter) -> str:
+    return converter.library or converter.name
+
+
+def validate_output(schema: str | None, language: str) -> bool:
+    if schema is None or not schema.strip():
+        return False
+
+    try:
+        if language in {SchemaLanguage.JsonSchema.value, SchemaLanguage.SHACL_JSON_LD.value}:
+            json.loads(schema)
+            return True
+
+        if language in {SchemaLanguage.LinkMl.value}:
+            yaml.safe_load(schema)
+            return True
+
+        if language == SchemaLanguage.Xsd.value:
+            ElementTree.fromstring(schema.encode("utf-8"))
+            return True
+
+        if language == SchemaLanguage.SHACL_TTL.value:
+            try:
+                from rdflib import Graph
+            except ImportError:
+                return bool(schema.strip())
+            Graph().parse(data=schema, format="turtle")
+            return True
+
+        if language == SchemaLanguage.GraphQL.value:
+            return "type " in schema or "schema " in schema or "interface " in schema
+
+        if language == SchemaLanguage.Protobuf.value:
+            return "syntax" in schema or "message " in schema
+
+        return bool(schema.strip())
+    except Exception:
+        return False
+
+
+def discover_inputs(input_dir: Path, source_languages: Iterable[SchemaLanguage]) -> dict[SchemaLanguage, list[Path]]:
+    discovered: dict[SchemaLanguage, list[Path]] = {}
+    for language in source_languages:
+        language_dir = input_dir / language.value
+        language_dir.mkdir(parents=True, exist_ok=True)
+        files = [
+            path for path in sorted(language_dir.iterdir())
+            if path.is_file() and not path.name.startswith(".")
+        ]
+        discovered[language] = files
+    return discovered
+
+
+def write_text(path: Path, content: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(content, encoding="utf-8")
+
+
+def execute_path(
+    source: SchemaLanguage,
+    target: SchemaLanguage,
+    input_file: Path,
+    input_schema: str,
+    path: ConversionPath,
+    path_id: str,
+    path_count: int,
+    attempt_dir: Path,
+) -> AttemptRecord:
+    current_schema = input_schema
+    steps: list[StepRecord] = []
+    failed_step_index: int | None = None
+    final_output_path: Path | None = None
+    error_path: Path | None = None
+    error: str | None = None
+    success = False
+
+    attempt_start = time.perf_counter()
+    for step_index, converter in enumerate(path, start=1):
+        step_start = time.perf_counter()
+        output_path = attempt_dir / "steps" / f"step_{step_index:02d}_output{output_extension(converter.target_language.value)}"
+        try:
+            current_schema = converter.convert(current_schema)
+            automatic_valid = validate_output(current_schema, converter.target_language.value)
+            write_text(output_path, current_schema)
+            steps.append(
+                StepRecord(
+                    step_index=step_index,
+                    source_language=converter.source_language.value,
+                    target_language=converter.target_language.value,
+                    converter_name=converter.name,
+                    service_name=converter.service_name,
+                    library=converter.library,
+                    library_version=converter.library_version,
+                    library_url=converter.library_url,
+                    success=True,
+                    automatic_valid=automatic_valid,
+                    output_path=str(output_path.relative_to(OUTPUT_DIR)),
+                    error=None,
+                    duration_seconds=round(time.perf_counter() - step_start, 4),
+                )
+            )
+        except Exception as exc:
+            failed_step_index = step_index - 1
+            error = f"{exc}\n\nTraceback:\n{traceback.format_exc()}"
+            error_path = attempt_dir / "error.txt"
+            write_text(error_path, error)
+            steps.append(
+                StepRecord(
+                    step_index=step_index,
+                    source_language=converter.source_language.value,
+                    target_language=converter.target_language.value,
+                    converter_name=converter.name,
+                    service_name=converter.service_name,
+                    library=converter.library,
+                    library_version=converter.library_version,
+                    library_url=converter.library_url,
+                    success=False,
+                    automatic_valid=False,
+                    output_path=None,
+                    error=str(exc),
+                    duration_seconds=round(time.perf_counter() - step_start, 4),
+                )
+            )
+            break
     else:
-        print(f"Error {resp.status_code}: {resp.text}")
-        return resp.status_code, resp.text
+        success = bool(current_schema)
+        final_output_path = attempt_dir / f"final_output{output_extension(target.value)}"
+        write_text(final_output_path, current_schema)
+
+    automatic_valid = success and validate_output(current_schema, target.value)
+    record = AttemptRecord(
+        source_language=source.value,
+        target_language=target.value,
+        input_file=str(input_file.relative_to(INPUT_DIR)),
+        path_id=path_id,
+        path_rank=None,
+        path_count=path_count,
+        path_signature=path_signature(path),
+        success=success,
+        automatic_valid=automatic_valid,
+        final_output_path=str(final_output_path.relative_to(OUTPUT_DIR)) if final_output_path else None,
+        error_path=str(error_path.relative_to(OUTPUT_DIR)) if error_path else None,
+        failed_step_index=failed_step_index,
+        duration_seconds=round(time.perf_counter() - attempt_start, 4),
+        steps=steps,
+    )
+    metadata_path = attempt_dir / "metadata.json"
+    metadata_path.write_text(json.dumps(asdict(record), indent=2) + "\n", encoding="utf-8")
+    return record
 
 
-def load_golden_schemas(schema_languages: list[str]) -> dict[str, str]:
-    """
-    Loads the golden schemas for each schema language from the 'golden_schemas/' folder.
+def run_evaluation(input_dir: Path, output_dir: Path, run_id: str, only_core_languages: bool) -> Path:
+    global OUTPUT_DIR
+    OUTPUT_DIR = output_dir
+    run_dir = output_dir / "runs" / run_id
+    review_dir = output_dir / "review"
+    run_dir.mkdir(parents=True, exist_ok=True)
+    review_dir.mkdir(parents=True, exist_ok=True)
 
-    :param schema_languages: List of schema languages to load.
-    :return: A map of schema language to its corresponding golden schema string.
-    """
-    golden_schemas = {}
-    for language in schema_languages:
-        source_folder = os.path.join("golden_schemas", language)
-        for filename in os.listdir(source_folder):
-            with open(os.path.join(source_folder, filename), "r") as f:
-                golden_schemas[language] = f.read()
-            break  # There is only one schema file per language
-    return golden_schemas
+    service = ConversionService(register_converters(only_core_languages=only_core_languages))
+    inputs = discover_inputs(input_dir, SOURCE_LANGUAGES)
 
+    final_review_rows: list[dict[str, str | int | bool | None]] = []
+    edge_review_rows: list[dict[str, str | int | bool | None]] = []
+    all_metadata: list[dict] = []
 
-def request_conversion_results(source_languages: list[str], target_languages: list[str], golden_schemas: dict[str, str]) -> dict[str, dict[str, any]]:
-    results = {}  # multi-dimensional map [source_language][target_language] = result_schema
-    successes = 0
-    errors = 0
-    for source_language in source_languages:
+    for source, input_files in inputs.items():
+        if not input_files:
+            print(f"No input files for {source.value}; skipping source language.")
+            continue
 
-        input_schema = golden_schemas[source_language]
+        for input_file in input_files:
+            input_schema = input_file.read_text(encoding="utf-8")
+            for target in TARGET_LANGUAGES:
+                if source == target:
+                    continue
 
-        source_language_results = {}
-        for target_language in target_languages:
-            if source_language == target_language:
-                continue
+                paths = find_paths(source, target, service.conversion_graph)
+                path_count = len(paths)
+                if path_count == 0:
+                    continue
 
-            request_result = send_conversion_request(source_language, target_language, input_schema)
-            if isinstance(request_result, tuple):
-                error_code, error_message = request_result
-                errors += 1
-                print("Conversion request error code " + str(error_code) + ": " + error_message)
+                print(f"{source.value} -> {target.value}: {input_file.name} ({path_count} paths)")
+                attempts: list[AttemptRecord] = []
+                conversion_results: list[ConversionResult] = []
 
-            else:
-                successes += 1
-                # results is an object { "results": [ "conversionPath": [...], "result": {...}, "success": bool ] }
-                # we want to extract all result schemas and their corresponding success value and prettified path
-                formatted_results = []
-                for idx, result_entry in enumerate(request_result["results"]):
-                    conversion_path_short = "__".join(
-                        [f"to_{step['targetLanguage']}_via_{step['serviceName']}" for step in result_entry["conversionPath"]]
+                for path_index, path in enumerate(paths, start=1):
+                    path_id = f"path_{path_index:03d}"
+                    attempt_dir = (
+                        run_dir
+                        / source.value
+                        / safe_name(input_file.stem)
+                        / target.value
+                        / path_id
                     )
-                    conversion_path_full = " -> ".join(
-                        [f"{step['sourceLanguage']} to {step['targetLanguage']} via {step['serviceName']}[{step['converterName']}]" for step in result_entry["conversionPath"]]
+                    attempt = execute_path(
+                        source=source,
+                        target=target,
+                        input_file=input_file,
+                        input_schema=input_schema,
+                        path=path,
+                        path_id=path_id,
+                        path_count=path_count,
+                        attempt_dir=attempt_dir,
                     )
-                    formatted_results.append({
-                        "attempt": idx + 1,
-                        "success": result_entry["success"],
-                        "result_schema": result_entry.get("result", None),
-                        "conversion_path": conversion_path_short,
-                        "conversion_path_full": conversion_path_full
+                    attempts.append(attempt)
+                    result_text = (
+                        Path(output_dir / attempt.final_output_path).read_text(encoding="utf-8")
+                        if attempt.final_output_path
+                        else (Path(output_dir / attempt.error_path).read_text(encoding="utf-8") if attempt.error_path else "")
+                    )
+                    conversion_results.append((attempt.success, result_text, path, attempt.failed_step_index))
+
+                service._rank_results(conversion_results, source, target)
+                rank_by_signature = {
+                    path_signature(path): rank
+                    for rank, (_success, _schema_or_error, path, _failed_step_index)
+                    in enumerate(conversion_results, start=1)
+                }
+
+                for attempt in attempts:
+                    attempt.path_rank = rank_by_signature.get(attempt.path_signature)
+                    metadata_path = (
+                        run_dir
+                        / attempt.source_language
+                        / safe_name(Path(attempt.input_file).stem)
+                        / attempt.target_language
+                        / attempt.path_id
+                        / "metadata.json"
+                    )
+                    metadata_path.write_text(json.dumps(asdict(attempt), indent=2) + "\n", encoding="utf-8")
+                    all_metadata.append(asdict(attempt))
+                    final_status = "I" if not attempt.automatic_valid else ""
+                    final_review_rows.append({
+                        "status": final_status,
+                        "automatic_valid": attempt.automatic_valid,
+                        "source_language": attempt.source_language,
+                        "target_language": attempt.target_language,
+                        "input_file": attempt.input_file,
+                        "path_id": attempt.path_id,
+                        "path_rank": attempt.path_rank,
+                        "path_count": attempt.path_count,
+                        "path_signature": attempt.path_signature,
+                        "output_path": attempt.final_output_path or attempt.error_path,
+                        "notes": "",
                     })
 
-                source_language_results[target_language] = formatted_results
+                    for step in attempt.steps:
+                        edge_status = "I" if not step.automatic_valid else ""
+                        edge_review_rows.append({
+                            "status": edge_status,
+                            "automatic_valid": step.automatic_valid,
+                            "source_language": attempt.source_language,
+                            "target_language": attempt.target_language,
+                            "input_file": attempt.input_file,
+                            "path_id": attempt.path_id,
+                            "step_index": step.step_index,
+                            "edge_signature": f"{step.source_language}:{step.target_language}:{step.converter_name}",
+                            "edge_source_language": step.source_language,
+                            "edge_target_language": step.target_language,
+                            "converter_name": step.converter_name,
+                            "library": step.library or step.converter_name,
+                            "output_path": step.output_path,
+                            "notes": "",
+                        })
 
-        # if source_language_results is not empty, store it
-        if source_language_results:
-            results[source_language] = source_language_results
-        else:
-            results[source_language] = {
-                target_language: [] for target_language in target_languages if target_language != source_language
-            }
-    print(f"Conversions completed: {successes} successful conversions, {errors} errors.")
-    return results
-
-
-def store_conversion_results(results: dict[str, dict[str, any]]) -> None:
-    # Store result schemas in output_schemas/source_language/target_language/attempt_<attempt>_<success>_
-    # <conversion_path>.txt
-    output_base_folder = "output_schemas"
-
-    # First clear the output folder if it already exists
-    if os.path.exists(output_base_folder):
-        for root, dirs, files in os.walk(output_base_folder, topdown=False):
-            for name in files:
-                os.remove(os.path.join(root, name))
-            for name in dirs:
-                os.rmdir(os.path.join(root, name))
-
-    for source_language, target_language_results in results.items():
-        for target_language, result_entries in target_language_results.items():
-            output_folder = os.path.join(output_base_folder, source_language, target_language)
-            os.makedirs(output_folder, exist_ok=True)
-
-            for entry in result_entries:
-                attempt = entry["attempt"]
-                success = entry["success"]
-                result_schema = entry["result_schema"]
-                conversion_path = entry["conversion_path"]
-                conversion_path_full = entry["conversion_path_full"]
-
-                output_filename = f"attempt_{attempt}_success_{success}_path_{conversion_path}.txt"
-                output_filepath = os.path.join(output_folder, output_filename)
-
-                with open(output_filepath, "w") as f:
-                    if result_schema is not None:
-                        f.write(result_schema)
-                    else:
-                        f.write("No result schema.")
-
-                # Additionally store full conversion path in a separate metadata file
-                output_metadata_filepath = os.path.join(output_folder, f"attempt_{attempt}_success_{success}_path_{conversion_path}_metadata.txt")
-                with open(output_metadata_filepath, "w") as f:
-                    f.write(f"Full Conversion Path:\n{conversion_path_full}\n")
+    write_review_csv(review_dir / "final_outputs.csv", REVIEW_FIELDS, final_review_rows)
+    write_review_csv(review_dir / "edge_outputs.csv", EDGE_REVIEW_FIELDS, edge_review_rows)
+    (run_dir / "all_metadata.json").write_text(json.dumps(all_metadata, indent=2) + "\n", encoding="utf-8")
+    (output_dir / "latest_run.txt").write_text(run_id + "\n", encoding="utf-8")
+    return run_dir
 
 
-def evaluate():
-    """
-    Runs the conversion of the golden schemas from each schema language (source) to each other schema language (target).
-    Assumes the Schema Conversion Orchestrator (the subject to be evaluated) is already running locally.
-
-    All golden schemas are stored in a dedicated folder structure under 'golden_schemas/'.
-    The output schemas resulting from the conversions will be stored in 'output_schemas/'.
-
-    """
-    print("Running evaluation...")
-
-    # List of all relevant schema languages
-
-    # Extract golden schema (source schema) for each schema language.
-    golden_schemas = load_golden_schemas(SOURCE_LANGUAGES)
-
-    # Go through each combination of source language and target language
-    results = request_conversion_results(SOURCE_LANGUAGES, TARGET_LANGUAGES, golden_schemas)
-
-    # Store result schemas
-    store_conversion_results(results)
-
-    # Build conversion matrix
-    conversion_matrix = compute_conversion_matrix(golden_schemas, results)
-
-    # Plot conversion matrix
-    plot_conversion_matrix(conversion_matrix, output_path="conversion_matrix.png")
+def write_review_csv(path: Path, fields: list[str], rows: list[dict]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields)
+        writer.writeheader()
+        writer.writerows(rows)
 
 
-def compute_conversion_matrix(golden_schemas: dict[str, str], results: dict[str, dict[str, any]]) -> pd.DataFrame:
-    """
-    Computes a matrix that shows the character lengths of the converted schemas for each source-target language pair.
-    For a source-target pair with multiple conversion attempts, the lengths are comma-separated.
-    For unconvertible pairs, a dash ("—") is used.
-    For paths where source and target language are the same, the length of the original schema is used.
-    :param golden_schemas:
-    :param results:
-    :return:
-    """
-    matrix = pd.DataFrame(index=results.keys(), columns=results.keys())
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Run the broad real-world orchestrator evaluation.")
+    parser.add_argument("--input-dir", type=Path, default=INPUT_DIR)
+    parser.add_argument("--output-dir", type=Path, default=OUTPUT_DIR)
+    parser.add_argument("--run-id", default=datetime.now().strftime("%Y%m%d_%H%M%S"))
+    parser.add_argument("--full-graph", action="store_true", help="Use all registered converters, not only core-language converters.")
+    args = parser.parse_args()
 
-    for source_language, target_language_results in results.items():
-        for target_language in matrix.columns:
-            if source_language == target_language:
-                # length of original schema
-                original_schema_length = len(golden_schemas[source_language])
-                matrix.loc[source_language, target_language] = str(original_schema_length)
-                continue
-
-            result_entries = target_language_results.get(target_language, [])
-            if not result_entries:
-                matrix.loc[source_language, target_language] = "—"
-                continue
-
-            lengths = []
-            for entry in result_entries:
-                if not entry["success"]:
-                    continue
-                result_schema = entry["result_schema"]
-                if result_schema is not None:
-                    lengths.append(str(len(result_schema)))
-
-            if lengths:
-                matrix.loc[source_language, target_language] = ", ".join(lengths)
-            else:
-                matrix.loc[source_language, target_language] = "—"
-
-    matrix.index.name = "Source Language"
-    matrix.columns.name = "Target Language"
-    return matrix
-
-
-def plot_conversion_matrix(matrix: pd.DataFrame, output_path: str = None) -> None:
-    numeric_matrix = matrix.copy()
-
-    for i in numeric_matrix.index:
-        for j in numeric_matrix.columns:
-            val = matrix.loc[i, j]
-
-            if val == "—":
-                numeric_matrix.loc[i, j] = 0
-            else:
-                # take the minimum length if multiple attempts
-                lengths = list(map(int, val.split(", ")))
-                numeric_matrix.loc[i, j] = min(lengths)
-
-    plt.figure(figsize=(8, 6))
-    sns.heatmap(numeric_matrix.astype(float), annot=matrix, fmt='', cmap="YlGnBu", cbar_kws={'label': 'Schema Length'})
-    plt.title("Schema Conversion Length Matrix")
-    plt.tight_layout()
-
-    if output_path:
-        plt.savefig(output_path)
-    else:
-        plt.show()
+    run_dir = run_evaluation(
+        input_dir=args.input_dir,
+        output_dir=args.output_dir,
+        run_id=args.run_id,
+        only_core_languages=not args.full_graph,
+    )
+    print(f"Evaluation run stored in {run_dir}")
+    print(f"Review CSVs stored in {args.output_dir / 'review'}")
 
 
 if __name__ == "__main__":
-    evaluate()
+    main()

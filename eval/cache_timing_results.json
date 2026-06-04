@@ -1,0 +1,24 @@
+[
+  {
+    "task": "SHACL_TTL -> JsonSchema",
+    "cache_enabled_seconds": 50.6425,
+    "cache_disabled_seconds": 64.0249,
+    "absolute_saved_seconds": 13.3823,
+    "speedup_percent": 20.9,
+    "cache_enabled_rows": 234,
+    "cache_disabled_rows": 234,
+    "cache_enabled_cases": 39,
+    "cache_disabled_cases": 39
+  },
+  {
+    "task": "JsonSchema -> SHACL_TTL",
+    "cache_enabled_seconds": 52.2899,
+    "cache_disabled_seconds": 54.5579,
+    "absolute_saved_seconds": 2.268,
+    "speedup_percent": 4.16,
+    "cache_enabled_rows": 352,
+    "cache_disabled_rows": 352,
+    "cache_enabled_cases": 88,
+    "cache_disabled_cases": 88
+  }
+]

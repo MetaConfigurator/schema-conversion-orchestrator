@@ -320,3 +320,20 @@ class TestAttemptAllConversionPaths:
         )
         # c1 should only be called once due to caching
         assert call_count["n"] == 1
+
+    def test_intermediate_result_not_cached_when_disabled(self):
+        call_count = {"n": 0}
+
+        class CountingConverter(_MockConverter):
+            def converter_logic(self, schema: str) -> str:
+                call_count["n"] += 1
+                return "intermediate"
+
+        c1 = CountingConverter(SchemaLanguage.JsonSchema, SchemaLanguage.LinkMl)
+        c2a = _MockConverter(SchemaLanguage.LinkMl, SchemaLanguage.Xsd, result="xsd_a")
+        c2b = _MockConverter(SchemaLanguage.LinkMl, SchemaLanguage.Xsd, result="xsd_b")
+        paths = [[c1, c2a], [c1, c2b]]
+        attempt_all_conversion_paths(
+            SchemaLanguage.JsonSchema, SchemaLanguage.Xsd, "input", paths, use_cache=False
+        )
+        assert call_count["n"] == 2

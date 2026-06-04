@@ -169,6 +169,32 @@ class TestConvertSuccess:
         assert step["sourceLanguage"] == "JsonSchema"
         assert step["targetLanguage"] == "LinkMl"
 
+    def test_use_cache_flag_can_disable_subpath_cache(self):
+        call_count = {"n": 0}
+
+        class CountingConverter(_MockConverter):
+            def converter_logic(self, schema: str) -> str:
+                call_count["n"] += 1
+                return '{"id": "shared"}'
+
+        shared = CountingConverter(SchemaLanguage.JsonSchema, SchemaLanguage.LinkMl)
+        app = create_app(converters=[
+            shared,
+            _MockConverter(SchemaLanguage.LinkMl, SchemaLanguage.Xsd, result="<xs:schema id='a'/>"),
+            _MockConverter(SchemaLanguage.LinkMl, SchemaLanguage.Xsd, result="<xs:schema id='b'/>"),
+        ])
+        app.config["TESTING"] = True
+        with app.test_client() as c:
+            resp = c.post("/convert", json={
+                "sourceLanguage": "JsonSchema",
+                "targetLanguage": "Xsd",
+                "schema": "{}",
+                "useCache": False,
+            })
+
+        assert resp.status_code == 200
+        assert call_count["n"] == 2
+
 
 # ---------------------------------------------------------------------------
 # /convert — error cases
@@ -220,6 +246,16 @@ class TestConvertErrors:
             "schema": "{}",
         })
         assert resp.status_code == 400
+
+    def test_use_cache_must_be_boolean(self, client):
+        resp = client.post("/convert", json={
+            "sourceLanguage": "JsonSchema",
+            "targetLanguage": "LinkMl",
+            "schema": "{}",
+            "useCache": "false",
+        })
+        assert resp.status_code == 400
+        assert "useCache" in resp_json(resp)["error"]
 
 
 # ---------------------------------------------------------------------------

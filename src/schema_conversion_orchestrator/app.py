@@ -60,6 +60,9 @@ def create_app(converters: Optional[List[Converter]] = None) -> Flask:
         source = data["sourceLanguage"]
         target = data["targetLanguage"]
         schema = data["schema"]
+        use_cache = data.get("useCache", True)
+        if not isinstance(use_cache, bool):
+            return {"error": "useCache must be a boolean when provided."}, 400
 
         try:
             source = schema_language_from_string(source)
@@ -71,7 +74,7 @@ def create_app(converters: Optional[List[Converter]] = None) -> Flask:
             schema = json.dumps(schema)
 
         try:
-            results = conversion_service.convert(source, target, schema)
+            results = conversion_service.convert(source, target, schema, use_cache=use_cache)
         except NoConversionPathError as e:
             return {"error": str(e)}, 400
         except ValueError as e:

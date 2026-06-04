@@ -34,15 +34,21 @@ class ConversionPathError(Exception):
         self.failed_step_index = failed_step_index
 
 
-def attempt_all_conversion_paths(source: SchemaLanguage, target: SchemaLanguage, schema: str,
-                                 paths: ConversionPaths) -> ConversionResults:
+def attempt_all_conversion_paths(
+    source: SchemaLanguage,
+    target: SchemaLanguage,
+    schema: str,
+    paths: ConversionPaths,
+    use_cache: bool = True,
+) -> ConversionResults:
     """ Attempts all conversion paths without any ranking or selection. Returns all results as is."""
     all_attempts: List[ConversionResult] = []
     conversions_cache = {}  # cache for all conversion sub-paths
     for path in paths:
         try:
-            result_schema, conversions_cache_update = attempt_conversion_path(source, target, path, schema,
-                                                                              conversions_cache)
+            result_schema, conversions_cache_update = attempt_conversion_path(
+                source, target, path, schema, conversions_cache, use_cache=use_cache
+            )
             conversions_cache = conversions_cache_update
 
             if not result_schema:
@@ -80,8 +86,14 @@ def collect_previous_step_results_for_debug(path: ConversionPath, conversions_ca
 
 
 # the conversions cache contains the results of all previously attempted conversion sub-paths
-def attempt_conversion_path(source: str, target: str, path: List[Converter], schema: str,
-                            conversions_cache: ConversionsCache) -> tuple[str, ConversionsCache]:
+def attempt_conversion_path(
+    source: str,
+    target: str,
+    path: List[Converter],
+    schema: str,
+    conversions_cache: ConversionsCache,
+    use_cache: bool = True,
+) -> tuple[str, ConversionsCache]:
     print_conversion_path(source, target, path)
     current_schema = schema
     current_converter = None
@@ -95,7 +107,7 @@ def attempt_conversion_path(source: str, target: str, path: List[Converter], sch
 
             # check cache
             conversion_sub_path_hash = conversion_path_to_string(conversion_sub_path)
-            if conversion_sub_path_hash in conversions_cache:
+            if use_cache and conversion_sub_path_hash in conversions_cache:
                 # cache hit
                 cached_result = conversions_cache[conversion_sub_path_hash]
                 if cached_result is None:
@@ -115,7 +127,8 @@ def attempt_conversion_path(source: str, target: str, path: List[Converter], sch
                     print(
                         "\n\nIntermediate schema of format " + conv.target_language + " after conversion via " + conv.service_name + ": \n" + current_schema + "\n\n\n\n")
                 # store in cache
-                conversions_cache[conversion_sub_path_hash] = current_schema
+                if use_cache:
+                    conversions_cache[conversion_sub_path_hash] = current_schema
 
         return current_schema, conversions_cache
     except Exception as e:

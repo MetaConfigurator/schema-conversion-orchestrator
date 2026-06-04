@@ -1,4 +1,4 @@
-"""Conversion benchmarks for the orchestrator's feature-based ranking.
+"""Conversion benchmarks for the orchestrator's accuracy-based ranking.
 
 Importing this package registers all concrete benchmarks. Add new conversion
 paths by creating a module here that defines and registers a

@@ -1,265 +1,353 @@
 name,category,signature,success,f1,jaccard
 additional-properties/additional-properties-allowed-by-default,additional-properties,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 additional-properties/additional-properties-allowed-by-default,additional-properties,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0952,0.04999124435672578
+additional-properties/additional-properties-allowed-by-default,additional-properties,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 additional-properties/additional-properties-allowed-by-default,additional-properties,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 additional-properties/additional-properties-false,additional-properties,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 additional-properties/additional-properties-false,additional-properties,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0909,0.04760634751300173
+additional-properties/additional-properties-false,additional-properties,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 additional-properties/additional-properties-false,additional-properties,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 additional-properties/additional-properties-true,additional-properties,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 additional-properties/additional-properties-true,additional-properties,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0952,0.04999124435672578
+additional-properties/additional-properties-true,additional-properties,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 additional-properties/additional-properties-true,additional-properties,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 array/item-simple,array,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 array/item-simple,array,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+array/item-simple,array,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 array/item-simple,array,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 array/item-with-cardinality,array,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 array/item-with-cardinality,array,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+array/item-with-cardinality,array,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 array/item-with-cardinality,array,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 array/item-with-contains,array,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 array/item-with-contains,array,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+array/item-with-contains,array,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 array/item-with-contains,array,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 const/const-boolean-false,const,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 const/const-boolean-false,const,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+const/const-boolean-false,const,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 const/const-boolean-false,const,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 const/const-boolean-true,const,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 const/const-boolean-true,const,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+const/const-boolean-true,const,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 const/const-boolean-true,const,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 const/const-integer,const,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 const/const-integer,const,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+const/const-integer,const,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 const/const-integer,const,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 const/const-null,const,JsonSchema:SHACL_TTL:shacl-bridge,True,0.6667,0.5
 const/const-null,const,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+const/const-null,const,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 const/const-null,const,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 const/const-string,const,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 const/const-string,const,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+const/const-string,const,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 const/const-string,const,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 def-ref/defs-ref,def-ref,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 def-ref/defs-ref,def-ref,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0571,0.029427410439184513
+def-ref/defs-ref,def-ref,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 def-ref/defs-ref,def-ref,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 enum/enum-empty,enum,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 enum/enum-empty,enum,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+enum/enum-empty,enum,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 enum/enum-empty,enum,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 enum/enum-false,enum,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 enum/enum-false,enum,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+enum/enum-false,enum,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.4,0.2499812495312383
 enum/enum-false,enum,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 enum/enum-homogenous,enum,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 enum/enum-homogenous,enum,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+enum/enum-homogenous,enum,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.6667,0.5
 enum/enum-homogenous,enum,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 enum/enum-in-properties,enum,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 enum/enum-in-properties,enum,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0667,0.034500594837842034
+enum/enum-in-properties,enum,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 enum/enum-in-properties,enum,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 enum/enum-true,enum,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 enum/enum-true,enum,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+enum/enum-true,enum,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.4,0.2499812495312383
 enum/enum-true,enum,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/allOf/allOf-base-schema,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/allOf/allOf-base-schema,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/allOf/allOf-base-schema,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/allOf/allOf-base-schema,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/allOf/allOf-multiple-all-false,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/allOf/allOf-multiple-all-false,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/allOf/allOf-multiple-all-false,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/allOf/allOf-multiple-all-false,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/allOf/allOf-multiple-all-true,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/allOf/allOf-multiple-all-true,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/allOf/allOf-multiple-all-true,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/allOf/allOf-multiple-all-true,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/allOf/allOf-multiple-empty-schema,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/allOf/allOf-multiple-empty-schema,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/allOf/allOf-multiple-empty-schema,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/allOf/allOf-multiple-empty-schema,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/allOf/allOf-multiple-one-true,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/allOf/allOf-multiple-one-true,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/allOf/allOf-multiple-one-true,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/allOf/allOf-multiple-one-true,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/allOf/allOf-nested,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/allOf/allOf-nested,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/allOf/allOf-nested,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/allOf/allOf-nested,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/allOf/allOf-simple-types,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/allOf/allOf-simple-types,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/allOf/allOf-simple-types,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/allOf/allOf-simple-types,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/allOf/allOf-simple,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/allOf/allOf-simple,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/allOf/allOf-simple,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/allOf/allOf-simple,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/allOf/allOf-single-empty-schema,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/allOf/allOf-single-empty-schema,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/allOf/allOf-single-empty-schema,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/allOf/allOf-single-empty-schema,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/allOf/allOf-with-empty-schema,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/allOf/allOf-with-empty-schema,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/allOf/allOf-with-empty-schema,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/allOf/allOf-with-empty-schema,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/anyOf/anyOf-base-schema,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/anyOf/anyOf-base-schema,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/anyOf/anyOf-base-schema,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/anyOf/anyOf-base-schema,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/anyOf/anyOf-complex,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/anyOf/anyOf-complex,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/anyOf/anyOf-complex,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/anyOf/anyOf-complex,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/anyOf/anyOf-multiple-all-false,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/anyOf/anyOf-multiple-all-false,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/anyOf/anyOf-multiple-all-false,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/anyOf/anyOf-multiple-all-false,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/anyOf/anyOf-multiple-all-true,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/anyOf/anyOf-multiple-all-true,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/anyOf/anyOf-multiple-all-true,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/anyOf/anyOf-multiple-all-true,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/anyOf/anyOf-multiple-one-true,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/anyOf/anyOf-multiple-one-true,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/anyOf/anyOf-multiple-one-true,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/anyOf/anyOf-multiple-one-true,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/anyOf/anyOf-nested,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/anyOf/anyOf-nested,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/anyOf/anyOf-nested,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/anyOf/anyOf-nested,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/anyOf/anyOf-simple,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/anyOf/anyOf-simple,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/anyOf/anyOf-simple,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/anyOf/anyOf-simple,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/anyOf/anyOf-with-empty-schema,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/anyOf/anyOf-with-empty-schema,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/anyOf/anyOf-with-empty-schema,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/anyOf/anyOf-with-empty-schema,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/if-then-else/if-else,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/if-then-else/if-else,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/if-then-else/if-else,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/if-then-else/if-else,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/if-then-else/if-then-else,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/if-then-else/if-then-else,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/if-then-else/if-then-else,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/if-then-else/if-then-else,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/if-then-else/if-then,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/if-then-else/if-then,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/if-then-else/if-then,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/if-then-else/if-then,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/not/double-negation,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/not/double-negation,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/not/double-negation,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/not/double-negation,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/not/not-complex,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/not/not-complex,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/not/not-complex,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/not/not-complex,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/not/not-multiple,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/not/not-multiple,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/not/not-multiple,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/not/not-multiple,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/not/not-single,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/not/not-single,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/not/not-single,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/not/not-single,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/oneOf/oneOf-base-schema,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/oneOf/oneOf-base-schema,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/oneOf/oneOf-base-schema,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/oneOf/oneOf-base-schema,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/oneOf/oneOf-complex,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/oneOf/oneOf-complex,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/oneOf/oneOf-complex,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/oneOf/oneOf-complex,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/oneOf/oneOf-multiple-all-false,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/oneOf/oneOf-multiple-all-false,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/oneOf/oneOf-multiple-all-false,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/oneOf/oneOf-multiple-all-false,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/oneOf/oneOf-multiple-all-true,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/oneOf/oneOf-multiple-all-true,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/oneOf/oneOf-multiple-all-true,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/oneOf/oneOf-multiple-all-true,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/oneOf/oneOf-multiple-one-true,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/oneOf/oneOf-multiple-one-true,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/oneOf/oneOf-multiple-one-true,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/oneOf/oneOf-multiple-one-true,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/oneOf/oneOf-nested,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/oneOf/oneOf-nested,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/oneOf/oneOf-nested,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/oneOf/oneOf-nested,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/oneOf/oneOf-required-all,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/oneOf/oneOf-required-all,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/oneOf/oneOf-required-all,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/oneOf/oneOf-required-all,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/oneOf/oneOf-required-some,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/oneOf/oneOf-required-some,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/oneOf/oneOf-required-some,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/oneOf/oneOf-required-some,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/oneOf/oneOf-simple,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/oneOf/oneOf-simple,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/oneOf/oneOf-simple,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/oneOf/oneOf-simple,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 logical/oneOf/oneOf-with-empty-schema,logical,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 logical/oneOf/oneOf-with-empty-schema,logical,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+logical/oneOf/oneOf-with-empty-schema,logical,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 logical/oneOf/oneOf-with-empty-schema,logical,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 numeric/exclusiveMaximum/exclusive-maximum,numeric,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 numeric/exclusiveMaximum/exclusive-maximum,numeric,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+numeric/exclusiveMaximum/exclusive-maximum,numeric,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 numeric/exclusiveMaximum/exclusive-maximum,numeric,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 numeric/exclusiveMinimum/exclusive-minimum,numeric,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 numeric/exclusiveMinimum/exclusive-minimum,numeric,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+numeric/exclusiveMinimum/exclusive-minimum,numeric,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 numeric/exclusiveMinimum/exclusive-minimum,numeric,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 numeric/maximum/maximum-float-with-type,numeric,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 numeric/maximum/maximum-float-with-type,numeric,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+numeric/maximum/maximum-float-with-type,numeric,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 numeric/maximum/maximum-float-with-type,numeric,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 numeric/maximum/maximum-float,numeric,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 numeric/maximum/maximum-float,numeric,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+numeric/maximum/maximum-float,numeric,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 numeric/maximum/maximum-float,numeric,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 numeric/maximum/maximum-negative,numeric,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 numeric/maximum/maximum-negative,numeric,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+numeric/maximum/maximum-negative,numeric,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 numeric/maximum/maximum-negative,numeric,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 numeric/maximum/maximum-number-with-type,numeric,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 numeric/maximum/maximum-number-with-type,numeric,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+numeric/maximum/maximum-number-with-type,numeric,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 numeric/maximum/maximum-number-with-type,numeric,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 numeric/maximum/maximum,numeric,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 numeric/maximum/maximum,numeric,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+numeric/maximum/maximum,numeric,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 numeric/maximum/maximum,numeric,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 numeric/minimum/minimum-float-with-type,numeric,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 numeric/minimum/minimum-float-with-type,numeric,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+numeric/minimum/minimum-float-with-type,numeric,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 numeric/minimum/minimum-float-with-type,numeric,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 numeric/minimum/minimum-float,numeric,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 numeric/minimum/minimum-float,numeric,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+numeric/minimum/minimum-float,numeric,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 numeric/minimum/minimum-float,numeric,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 numeric/minimum/minimum-negative,numeric,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 numeric/minimum/minimum-negative,numeric,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+numeric/minimum/minimum-negative,numeric,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 numeric/minimum/minimum-negative,numeric,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 numeric/minimum/minimum-number-with-type,numeric,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 numeric/minimum/minimum-number-with-type,numeric,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+numeric/minimum/minimum-number-with-type,numeric,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 numeric/minimum/minimum-number-with-type,numeric,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 numeric/minimum/minimum,numeric,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 numeric/minimum/minimum,numeric,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+numeric/minimum/minimum,numeric,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 numeric/minimum/minimum,numeric,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 properties/properties-boolean,properties,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
+properties/properties-boolean,properties,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 properties/properties-boolean,properties,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,False,0.0,0.0
 properties/properties-boolean,properties,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 properties/properties-simple,properties,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 properties/properties-simple,properties,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.08,0.04166510406900431
+properties/properties-simple,properties,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 properties/properties-simple,properties,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 required/required-default,required,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 required/required-default,required,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+required/required-default,required,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 required/required-default,required,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 required/required-empty,required,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 required/required-empty,required,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+required/required-empty,required,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 required/required-empty,required,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 required/required-specified,required,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 required/required-specified,required,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.087,0.045470038857454494
+required/required-specified,required,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 required/required-specified,required,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 string/format/date-time,string,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 string/format/date-time,string,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+string/format/date-time,string,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 string/format/date-time,string,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 string/format/date,string,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 string/format/date,string,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+string/format/date,string,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 string/format/date,string,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 string/format/duration,string,JsonSchema:SHACL_TTL:shacl-bridge,True,0.6667,0.5
 string/format/duration,string,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+string/format/duration,string,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 string/format/duration,string,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 string/format/email,string,JsonSchema:SHACL_TTL:shacl-bridge,True,0.8,0.6667
 string/format/email,string,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+string/format/email,string,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 string/format/email,string,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 string/format/iri,string,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 string/format/iri,string,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+string/format/iri,string,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 string/format/iri,string,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 string/format/regex,string,JsonSchema:SHACL_TTL:shacl-bridge,True,0.6667,0.5
 string/format/regex,string,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+string/format/regex,string,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 string/format/regex,string,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 string/format/time,string,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 string/format/time,string,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+string/format/time,string,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 string/format/time,string,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 string/format/uri,string,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 string/format/uri,string,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+string/format/uri,string,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 string/format/uri,string,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 string/format/uuid,string,JsonSchema:SHACL_TTL:shacl-bridge,True,0.8,0.6667
 string/format/uuid,string,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+string/format/uuid,string,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 string/format/uuid,string,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 string/maxLength,string,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 string/maxLength,string,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+string/maxLength,string,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 string/maxLength,string,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 string/minLength,string,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 string/minLength,string,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+string/minLength,string,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 string/minLength,string,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 string/pattern,string,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 string/pattern,string,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+string/pattern,string,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 string/pattern,string,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 types/array-multiple-types,types,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 types/array-multiple-types,types,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
 types/array-multiple-types,types,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
+types/array-multiple-types,types,JsonSchema:SHACL_TTL:jsonschema2shacl,False,0.0,0.0
 types/array-one-type,types,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 types/array-one-type,types,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
 types/array-one-type,types,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
+types/array-one-type,types,JsonSchema:SHACL_TTL:jsonschema2shacl,False,0.0,0.0
 types/boolean,types,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 types/boolean,types,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+types/boolean,types,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 types/boolean,types,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 types/integer,types,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 types/integer,types,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+types/integer,types,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 types/integer,types,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 types/number,types,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 types/number,types,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+types/number,types,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 types/number,types,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 types/object,types,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 types/object,types,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+types/object,types,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 types/object,types,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0
 types/string,types,JsonSchema:SHACL_TTL:shacl-bridge,True,1.0,1.0
 types/string,types,JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator,True,0.0,0.0
+types/string,types,JsonSchema:SHACL_TTL:jsonschema2shacl,True,0.0,0.0
 types/string,types,JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL,False,0.0,0.0

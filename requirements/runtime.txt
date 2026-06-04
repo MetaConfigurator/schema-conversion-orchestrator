@@ -3,6 +3,7 @@ Flask-Cors
 gunicorn
 gevent
 linkml
+jsonschema2shacl
 mdmodels
 mdmodels_core
 schema_automator

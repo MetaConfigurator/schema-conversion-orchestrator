@@ -9,7 +9,7 @@ For each registered :class:`ConversionBenchmark` (see ``eval/benchmarks/``) it:
   3. scores every returned conversion path with the benchmark's ``compare``,
   4. aggregates the scores per path (mean over all cases; failed/missing
      outputs count as zero), and
-  5. persists the per-path scores (consumed by the orchestrator's feature-based
+  5. persists the per-path scores (consumed by the orchestrator's accuracy-based
      ranking), a per-case CSV, and an accuracy plot.
 
 Usage::
@@ -35,7 +35,7 @@ REPO_ROOT = EVAL_DIR.parent
 sys.path.insert(0, str(EVAL_DIR))
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
-from schema_conversion_orchestrator.domain.feature_scores import (  # noqa: E402
+from schema_conversion_orchestrator.domain.accuracy_scores import (  # noqa: E402
     DEFAULT_SCORES_PATH,
     path_signature_from_steps,
     task_key,
@@ -48,8 +48,13 @@ import os  # noqa: E402
 SERVER_URL = os.environ.get("ORCHESTRATOR_URL", "http://localhost:5002/convert")
 
 
-def request_conversion(source: str, target: str, schema: str) -> List[dict] | None:
-    payload = {"sourceLanguage": source, "targetLanguage": target, "schema": schema}
+def request_conversion(source: str, target: str, schema: str, use_cache: bool = True) -> List[dict] | None:
+    payload = {
+        "sourceLanguage": source,
+        "targetLanguage": target,
+        "schema": schema,
+        "useCache": use_cache,
+    }
     resp = requests.post(SERVER_URL, json=payload, timeout=120)
     if resp.status_code != 200:
         print(f"  request error {resp.status_code}: {resp.text[:200]}")
@@ -57,15 +62,19 @@ def request_conversion(source: str, target: str, schema: str) -> List[dict] | No
     return resp.json().get("results", [])
 
 
-def run_one(benchmark: ConversionBenchmark) -> pd.DataFrame:
+def run_one(benchmark: ConversionBenchmark, use_cache: bool = True) -> pd.DataFrame:
     """Run a single benchmark, returning a per-(case, path) results DataFrame."""
     cases = benchmark.load_cases()
     print(f"\n=== {benchmark.task_name}: {len(cases)} cases ===")
     rows = []
     for i, case in enumerate(cases, 1):
         print(f"[{i}/{len(cases)}] {case.name}")
-        results = request_conversion(benchmark.source_language, benchmark.target_language,
-                                     case.source_schema)
+        results = request_conversion(
+            benchmark.source_language,
+            benchmark.target_language,
+            case.source_schema,
+            use_cache=use_cache,
+        )
         if results is None:
             continue
         for attempt in results:
@@ -148,8 +157,8 @@ def slug(task: str) -> str:
     return task.replace(" -> ", "_to_").replace(" ", "")
 
 
-def run_benchmark(benchmark: ConversionBenchmark) -> None:
-    df = run_one(benchmark)
+def run_benchmark(benchmark: ConversionBenchmark, use_cache: bool = True) -> None:
+    df = run_one(benchmark, use_cache=use_cache)
     if df.empty:
         print(f"  no results for {benchmark.task_name} (is the orchestrator running at {SERVER_URL}?)")
         return

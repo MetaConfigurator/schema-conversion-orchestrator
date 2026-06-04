@@ -9,6 +9,9 @@ from schema_conversion_orchestrator.converters.python.mdmodels import (
     ConverterJsonSchemaToMdModels,
 )
 from schema_conversion_orchestrator.converters.python.rdflib import ConverterTtlToJsonLd
+from schema_conversion_orchestrator.converters.python.jsonschema2shacl import (
+    ConverterJsonSchemaToShaclCitius,
+)
 
 from schema_conversion_orchestrator.converters.base import Converter
 from schema_conversion_orchestrator.domain.schema_types import SchemaLanguage
@@ -39,5 +42,7 @@ def register_python_converters() -> List[Converter]:
         ConverterFromMdModels(target_language=SchemaLanguage.Shex),
 
         ConverterJsonSchemaToMdModels(),
+
+        ConverterJsonSchemaToShaclCitius(),
 
     ]

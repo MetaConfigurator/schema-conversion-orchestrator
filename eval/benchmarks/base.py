@@ -9,7 +9,7 @@ The generic runner (``eval/benchmark_runner.py``) is agnostic to the concrete
 languages and metrics: it asks a benchmark for its cases, sends each source
 schema through the orchestrator, scores every returned conversion path with the
 benchmark's :meth:`ConversionBenchmark.compare`, aggregates per path, and
-persists the per-path scores used for the orchestrator's feature-based ranking.
+persists the per-path scores used for the orchestrator's accuracy-based ranking.
 
 To support a new conversion path, implement a :class:`ConversionBenchmark`
 subclass (defining ``source_language``, ``target_language``, :meth:`load_cases`,

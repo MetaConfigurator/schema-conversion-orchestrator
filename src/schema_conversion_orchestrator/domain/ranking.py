@@ -4,12 +4,12 @@ except ImportError:
     from strenum import StrEnum
 
 from schema_conversion_orchestrator.domain.conversion_types import ConversionResults
-from schema_conversion_orchestrator.domain.feature_scores import lookup_score, path_signature
+from schema_conversion_orchestrator.domain.accuracy_scores import lookup_score, path_signature
 
 
 class RankingStrategy(StrEnum):
     LeastCharacterLoss = "LeastCharacterLoss"
-    FeatureBased = "FeatureBased"
+    AccuracyBased = "AccuracyBased"
 
 
 def rank_with_strategy_least_character_loss(unsorted_results: ConversionResults):
@@ -18,8 +18,8 @@ def rank_with_strategy_least_character_loss(unsorted_results: ConversionResults)
     unsorted_results.sort(key=lambda x: (x[0], len(x[1]) if x[0] else 0), reverse=True)
 
 
-def rank_with_strategy_feature_based(unsorted_results: ConversionResults, source: str, target: str) -> None:
-    """Rank results by benchmark-derived feature-preservation score (descending).
+def rank_with_strategy_accuracy_based(unsorted_results: ConversionResults, source: str, target: str) -> None:
+    """Rank results by benchmark-derived conversion accuracy (descending).
 
     Successful attempts are ranked first by their path's benchmark score for this
     source -> target task, then by resulting schema length as a tie-breaker.
