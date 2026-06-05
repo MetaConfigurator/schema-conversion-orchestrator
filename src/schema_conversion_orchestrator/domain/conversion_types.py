@@ -17,8 +17,14 @@ ConversionsCache = dict[str, str | None]
 
 
 def conversion_path_to_string(path: ConversionPath) -> str:
+    # The converter name must be part of this string: it is used as the sub-path
+    # cache key, and two different converters between the same source and target
+    # language (e.g. several SHACL -> JSON Schema converters) share the same
+    # source/target/service_name. Without the name they would collide in the
+    # cache and the second converter would return the first one's result.
     return " -> ".join(
-        [f"{conv.source_language.value} to {conv.target_language.value} via {conv.service_name}" for conv in path]
+        [f"{conv.source_language.value} to {conv.target_language.value} via {conv.service_name} ({conv.name})"
+         for conv in path]
     )
 
 

@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import math
+import textwrap
+
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -147,6 +150,175 @@ def build_orchestrator_result_matrix(final_review: pd.DataFrame) -> tuple[pd.Dat
     annotations.index.name = "Source Language"
     annotations.columns.name = "Target Language"
     return annotations, heat
+
+
+def _normalize_status(value) -> str:
+    if pd.isna(value):
+        return ""
+    return str(value).strip().upper()
+
+
+def _status_counts(rows: pd.DataFrame) -> tuple[int, int, int, int]:
+    statuses = rows["status"].map(_normalize_status)
+    good = int((statuses == "G").sum())
+    lacking = int((statuses == "L").sum())
+    invalid = int((statuses == "I").sum())
+    unknown = int((~statuses.isin({"G", "L", "I"})).sum())
+    return good, lacking, invalid, unknown
+
+
+def build_edge_quality_matrix(edge_review: pd.DataFrame) -> pd.DataFrame:
+    """Aggregate edge-local quality counts by concrete converter edge."""
+    if edge_review.empty:
+        return pd.DataFrame()
+
+    rows = []
+    for edge_signature, group in edge_review.groupby("edge_signature", sort=False):
+        good, lacking, invalid, unknown = _status_counts(group)
+        total = len(group)
+        score = (good + 0.5 * lacking) / total if total else 0.0
+        first = group.iloc[0]
+        rows.append({
+            "edge_signature": edge_signature,
+            "edge_source_language": first["edge_source_language"],
+            "edge_target_language": first["edge_target_language"],
+            "converter_name": first["converter_name"],
+            "library": first["library"],
+            "total": total,
+            "good": good,
+            "lacking": lacking,
+            "invalid": invalid,
+            "unknown": unknown,
+            "score": score,
+        })
+
+    matrix = pd.DataFrame(rows)
+    if matrix.empty:
+        return matrix
+
+    source_order = {lang.value: index for index, lang in enumerate(SchemaLanguage)}
+    matrix["pair"] = matrix["edge_source_language"] + " -> " + matrix["edge_target_language"]
+    matrix["_source_order"] = matrix["edge_source_language"].map(source_order).fillna(999)
+    matrix["_target_order"] = matrix["edge_target_language"].map(source_order).fillna(999)
+    matrix = matrix.sort_values(
+        ["_source_order", "_target_order", "score", "good", "lacking", "total", "converter_name"],
+        ascending=[True, True, False, False, False, False, True],
+    ).drop(columns=["_source_order", "_target_order"]).reset_index(drop=True)
+    return matrix
+
+
+def plot_edge_quality_matrix(
+    edge_quality: pd.DataFrame,
+    output_path: str | None = None,
+) -> None:
+    if edge_quality.empty:
+        raise ValueError("Cannot plot an empty edge quality matrix.")
+
+    plot_data = edge_quality.copy()
+    pairs = plot_data["pair"].drop_duplicates().tolist()
+    ncols = min(3, len(pairs))
+    nrows = math.ceil(len(pairs) / ncols)
+    fig, axes = plt.subplots(
+        nrows,
+        ncols,
+        figsize=(max(8, 6.4 * ncols), max(5, 4.4 * nrows)),
+        squeeze=False,
+    )
+
+    colors = {
+        "good": "#5BAF72",
+        "lacking": "#F2D06B",
+        "invalid": "#C94C4C",
+        "unknown": "#9CA3AF",
+    }
+    legend_handles = None
+
+    for axis, pair in zip(axes.flatten(), pairs):
+        pair_data = plot_data[plot_data["pair"] == pair].reset_index(drop=True)
+        labels = [
+            "\n".join(textwrap.wrap(str(name), width=18, break_long_words=False))
+            for name in pair_data["converter_name"]
+        ]
+        x_positions = range(len(pair_data))
+
+        invalid = pair_data["invalid"].to_numpy()
+        lacking = pair_data["lacking"].to_numpy()
+        good = pair_data["good"].to_numpy()
+        unknown = pair_data["unknown"].to_numpy()
+
+        invalid_bars = axis.bar(x_positions, invalid, color=colors["invalid"], label="Invalid")
+        lacking_bars = axis.bar(x_positions, lacking, bottom=invalid, color=colors["lacking"], label="Lacking")
+        good_bars = axis.bar(
+            x_positions,
+            good,
+            bottom=invalid + lacking,
+            color=colors["good"],
+            label="Good",
+        )
+        unknown_bars = None
+        if unknown.any():
+            unknown_bars = axis.bar(
+                x_positions,
+                unknown,
+                bottom=invalid + lacking + good,
+                color=colors["unknown"],
+                label="Unknown",
+            )
+
+        if legend_handles is None:
+            legend_handles = [good_bars[0], lacking_bars[0], invalid_bars[0]]
+            if unknown_bars is not None:
+                legend_handles.append(unknown_bars[0])
+
+        for index, row in pair_data.iterrows():
+            axis.text(
+                index,
+                float(row["total"]) + 0.15,
+                f"{row['score']:.2f}",
+                ha="center",
+                va="bottom",
+                fontsize=8,
+            )
+
+        axis.set_title(pair, fontsize=12, fontweight="semibold")
+        axis.set_xticks(list(x_positions))
+        axis.set_xticklabels(labels, rotation=35, ha="right", fontsize=8)
+        axis.set_ylabel("Annotated edge uses")
+        axis.set_ylim(0, max(pair_data["total"].max() + 1, 3))
+        axis.grid(axis="y", alpha=0.25)
+
+    for axis in axes.flatten()[len(pairs):]:
+        axis.axis("off")
+
+    legend_labels = ["Good", "Lacking", "Invalid"]
+    if legend_handles and len(legend_handles) == 4:
+        legend_labels.append("Unknown")
+    if legend_handles:
+        fig.legend(
+            legend_handles,
+            legend_labels,
+            loc="upper center",
+            ncol=len(legend_labels),
+            frameon=False,
+            bbox_to_anchor=(0.5, 0.995),
+        )
+    fig.suptitle("Direct Converter Edge Quality by Language Pair", y=1.01, fontsize=15, fontweight="semibold")
+    fig.text(
+        0.5,
+        0.01,
+        "Bars show concrete converter edges; height is annotated edge-output uses; numbers above bars are quality scores (G + 0.5L) / total.",
+        ha="center",
+        va="center",
+        fontsize=10,
+    )
+    fig.tight_layout(rect=(0, 0.025, 1, 0.965))
+
+    if output_path:
+        fig.savefig(output_path, dpi=300, bbox_inches="tight")
+    else:
+        plt.show()
+
+    plt.close()
 
 
 def plot_orchestrator_result_matrix(

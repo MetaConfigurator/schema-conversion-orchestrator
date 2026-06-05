@@ -144,7 +144,7 @@ public class XsdToJsonSchemaConverter implements ConverterService.Converter {
         try (var walk = Files.walk(outDir)) {
             var found = walk.filter(p -> p.getFileName().toString().endsWith(".jsonschema")).findFirst();
             if (found.isPresent()) {
-                System.out.println("DEBUG: Found schema: " + found.get());
+                System.err.println("DEBUG: Found schema: " + found.get());
                 return Files.readString(found.get());
             }
         }
@@ -153,7 +153,7 @@ public class XsdToJsonSchemaConverter implements ConverterService.Converter {
         try (var walk = Files.walk(outDir)) {
             var found = walk.filter(p -> p.getFileName().toString().endsWith(".json")).findFirst();
             if (found.isPresent()) {
-                System.out.println("DEBUG: Found json: " + found.get());
+                System.err.println("DEBUG: Found json: " + found.get());
                 return Files.readString(found.get());
             }
         }

@@ -1,235 +1,235 @@
 name,category,signature,success,f1,jaccard
 core/cardiniality/combination-multi,cardiniality,SHACL_TTL:JsonSchema:shacl-bridge,True,1.0,1.0
-core/cardiniality/combination-multi,cardiniality,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.6666666666666666,0.6666666666666666
+core/cardiniality/combination-multi,cardiniality,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.7692307692307692,0.625
 core/cardiniality/combination-multi,cardiniality,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
-core/cardiniality/combination-multi,cardiniality,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.6666666666666666,0.6666666666666666
+core/cardiniality/combination-multi,cardiniality,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
 core/cardiniality/combination-multi,cardiniality,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,1.0,1.0
-core/cardiniality/combination-multi,cardiniality,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,1.0,1.0
+core/cardiniality/combination-multi,cardiniality,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.6666666666666666,0.6666666666666666
 core/cardiniality/combination-single,cardiniality,SHACL_TTL:JsonSchema:shacl-bridge,True,1.0,1.0
-core/cardiniality/combination-single,cardiniality,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.4444444444444444,0.3333333333333333
+core/cardiniality/combination-single,cardiniality,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.4,0.2857142857142857
 core/cardiniality/combination-single,cardiniality,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
-core/cardiniality/combination-single,cardiniality,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.4444444444444444,0.3333333333333333
+core/cardiniality/combination-single,cardiniality,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
 core/cardiniality/combination-single,cardiniality,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,1.0,1.0
-core/cardiniality/combination-single,cardiniality,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,1.0,1.0
+core/cardiniality/combination-single,cardiniality,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.4444444444444444,0.3333333333333333
 core/cardiniality/maxCount,cardiniality,SHACL_TTL:JsonSchema:shacl-bridge,True,1.0,1.0
-core/cardiniality/maxCount,cardiniality,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.75,0.75
+core/cardiniality/maxCount,cardiniality,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.6,0.42857142857142855
 core/cardiniality/maxCount,cardiniality,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
-core/cardiniality/maxCount,cardiniality,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.75,0.75
+core/cardiniality/maxCount,cardiniality,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
 core/cardiniality/maxCount,cardiniality,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,1.0,1.0
-core/cardiniality/maxCount,cardiniality,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,1.0,1.0
+core/cardiniality/maxCount,cardiniality,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.75,0.75
 core/cardiniality/minCount,cardiniality,SHACL_TTL:JsonSchema:shacl-bridge,True,1.0,1.0
-core/cardiniality/minCount,cardiniality,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.8000000000000002,0.8
+core/cardiniality/minCount,cardiniality,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.5454545454545454,0.42857142857142855
 core/cardiniality/minCount,cardiniality,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
-core/cardiniality/minCount,cardiniality,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.8000000000000002,0.8
+core/cardiniality/minCount,cardiniality,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
 core/cardiniality/minCount,cardiniality,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,1.0,1.0
-core/cardiniality/minCount,cardiniality,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,1.0,1.0
+core/cardiniality/minCount,cardiniality,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.8000000000000002,0.8
 core/logical/and,logical,SHACL_TTL:JsonSchema:shacl-bridge,True,1.0,1.0
-core/logical/and,logical,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.5,0.5
+core/logical/and,logical,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.3333333333333333,0.2
 core/logical/and,logical,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.5,0.5
-core/logical/and,logical,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,1.0,1.0
+core/logical/and,logical,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.5,0.5
 core/logical/and,logical,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
 core/logical/and,logical,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
 core/logical/not,logical,SHACL_TTL:JsonSchema:shacl-bridge,True,1.0,1.0
-core/logical/not,logical,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.5,0.3333333333333333
+core/logical/not,logical,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.28571428571428575,0.16666666666666666
 core/logical/not,logical,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.5,0.3333333333333333
-core/logical/not,logical,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,1.0,1.0
+core/logical/not,logical,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.5,0.3333333333333333
 core/logical/not,logical,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
 core/logical/not,logical,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
 core/logical/or,logical,SHACL_TTL:JsonSchema:shacl-bridge,True,1.0,1.0
-core/logical/or,logical,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.5,0.5
+core/logical/or,logical,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.3333333333333333,0.2
 core/logical/or,logical,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.5,0.5
-core/logical/or,logical,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,1.0,1.0
+core/logical/or,logical,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.5,0.5
 core/logical/or,logical,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
 core/logical/or,logical,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
 core/logical/xone,logical,SHACL_TTL:JsonSchema:shacl-bridge,True,1.0,1.0
-core/logical/xone,logical,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.5,0.5
+core/logical/xone,logical,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.07407407407407407,0.038461538461538464
 core/logical/xone,logical,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.5,0.5
-core/logical/xone,logical,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,1.0,1.0
+core/logical/xone,logical,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.5,0.5
 core/logical/xone,logical,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
 core/logical/xone,logical,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
+core/other/closed,other,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.5185185185185185,0.3888888888888889
 core/other/closed,other,SHACL_TTL:JsonSchema:shacl-bridge,True,1.0,1.0
-core/other/closed,other,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.1904761904761905,0.11764705882352941
-core/other/closed,other,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.8750000000000001,0.7777777777777778
-core/other/closed,other,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.1904761904761905,0.11764705882352941
+core/other/closed,other,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
+core/other/closed,other,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
 core/other/closed,other,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.8750000000000001,0.7777777777777778
-core/other/closed,other,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,1.0,1.0
+core/other/closed,other,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.1904761904761905,0.11764705882352941
 core/other/hasValue,other,SHACL_TTL:JsonSchema:shacl-bridge,True,1.0,1.0
-core/other/hasValue,other,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
+core/other/hasValue,other,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.28571428571428575,0.16666666666666666
 core/other/hasValue,other,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
-core/other/hasValue,other,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,1.0,1.0
+core/other/hasValue,other,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
 core/other/hasValue,other,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
 core/other/hasValue,other,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
+core/other/ignored-properties-ext,other,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.5,0.3684210526315789
 core/other/ignored-properties-ext,other,SHACL_TTL:JsonSchema:shacl-bridge,True,0.9473684210526316,0.9
-core/other/ignored-properties-ext,other,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.1818181818181818,0.1111111111111111
-core/other/ignored-properties-ext,other,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.8235294117647058,0.7
-core/other/ignored-properties-ext,other,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.1818181818181818,0.1111111111111111
+core/other/ignored-properties-ext,other,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.9473684210526316,0.9
+core/other/ignored-properties-ext,other,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.9473684210526316,0.9
 core/other/ignored-properties-ext,other,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.8235294117647058,0.7
-core/other/ignored-properties-ext,other,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.9473684210526316,0.9
+core/other/ignored-properties-ext,other,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.1818181818181818,0.1111111111111111
 core/other/in,other,SHACL_TTL:JsonSchema:shacl-bridge,True,1.0,1.0
-core/other/in,other,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
+core/other/in,other,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.28571428571428575,0.16666666666666666
 core/other/in,other,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
-core/other/in,other,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,1.0,1.0
+core/other/in,other,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
 core/other/in,other,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
 core/other/in,other,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
 core/property-pair/disjoint-ext,property-pair,SHACL_TTL:JsonSchema:shacl-bridge,True,0.8,0.6666666666666666
-core/property-pair/disjoint-ext,property-pair,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.8,0.6666666666666666
+core/property-pair/disjoint-ext,property-pair,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.5,0.3333333333333333
 core/property-pair/disjoint-ext,property-pair,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.8,0.6666666666666666
-core/property-pair/disjoint-ext,property-pair,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.8,0.6666666666666666
+core/property-pair/disjoint-ext,property-pair,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.8,0.6666666666666666
 core/property-pair/disjoint-ext,property-pair,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
 core/property-pair/disjoint-ext,property-pair,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
 core/property-pair/equals-ext,property-pair,SHACL_TTL:JsonSchema:shacl-bridge,True,0.8,0.6666666666666666
-core/property-pair/equals-ext,property-pair,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.8,0.6666666666666666
+core/property-pair/equals-ext,property-pair,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.5,0.3333333333333333
 core/property-pair/equals-ext,property-pair,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.8,0.6666666666666666
-core/property-pair/equals-ext,property-pair,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.8,0.6666666666666666
+core/property-pair/equals-ext,property-pair,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.8,0.6666666666666666
 core/property-pair/equals-ext,property-pair,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
 core/property-pair/equals-ext,property-pair,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
 core/property-pair/lessThan-ext,property-pair,SHACL_TTL:JsonSchema:shacl-bridge,True,0.8,0.6666666666666666
-core/property-pair/lessThan-ext,property-pair,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.8,0.6666666666666666
+core/property-pair/lessThan-ext,property-pair,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.5,0.3333333333333333
 core/property-pair/lessThan-ext,property-pair,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.8,0.6666666666666666
-core/property-pair/lessThan-ext,property-pair,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.8,0.6666666666666666
+core/property-pair/lessThan-ext,property-pair,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.8,0.6666666666666666
 core/property-pair/lessThan-ext,property-pair,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
 core/property-pair/lessThan-ext,property-pair,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
 core/property-pair/lessThanOrEquals-ext,property-pair,SHACL_TTL:JsonSchema:shacl-bridge,True,0.8,0.6666666666666666
-core/property-pair/lessThanOrEquals-ext,property-pair,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.8,0.6666666666666666
+core/property-pair/lessThanOrEquals-ext,property-pair,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.5,0.3333333333333333
 core/property-pair/lessThanOrEquals-ext,property-pair,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.8,0.6666666666666666
-core/property-pair/lessThanOrEquals-ext,property-pair,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.8,0.6666666666666666
+core/property-pair/lessThanOrEquals-ext,property-pair,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.8,0.6666666666666666
 core/property-pair/lessThanOrEquals-ext,property-pair,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
 core/property-pair/lessThanOrEquals-ext,property-pair,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
 core/shape-based/node,shape-based,SHACL_TTL:JsonSchema:shacl-bridge,True,0.782608695652174,0.6428571428571429
-core/shape-based/node,shape-based,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.06060606060606061,0.03125
-core/shape-based/node,shape-based,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.07407407407407408,0.038461538461538464
-core/shape-based/node,shape-based,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.06060606060606061,0.03125
+core/shape-based/node,shape-based,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.5925925925925927,0.4444444444444444
+core/shape-based/node,shape-based,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.782608695652174,0.6428571428571429
+core/shape-based/node,shape-based,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.782608695652174,0.6428571428571429
 core/shape-based/node,shape-based,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.07407407407407408,0.038461538461538464
-core/shape-based/node,shape-based,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.782608695652174,0.6428571428571429
+core/shape-based/node,shape-based,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.06060606060606061,0.03125
 core/shape-based/property,shape-based,SHACL_TTL:JsonSchema:shacl-bridge,True,1.0,1.0
-core/shape-based/property,shape-based,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.4444444444444444,0.3333333333333333
+core/shape-based/property,shape-based,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.4,0.2857142857142857
 core/shape-based/property,shape-based,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
-core/shape-based/property,shape-based,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.4444444444444444,0.3333333333333333
+core/shape-based/property,shape-based,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
 core/shape-based/property,shape-based,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,1.0,1.0
-core/shape-based/property,shape-based,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,1.0,1.0
+core/shape-based/property,shape-based,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.4444444444444444,0.3333333333333333
 core/shape-based/qualifiedValueShape,shape-based,SHACL_TTL:JsonSchema:shacl-bridge,True,0.6666666666666666,0.6666666666666666
-core/shape-based/qualifiedValueShape,shape-based,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.6666666666666666,0.6666666666666666
+core/shape-based/qualifiedValueShape,shape-based,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.25,0.16666666666666666
 core/shape-based/qualifiedValueShape,shape-based,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.6666666666666666,0.6666666666666666
-core/shape-based/qualifiedValueShape,shape-based,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.6666666666666666,0.6666666666666666
+core/shape-based/qualifiedValueShape,shape-based,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.6666666666666666,0.6666666666666666
 core/shape-based/qualifiedValueShape,shape-based,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
 core/shape-based/qualifiedValueShape,shape-based,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
 core/string/languageIn-ext,string,SHACL_TTL:JsonSchema:shacl-bridge,True,0.8,0.6666666666666666
-core/string/languageIn-ext,string,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.8,0.6666666666666666
 core/string/languageIn-ext,string,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.8,0.6666666666666666
-core/string/languageIn-ext,string,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.8,0.6666666666666666
+core/string/languageIn-ext,string,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.8,0.6666666666666666
 core/string/languageIn-ext,string,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
+core/string/languageIn-ext,string,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,False,0.0,0.0
 core/string/languageIn-ext,string,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
 core/string/maxLength,string,SHACL_TTL:JsonSchema:shacl-bridge,True,1.0,1.0
-core/string/maxLength,string,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
 core/string/maxLength,string,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
-core/string/maxLength,string,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,1.0,1.0
+core/string/maxLength,string,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
 core/string/maxLength,string,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
+core/string/maxLength,string,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,False,0.0,0.0
 core/string/maxLength,string,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
 core/string/minLength,string,SHACL_TTL:JsonSchema:shacl-bridge,True,1.0,1.0
-core/string/minLength,string,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
 core/string/minLength,string,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
-core/string/minLength,string,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,1.0,1.0
+core/string/minLength,string,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
 core/string/minLength,string,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
+core/string/minLength,string,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,False,0.0,0.0
 core/string/minLength,string,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
 core/string/pattern,string,SHACL_TTL:JsonSchema:shacl-bridge,True,1.0,1.0
 core/string/pattern,string,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
-core/string/pattern,string,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,1.0,1.0
 core/string/pattern,string,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
 core/string/pattern,string,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,False,0.0,0.0
+core/string/pattern,string,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,False,0.0,0.0
 core/string/pattern,string,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
 core/string/uniqueLang-ext,string,SHACL_TTL:JsonSchema:shacl-bridge,True,0.8,0.6666666666666666
-core/string/uniqueLang-ext,string,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.8,0.6666666666666666
+core/string/uniqueLang-ext,string,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.5,0.3333333333333333
 core/string/uniqueLang-ext,string,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.8,0.6666666666666666
-core/string/uniqueLang-ext,string,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.8,0.6666666666666666
+core/string/uniqueLang-ext,string,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.8,0.6666666666666666
 core/string/uniqueLang-ext,string,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
 core/string/uniqueLang-ext,string,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
 core/value-range/combination-exclusive,value-range,SHACL_TTL:JsonSchema:shacl-bridge,True,1.0,1.0
-core/value-range/combination-exclusive,value-range,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.3076923076923077,0.2
+core/value-range/combination-exclusive,value-range,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.8333333333333333,0.7142857142857143
 core/value-range/combination-exclusive,value-range,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
-core/value-range/combination-exclusive,value-range,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.3076923076923077,0.2
+core/value-range/combination-exclusive,value-range,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
 core/value-range/combination-exclusive,value-range,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,1.0,1.0
-core/value-range/combination-exclusive,value-range,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,1.0,1.0
+core/value-range/combination-exclusive,value-range,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.3076923076923077,0.2
 core/value-range/combination-inclusive,value-range,SHACL_TTL:JsonSchema:shacl-bridge,True,1.0,1.0
-core/value-range/combination-inclusive,value-range,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.3076923076923077,0.2
+core/value-range/combination-inclusive,value-range,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.8333333333333333,0.7142857142857143
 core/value-range/combination-inclusive,value-range,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
-core/value-range/combination-inclusive,value-range,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.3076923076923077,0.2
+core/value-range/combination-inclusive,value-range,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
 core/value-range/combination-inclusive,value-range,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,1.0,1.0
-core/value-range/combination-inclusive,value-range,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,1.0,1.0
+core/value-range/combination-inclusive,value-range,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.3076923076923077,0.2
 core/value-range/maxExclusive,value-range,SHACL_TTL:JsonSchema:shacl-bridge,True,1.0,1.0
-core/value-range/maxExclusive,value-range,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.36363636363636365,0.25
+core/value-range/maxExclusive,value-range,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.8,0.6666666666666666
 core/value-range/maxExclusive,value-range,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
-core/value-range/maxExclusive,value-range,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.36363636363636365,0.25
+core/value-range/maxExclusive,value-range,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
 core/value-range/maxExclusive,value-range,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,1.0,1.0
-core/value-range/maxExclusive,value-range,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,1.0,1.0
+core/value-range/maxExclusive,value-range,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.36363636363636365,0.25
 core/value-range/maxInclusive,value-range,SHACL_TTL:JsonSchema:shacl-bridge,True,1.0,1.0
-core/value-range/maxInclusive,value-range,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.36363636363636365,0.25
+core/value-range/maxInclusive,value-range,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.8,0.6666666666666666
 core/value-range/maxInclusive,value-range,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
-core/value-range/maxInclusive,value-range,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.36363636363636365,0.25
+core/value-range/maxInclusive,value-range,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
 core/value-range/maxInclusive,value-range,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,1.0,1.0
-core/value-range/maxInclusive,value-range,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,1.0,1.0
+core/value-range/maxInclusive,value-range,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.36363636363636365,0.25
 core/value-range/minExclusive,value-range,SHACL_TTL:JsonSchema:shacl-bridge,True,1.0,1.0
-core/value-range/minExclusive,value-range,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.36363636363636365,0.25
+core/value-range/minExclusive,value-range,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.8,0.6666666666666666
 core/value-range/minExclusive,value-range,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
-core/value-range/minExclusive,value-range,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.36363636363636365,0.25
+core/value-range/minExclusive,value-range,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
 core/value-range/minExclusive,value-range,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,1.0,1.0
-core/value-range/minExclusive,value-range,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,1.0,1.0
+core/value-range/minExclusive,value-range,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.36363636363636365,0.25
 core/value-range/minInclusive,value-range,SHACL_TTL:JsonSchema:shacl-bridge,True,1.0,1.0
-core/value-range/minInclusive,value-range,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.36363636363636365,0.25
+core/value-range/minInclusive,value-range,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.8,0.6666666666666666
 core/value-range/minInclusive,value-range,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
-core/value-range/minInclusive,value-range,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.36363636363636365,0.25
+core/value-range/minInclusive,value-range,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
 core/value-range/minInclusive,value-range,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,1.0,1.0
-core/value-range/minInclusive,value-range,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,1.0,1.0
+core/value-range/minInclusive,value-range,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.36363636363636365,0.25
 core/value-type/class,value-type,SHACL_TTL:JsonSchema:shacl-bridge,True,0.6666666666666666,0.5
-core/value-type/class,value-type,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.6666666666666666,0.5
+core/value-type/class,value-type,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.5714285714285715,0.4
 core/value-type/class,value-type,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.6666666666666666,0.5
-core/value-type/class,value-type,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.6666666666666666,0.5
+core/value-type/class,value-type,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.6666666666666666,0.5
 core/value-type/class,value-type,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
 core/value-type/class,value-type,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
 core/value-type/datatype,value-type,SHACL_TTL:JsonSchema:shacl-bridge,True,1.0,1.0
-core/value-type/datatype,value-type,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.4444444444444444,0.3333333333333333
+core/value-type/datatype,value-type,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.5714285714285715,0.4
 core/value-type/datatype,value-type,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
-core/value-type/datatype,value-type,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.4444444444444444,0.3333333333333333
+core/value-type/datatype,value-type,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
 core/value-type/datatype,value-type,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,1.0,1.0
-core/value-type/datatype,value-type,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,1.0,1.0
+core/value-type/datatype,value-type,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.4444444444444444,0.3333333333333333
 core/value-type/node-kind/blank-node-or-iri,value-type,SHACL_TTL:JsonSchema:shacl-bridge,True,1.0,1.0
-core/value-type/node-kind/blank-node-or-iri,value-type,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.4444444444444444,0.2857142857142857
-core/value-type/node-kind/blank-node-or-iri,value-type,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.6666666666666666,0.5
-core/value-type/node-kind/blank-node-or-iri,value-type,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.4444444444444444,0.2857142857142857
+core/value-type/node-kind/blank-node-or-iri,value-type,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.5714285714285715,0.4
+core/value-type/node-kind/blank-node-or-iri,value-type,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
+core/value-type/node-kind/blank-node-or-iri,value-type,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
 core/value-type/node-kind/blank-node-or-iri,value-type,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.6666666666666666,0.5
-core/value-type/node-kind/blank-node-or-iri,value-type,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,1.0,1.0
+core/value-type/node-kind/blank-node-or-iri,value-type,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.4444444444444444,0.2857142857142857
 core/value-type/node-kind/blank-node-or-literal,value-type,SHACL_TTL:JsonSchema:shacl-bridge,True,1.0,1.0
-core/value-type/node-kind/blank-node-or-literal,value-type,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.4444444444444444,0.2857142857142857
-core/value-type/node-kind/blank-node-or-literal,value-type,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.6666666666666666,0.5
-core/value-type/node-kind/blank-node-or-literal,value-type,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.4444444444444444,0.2857142857142857
+core/value-type/node-kind/blank-node-or-literal,value-type,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.5714285714285715,0.4
+core/value-type/node-kind/blank-node-or-literal,value-type,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
+core/value-type/node-kind/blank-node-or-literal,value-type,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
 core/value-type/node-kind/blank-node-or-literal,value-type,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.6666666666666666,0.5
-core/value-type/node-kind/blank-node-or-literal,value-type,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,1.0,1.0
+core/value-type/node-kind/blank-node-or-literal,value-type,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.4444444444444444,0.2857142857142857
 core/value-type/node-kind/blank-node,value-type,SHACL_TTL:JsonSchema:shacl-bridge,True,1.0,1.0
-core/value-type/node-kind/blank-node,value-type,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.4444444444444444,0.3333333333333333
+core/value-type/node-kind/blank-node,value-type,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.5714285714285715,0.4
 core/value-type/node-kind/blank-node,value-type,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
-core/value-type/node-kind/blank-node,value-type,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.4444444444444444,0.3333333333333333
+core/value-type/node-kind/blank-node,value-type,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
 core/value-type/node-kind/blank-node,value-type,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,1.0,1.0
-core/value-type/node-kind/blank-node,value-type,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,1.0,1.0
+core/value-type/node-kind/blank-node,value-type,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.4444444444444444,0.3333333333333333
 core/value-type/node-kind/iri-or-literal,value-type,SHACL_TTL:JsonSchema:shacl-bridge,True,1.0,1.0
-core/value-type/node-kind/iri-or-literal,value-type,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.4444444444444444,0.2857142857142857
-core/value-type/node-kind/iri-or-literal,value-type,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.6666666666666666,0.5
-core/value-type/node-kind/iri-or-literal,value-type,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.4444444444444444,0.2857142857142857
+core/value-type/node-kind/iri-or-literal,value-type,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.5714285714285715,0.4
+core/value-type/node-kind/iri-or-literal,value-type,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
+core/value-type/node-kind/iri-or-literal,value-type,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
 core/value-type/node-kind/iri-or-literal,value-type,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.6666666666666666,0.5
-core/value-type/node-kind/iri-or-literal,value-type,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,1.0,1.0
+core/value-type/node-kind/iri-or-literal,value-type,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.4444444444444444,0.2857142857142857
 core/value-type/node-kind/literal,value-type,SHACL_TTL:JsonSchema:shacl-bridge,True,1.0,1.0
-core/value-type/node-kind/literal,value-type,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.4444444444444444,0.3333333333333333
-core/value-type/node-kind/literal,value-type,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.6666666666666666,0.6666666666666666
-core/value-type/node-kind/literal,value-type,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.4444444444444444,0.3333333333333333
+core/value-type/node-kind/literal,value-type,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.5714285714285715,0.4
+core/value-type/node-kind/literal,value-type,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
+core/value-type/node-kind/literal,value-type,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,1.0,1.0
 core/value-type/node-kind/literal,value-type,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.6666666666666666,0.6666666666666666
-core/value-type/node-kind/literal,value-type,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,1.0,1.0
+core/value-type/node-kind/literal,value-type,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,True,0.4444444444444444,0.3333333333333333
 sparql/ask-ext,sparql,SHACL_TTL:JsonSchema:shacl-bridge,True,0.6666666666666666,0.5
-sparql/ask-ext,sparql,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.6666666666666666,0.5
+sparql/ask-ext,sparql,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.3333333333333333,0.2
 sparql/ask-ext,sparql,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.6666666666666666,0.5
-sparql/ask-ext,sparql,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.6666666666666666,0.5
+sparql/ask-ext,sparql,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.6666666666666666,0.5
 sparql/ask-ext,sparql,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
 sparql/ask-ext,sparql,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
 sparql/select-ext,sparql,SHACL_TTL:JsonSchema:shacl-bridge,True,0.6666666666666666,0.5
-sparql/select-ext,sparql,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.6666666666666666,0.5
+sparql/select-ext,sparql,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.3333333333333333,0.2
 sparql/select-ext,sparql,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.6666666666666666,0.5
-sparql/select-ext,sparql,SHACL_TTL:JsonSchema:shacl-jsonschema-converter,True,0.6666666666666666,0.5
+sparql/select-ext,sparql,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge,True,0.6666666666666666,0.5
 sparql/select-ext,sparql,SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0
 sparql/select-ext,sparql,SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema,False,0.0,0.0

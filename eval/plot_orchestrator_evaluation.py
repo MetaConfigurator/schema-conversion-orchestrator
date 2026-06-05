@@ -19,7 +19,9 @@ sys.path.insert(0, str(SRC_DIR))
 from schema_conversion_orchestrator.converters.registry import register_converters  # noqa: E402
 from schema_conversion_orchestrator.domain.conversion_graph import build_conversion_graph  # noqa: E402
 from schema_conversion_orchestrator.reporting.conversion_matrix import (  # noqa: E402
+    build_edge_quality_matrix,
     build_orchestrator_result_matrix,
+    plot_edge_quality_matrix,
     plot_orchestrator_result_matrix,
 )
 from schema_conversion_orchestrator.reporting.visualize_conversion_graph import (  # noqa: E402
@@ -90,6 +92,10 @@ def main() -> None:
     plot_orchestrator_result_matrix(annotations, heat, output_path=str(matrix_path))
 
     edge_review = pd.read_csv(edge_review_path)
+    edge_quality = build_edge_quality_matrix(edge_review)
+    edge_matrix_path = plots_dir / "edge_quality_matrix.png"
+    plot_edge_quality_matrix(edge_quality, output_path=str(edge_matrix_path))
+
     edge_scores = compute_edge_scores(edge_review)
     converters = register_converters(only_core_languages=not args.full_graph)
     conversion_graph = build_conversion_graph(converters)
@@ -114,6 +120,7 @@ def main() -> None:
     )
 
     print(f"Wrote {matrix_path}")
+    print(f"Wrote {edge_matrix_path}")
     print(f"Wrote {graph_path}")
     print(f"Wrote {full_graph_path}")
 

@@ -126,7 +126,7 @@ def plot(df: pd.DataFrame, path_scores: Dict[str, dict], benchmark: ConversionBe
     # Curate which paths appear in the report (ranking still uses all of them).
     reported = {s: v for s, v in path_scores.items() if benchmark.is_reported(short_label(s))}
     path_scores = reported or path_scores
-    labels = [short_label(s) for s in path_scores]
+    labels = [benchmark.report_label(s, short_label(s)) for s in path_scores]
     x = range(len(labels))
     width = 0.8 / max(len(metrics), 1)
     for k, m in enumerate(metrics):

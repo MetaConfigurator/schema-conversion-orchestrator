@@ -33,6 +33,13 @@ class JsonSchemaToShaclBenchmark(ConversionBenchmark):
     # MdModels cannot ingest these minimal JSON Schema inputs (the library
     # rejects schemas without `properties`), so its path is omitted from the report.
     report_exclude = ["MdModels"]
+    # The LinkML import/export chain has very long converter names; show a short
+    # label in the plot instead.
+    label_overrides = {
+        "schema_automator": "via LinkML",
+        "jsonschema2shacl": "jsonschema2shacl",
+        "JsonSchema:SHACL_TTL:shacl-bridge": "shacl-bridge",
+    }
 
     def __init__(self, benchmark_dir: Path | None = None) -> None:
         self.benchmark_dir = Path(

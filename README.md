@@ -69,6 +69,78 @@ Health check:
 curl http://localhost:5002/health
 ```
 
+## HTTP API
+
+The service exposes a single conversion endpoint.
+
+`POST /convert`
+
+Request body:
+
+```json
+{
+  "sourceLanguage": "SHACL_TTL",
+  "targetLanguage": "JsonSchema",
+  "schema": "<schema as a string>",
+  "useCache": true
+}
+```
+
+- `sourceLanguage` / `targetLanguage`: schema language enum values (see
+  [Supported Formats](#supported-formats)).
+- `schema`: the source schema, passed as a string (a JSON object is also
+  accepted and serialized automatically).
+- `useCache` (optional, default `true`): reuse cached results of shared
+  intermediate sub-paths across the attempted paths.
+
+The orchestrator discovers every feasible conversion path from the source to
+the target language, executes them, ranks the results, and returns all
+attempts (successful and failed):
+
+```json
+{
+  "results": [
+    {
+      "success": true,
+      "result": "<converted schema or error message>",
+      "failedStepIndex": null,
+      "conversionPath": [
+        {
+          "sourceLanguage": "SHACL_TTL",
+          "targetLanguage": "JsonSchema",
+          "serviceName": "node",
+          "converterName": "shacl-bridge SHACL->JSON Schema",
+          "library": "shacl-bridge",
+          "libraryVersion": "x.y.z",
+          "libraryUrl": "https://www.npmjs.com/package/shacl-bridge"
+        }
+      ]
+    }
+  ]
+}
+```
+
+For a failed attempt, `success` is `false`, `result` carries the error
+message, and `failedStepIndex` identifies the converter step that failed.
+Each step reports the underlying library, its version, and a URL, so the exact
+provenance of every result is traceable.
+
+A ready-made example request is in `scripts/send_test_request.py`.
+
+## Conversion Path Ranking
+
+When several paths connect the source and target language, the returned
+attempts are ranked so that the most faithful result surfaces first; failed
+attempts are always sorted below successful ones. Two strategies are available:
+
+- **Least character loss** (`LeastCharacterLoss`, default): a knowledge-free
+  fallback that prefers the largest successful output, on the assumption that
+  dropped constraints tend to shorten a schema.
+- **Accuracy-based** (`AccuracyBased`): ranks paths by benchmark-derived
+  accuracy scores. It is preferred automatically whenever offline benchmark
+  scores exist for the requested source--target pair (currently the
+  SHACL&nbsp;&harr;&nbsp;JSON&nbsp;Schema conversions).
+
 ## Test
 
 Run unit tests:

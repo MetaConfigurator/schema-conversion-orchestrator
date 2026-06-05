@@ -33,6 +33,14 @@ class ShaclToJsonSchemaBenchmark(ConversionBenchmark):
     # Collapse the RdfLib-vs-n3 duplicates (both only build the SHACL JSON-LD
     # intermediate); keep the n3-based variants as representatives.
     report_exclude = ["RdfLib"]
+    # Short plot labels (the via-JSON-LD converter chains are otherwise long).
+    # Order matters: the first matching substring wins.
+    label_overrides = {
+        "JsonSchema:@comake": "via JSON-LD -> @comake",
+        "SHACL_JSON_LD:JsonSchema:shacl-bridge": "via JSON-LD -> shacl-bridge",
+        "SHACL_TTL:JsonSchema:shacl-jsonschema-converter": "shacl-jsonschema-converter",
+        "SHACL_TTL:JsonSchema:shacl-bridge": "shacl-bridge",
+    }
 
     def __init__(self, benchmark_dir: Path | None = None) -> None:
         self.benchmark_dir = Path(

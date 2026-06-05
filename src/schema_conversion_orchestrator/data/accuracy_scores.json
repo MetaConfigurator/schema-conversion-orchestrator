@@ -8,11 +8,11 @@
       "successes": 39
     },
     "SHACL_TTL:JsonSchema:shacl-jsonschema-converter": {
-      "f1": 0.9281,
-      "jaccard": 0.89,
-      "score": 0.9281,
+      "f1": 0.4668,
+      "jaccard": 0.3416,
+      "score": 0.4668,
       "cases": 39,
-      "successes": 39
+      "successes": 35
     },
     "SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema": {
       "f1": 0.4472,
@@ -22,9 +22,9 @@
       "successes": 20
     },
     "SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge": {
-      "f1": 0.7925,
-      "jaccard": 0.7355,
-      "score": 0.7925,
+      "f1": 0.8512,
+      "jaccard": 0.8088,
+      "score": 0.8512,
       "cases": 39,
       "successes": 38
     },
@@ -36,9 +36,9 @@
       "successes": 20
     },
     "SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge": {
-      "f1": 0.5831,
-      "jaccard": 0.4974,
-      "score": 0.5831,
+      "f1": 0.8768,
+      "jaccard": 0.8344,
+      "score": 0.8768,
       "cases": 39,
       "successes": 39
     }

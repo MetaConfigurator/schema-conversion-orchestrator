@@ -52,9 +52,21 @@ class ConversionBenchmark(ABC):
     #: redundant or always-failing paths. Ranking still uses all paths.
     report_exclude: List[str] = []
 
+    #: Optional ``substring -> short label`` overrides for plots/tables. If a
+    #: path's signature contains one of the substrings, the mapped label is used
+    #: instead of the (often very long) auto-generated converter-chain label.
+    label_overrides: Dict[str, str] = {}
+
     def is_reported(self, label: str) -> bool:
         """Whether a path (by its short label) should appear in tables/plots."""
         return not any(excl in label for excl in self.report_exclude)
+
+    def report_label(self, signature: str, default_label: str) -> str:
+        """Short, human-readable label for a path signature in plots/tables."""
+        for substring, label in self.label_overrides.items():
+            if substring in signature:
+                return label
+        return default_label
 
     @abstractmethod
     def load_cases(self) -> List[BenchmarkCase]:
