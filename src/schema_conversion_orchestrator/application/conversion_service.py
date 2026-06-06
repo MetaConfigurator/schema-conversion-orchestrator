@@ -4,11 +4,12 @@ from schema_conversion_orchestrator.application.attempt_conversions import attem
 from schema_conversion_orchestrator.converters.base import Converter
 from schema_conversion_orchestrator.domain.conversion_graph import build_conversion_graph, find_paths
 from schema_conversion_orchestrator.domain.conversion_types import ConversionGraph, ConversionResults
-from schema_conversion_orchestrator.domain.accuracy_scores import has_benchmark
+from schema_conversion_orchestrator.domain.accuracy_scores import has_accuracy_scores
+from schema_conversion_orchestrator.domain.edge_robustness import has_robustness_scores
 from schema_conversion_orchestrator.domain.ranking import (
-    RankingStrategy,
     rank_with_strategy_accuracy_based,
-    rank_with_strategy_least_character_loss,
+    rank_with_strategy_edge_robustness,
+    rank_with_strategy_character_length,
 )
 from schema_conversion_orchestrator.domain.schema_types import SchemaLanguage
 
@@ -18,13 +19,8 @@ class NoConversionPathError(ValueError):
 
 
 class ConversionService:
-    def __init__(
-        self,
-        converters: List[Converter],
-        ranking_strategy: RankingStrategy = RankingStrategy.LeastCharacterLoss,
-    ) -> None:
+    def __init__(self, converters: List[Converter]) -> None:
         self.converters = converters
-        self.ranking_strategy = ranking_strategy
         self.conversion_graph: ConversionGraph = build_conversion_graph(converters)
 
     def convert(
@@ -45,19 +41,14 @@ class ConversionService:
         return sorted(results, key=lambda x: x[0], reverse=True)
 
     def _rank_results(self, results: ConversionResults, source: SchemaLanguage, target: SchemaLanguage) -> None:
-        # Prefer the benchmark-based ranking whenever offline accuracy scores
-        # exist for this source -> target task; otherwise fall back to the
-        # configured (naive) strategy.
-        if has_benchmark(source.value, target.value):
+        # Ranking is fully automatic, applied in a fixed priority order:
+        #   1. accuracy scores for this source -> target task, if available;
+        #   2. otherwise per-edge robustness scores (product over the path's
+        #      edges; unevaluated edges default to 0.5, ties broken by length);
+        #   3. otherwise the naive character-length heuristic.
+        if has_accuracy_scores(source.value, target.value):
             rank_with_strategy_accuracy_based(results, source.value, target.value)
-            return
-
-        if self.ranking_strategy == RankingStrategy.LeastCharacterLoss:
-            rank_with_strategy_least_character_loss(results)
-            return
-
-        if self.ranking_strategy == RankingStrategy.AccuracyBased:
-            rank_with_strategy_accuracy_based(results, source.value, target.value)
-            return
-
-        raise ValueError(f"Unknown conversion strategy: {self.ranking_strategy}")
+        elif has_robustness_scores():
+            rank_with_strategy_edge_robustness(results)
+        else:
+            rank_with_strategy_character_length(results)

@@ -39,6 +39,39 @@ EnzymeML is used as the preferred medium-complexity anchor where a suitable sche
 
 The corpus is self-contained; the evaluation runner reads the local files and does not dynamically download schemas. If a source schema is refreshed later, update the local file and the corresponding manifest row.
 
+### Source Schema Provenance
+
+The three input schemas per source language (one simple, one medium-complexity, one complex, classified by manual judgement) used in the broad orchestrator evaluation of the accompanying paper originate from the following sources. This table is the authoritative, citable record of the evaluation inputs; the paper refers here instead of listing every URL inline. Where a local adaptation was necessary for the current parsers, it is noted in the last column (see also `real_world_inputs/example_manifest.csv`).
+
+The "Reference" column gives the peer-reviewed paper describing the schema/standard where one exists (the EnzymeML, NMDC, and ThermoML models, and the DCAT-AP specification). The remaining inputs are documentation examples, tutorial schemas, or tooling registries without an associated paper.
+
+| Source language | Tier | Input schema (origin) | Source URL / origin | Local change | Reference |
+| --- | --- | --- | --- | --- | --- |
+| JSON Schema | simple | Address example (json-schema.org) | https://json-schema.org/learn/miscellaneous-examples#address | local compact baseline | — |
+| JSON Schema | medium | EnzymeML v2 data model | https://raw.githubusercontent.com/EnzymeML/enzymeml-specifications/main/schemes/v2/enzymeml-v2.json | none | Lauterbach et al., *Nat. Methods* 20:400–402 (2023), doi:10.1038/s41592-022-01763-1 |
+| JSON Schema | complex | GitHub Workflow (SchemaStore) | https://json.schemastore.org/github-workflow.json | none | — |
+| XSD | simple | Ship-order (tutorial example) | https://www.w3schools.com/xml/schema_example.asp | local compact baseline | — |
+| XSD | medium | EnzymeML v2 data model | https://raw.githubusercontent.com/EnzymeML/enzymeml-specifications/main/schemes/v2/enzymeml-v2.xsd | none | Lauterbach et al., *Nat. Methods* 20:400–402 (2023), doi:10.1038/s41592-022-01763-1 |
+| XSD | complex | Apache Maven POM 4.0.0 model | https://maven.apache.org/xsd/maven-4.0.0.xsd | none | — |
+| SHACL | simple | W3C property-shape example | https://www.w3.org/TR/shacl/#property-shapes | local compact baseline | — |
+| SHACL | medium | EnzymeML v2 shapes graph | https://raw.githubusercontent.com/EnzymeML/enzymeml-specifications/main/schemes/v2/enzymeml-v2.ttl | added missing `md:` prefix so it parses as Turtle | Lauterbach et al., *Nat. Methods* 20:400–402 (2023), doi:10.1038/s41592-022-01763-1 |
+| SHACL | complex | DCAT-AP 2.1.1 shapes (SEMIC) | https://raw.githubusercontent.com/SEMICeu/DCAT-AP/master/releases/2.1.1/dcat-ap_2.1.1_shacl_shapes.ttl | none | DCAT-AP specification (Publications Office of the EU); no journal paper |
+| LinkML | simple | PersonInfo example | https://raw.githubusercontent.com/linkml/linkml/main/examples/PersonSchema/personinfo.yaml | none | — |
+| LinkML | medium | EnzymeML v2 data model | https://raw.githubusercontent.com/EnzymeML/enzymeml-specifications/main/schemes/v2/enzymeml-v2-linkml.yaml | fixed invalid schema `name` (NCName) and removed `is_a` references to external CURIEs (see below) | Lauterbach et al., *Nat. Methods* 20:400–402 (2023), doi:10.1038/s41592-022-01763-1 |
+| LinkML | complex | NMDC schema (materialized) | https://raw.githubusercontent.com/microbiomedata/nmdc-schema/main/nmdc_schema/nmdc_materialized_patterns.yaml | none | Eloe-Fadrosh et al., *Nucleic Acids Res.* 50(D1):D828–D836 (2022), doi:10.1093/nar/gkab990 |
+| MD-Models | simple | Hello MD-Models example | https://fairchemistry.github.io/md-models/ | copied from the documented Hello MD-Models example | — |
+| MD-Models | medium | EnzymeML v2 data model | https://github.com/EnzymeML/enzymeml-specifications/blob/main/specifications/v2.md | removed bold markup from required field names so the current `mdmodels-core` parser accepts the source | Lauterbach et al., *Nat. Methods* 20:400–402 (2023), doi:10.1038/s41592-022-01763-1 |
+| MD-Models | complex | ThermoML model | provided locally; ThermoML standard: https://www.nist.gov/mml/acmd/trc/thermoml | source MD-Models file provided locally | Frenkel et al., *J. Chem. Eng. Data* 48(1):2–13 (2003), doi:10.1021/je025645o |
+
+### Data-quality issues discovered during conversion
+
+While running the evaluation we found several issues in real-world source schemas that prevented conversion. They are recorded here because they are findings in their own right (cross-conversion exercises the schemas more thoroughly than single-ecosystem use) and because they explain some of the local adaptations above.
+
+- **EnzymeML, LinkML representation — invalid schema `name` (NCName).** The upstream file (`enzymeml-v2-linkml.yaml`) sets `name: EnzymeML V2`. LinkML requires the schema `name` to be a valid NCName, which may not contain spaces, so LinkML's *own* generators abort at load time with `Not a valid NCName`. This is present in the current upstream file, not introduced by us. Fixed locally to `name: EnzymeML-V2` (the human-readable `title` keeps "EnzymeML V2").
+- **EnzymeML, LinkML representation — `is_a` pointing to external ontology terms.** Three classes (`Creator`, `Vessel`, `Protein`) declared both `class_uri:` and `is_a:` set to the same external CURIE (`schema:person`, `OBO:OBI_0400081`, `OBO:PR_000000001`). In LinkML, `is_a` must reference a class defined in the schema (inheritance), whereas the ontology mapping belongs in `class_uri`. The generators therefore fail with `No such class`. Fixed locally by removing the spurious `is_a` lines (keeping `class_uri`). After both fixes, the LinkML generators produce output for this input.
+- **EnzymeML, SHACL/Turtle representation — missing prefix.** The upstream Turtle (`enzymeml-v2.ttl`) uses the `md:` prefix without declaring it, so it does not parse as Turtle. Fixed locally by adding `@prefix md: <http://www.enzymeml.org/v2/> .`.
+- **EnzymeML, MD-Models representation — bold markup on required fields.** Required field names were wrapped in Markdown bold, which the current `mdmodels-core` parser rejects; removed locally.
+
 ### Run
 
 ```bash
@@ -82,6 +115,19 @@ Fill the `status` column in both review CSV files:
 - `I`: invalid, failed, syntactically invalid, empty/trivial, wrong target language, or unusable.
 
 The runner pre-fills `I` for failed or automatically invalid outputs. Valid outputs are left blank for inspection.
+
+The runs are deterministic, so on a re-run the runner **carries over** existing annotations from `orchestrator_outputs/review/*.csv`: you only need to (re-)annotate rows for inputs that changed. New or changed inputs leave their valid outputs blank for re-annotation.
+
+#### Re-annotating after a converter changed
+
+Carry-over keys on the input and the conversion path, not on converter behaviour, so if a *converter* (rather than the input data) changed, its carried-over annotations may be stale (e.g. a path that used to fail now produces output, or vice versa). To force re-annotation of every path/edge that uses a given converter, pass `--reset-converter` (repeatable; matched as a substring of the converter name / path signature):
+
+```bash
+PYTHONPATH=src venv/bin/python eval/evaluate.py \
+  --reset-converter shacl-bridge --reset-converter Jsonix
+```
+
+The runner reports how many final and edge annotations it dropped; those rows revert to the default (`I` for invalid output, blank for valid output needing a fresh judgement).
 
 `final_outputs.csv` is used for the orchestrator-level matrix. Only the best-ranked path per `(source_language, target_language, input_file)` is counted there.
 

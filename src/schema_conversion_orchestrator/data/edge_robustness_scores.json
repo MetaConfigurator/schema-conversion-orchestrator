@@ -1,0 +1,100 @@
+{
+  "JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine": {
+    "robustness": 0.5686,
+    "good": 10,
+    "lacking": 38,
+    "invalid": 3,
+    "cases": 51
+  },
+  "JsonSchema:MdModels:MdModels DataModel from JsonSchema": {
+    "robustness": 0.125,
+    "good": 6,
+    "lacking": 0,
+    "invalid": 42,
+    "cases": 48
+  },
+  "JsonSchema:SHACL_TTL:jsonschema2shacl": {
+    "robustness": 0.3,
+    "good": 0,
+    "lacking": 15,
+    "invalid": 10,
+    "cases": 25
+  },
+  "JsonSchema:SHACL_TTL:shacl-bridge": {
+    "robustness": 0.66,
+    "good": 8,
+    "lacking": 17,
+    "invalid": 0,
+    "cases": 25
+  },
+  "LinkMl:JsonSchema:LinkML JsonSchema Generator": {
+    "robustness": 1.0,
+    "good": 18,
+    "lacking": 0,
+    "invalid": 0,
+    "cases": 18
+  },
+  "LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator": {
+    "robustness": 0.6279,
+    "good": 19,
+    "lacking": 16,
+    "invalid": 8,
+    "cases": 43
+  },
+  "MdModels:JsonSchema:MdModels Templates: JsonSchema": {
+    "robustness": 1.0,
+    "good": 15,
+    "lacking": 0,
+    "invalid": 0,
+    "cases": 15
+  },
+  "MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL": {
+    "robustness": 0.0,
+    "good": 0,
+    "lacking": 0,
+    "invalid": 17,
+    "cases": 17
+  },
+  "MdModels:Xsd:MdModels Templates: Xsd": {
+    "robustness": 1.0,
+    "good": 50,
+    "lacking": 0,
+    "invalid": 0,
+    "cases": 50
+  },
+  "SHACL_TTL:JsonSchema:shacl-bridge": {
+    "robustness": 0.625,
+    "good": 12,
+    "lacking": 6,
+    "invalid": 6,
+    "cases": 24
+  },
+  "SHACL_TTL:JsonSchema:shacl-jsonschema-converter": {
+    "robustness": 0.1667,
+    "good": 0,
+    "lacking": 8,
+    "invalid": 16,
+    "cases": 24
+  },
+  "Xsd:JsonSchema:Jsonix": {
+    "robustness": 0.0972,
+    "good": 0,
+    "lacking": 7,
+    "invalid": 29,
+    "cases": 36
+  },
+  "Xsd:JsonSchema:xsd-json-converter (xjc)": {
+    "robustness": 0.4583,
+    "good": 2,
+    "lacking": 29,
+    "invalid": 5,
+    "cases": 36
+  },
+  "Xsd:JsonSchema:xsd2jsonschema": {
+    "robustness": 0.6667,
+    "good": 19,
+    "lacking": 10,
+    "invalid": 7,
+    "cases": 36
+  }
+}

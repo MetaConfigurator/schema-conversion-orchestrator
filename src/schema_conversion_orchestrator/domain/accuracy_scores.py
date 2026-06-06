@@ -61,8 +61,8 @@ def load_scores(scores_path: Optional[os.PathLike | str] = None) -> Dict[str, Di
     return _load_scores(resolved)
 
 
-def has_benchmark(source: str, target: str, scores: Optional[Dict] = None) -> bool:
-    """Whether benchmark scores exist for this source -> target task."""
+def has_accuracy_scores(source: str, target: str, scores: Optional[Dict] = None) -> bool:
+    """Whether accuracy scores exist for this source -> target task."""
     scores = scores if scores is not None else load_scores()
     return bool(scores.get(task_key(source, target)))
 

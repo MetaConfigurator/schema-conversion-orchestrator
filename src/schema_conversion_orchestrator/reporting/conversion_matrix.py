@@ -302,11 +302,11 @@ def plot_edge_quality_matrix(
             frameon=False,
             bbox_to_anchor=(0.5, 0.995),
         )
-    fig.suptitle("Direct Converter Edge Quality by Language Pair", y=1.01, fontsize=15, fontweight="semibold")
+    fig.suptitle("Direct Converter Edge Robustness by Language Pair", y=1.01, fontsize=15, fontweight="semibold")
     fig.text(
         0.5,
         0.01,
-        "Bars show concrete converter edges; height is annotated edge-output uses; numbers above bars are quality scores (G + 0.5L) / total.",
+        "Bars show concrete converter edges; height is annotated edge-output uses; numbers above bars are robustness scores (G + 0.5L) / total.",
         ha="center",
         va="center",
         fontsize=10,

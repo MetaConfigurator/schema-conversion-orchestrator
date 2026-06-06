@@ -347,7 +347,13 @@ def execute_path(
     return record
 
 
-def run_evaluation(input_dir: Path, output_dir: Path, run_id: str, only_core_languages: bool) -> Path:
+def run_evaluation(
+    input_dir: Path,
+    output_dir: Path,
+    run_id: str,
+    only_core_languages: bool,
+    reset_converters: list[str] | None = None,
+) -> Path:
     global OUTPUT_DIR
     OUTPUT_DIR = output_dir
     run_dir = output_dir / "runs" / run_id
@@ -471,8 +477,17 @@ def run_evaluation(input_dir: Path, output_dir: Path, run_id: str, only_core_lan
                             "notes": "",
                         })
 
-    carry_forward_review_annotations(final_review_rows, previous_final_reviews, FINAL_REVIEW_KEY_FIELDS)
-    carry_forward_review_annotations(edge_review_rows, previous_edge_reviews, EDGE_REVIEW_KEY_FIELDS)
+    skipped_final = carry_forward_review_annotations(
+        final_review_rows, previous_final_reviews, FINAL_REVIEW_KEY_FIELDS, reset_converters
+    )
+    skipped_edge = carry_forward_review_annotations(
+        edge_review_rows, previous_edge_reviews, EDGE_REVIEW_KEY_FIELDS, reset_converters
+    )
+    if reset_converters:
+        print(
+            f"Reset converters {reset_converters}: dropped carried-over annotations for "
+            f"{skipped_final} final rows and {skipped_edge} edge rows (re-annotate these)."
+        )
     run_review_dir = run_dir / "review"
     write_review_csv(run_review_dir / "final_outputs.csv", REVIEW_FIELDS, final_review_rows)
     write_review_csv(run_review_dir / "edge_outputs.csv", EDGE_REVIEW_FIELDS, edge_review_rows)
@@ -501,12 +516,42 @@ def load_review_annotations(path: Path, key_fields: list[str]) -> dict[tuple[str
         return annotations
 
 
+def row_involves_converter(row: dict, reset_converters: list[str]) -> bool:
+    """True if the row's path or edge uses any of the given converter names.
+
+    Used to drop carried-over annotations for paths/edges that touch a converter
+    whose behaviour may have changed, so they get re-annotated even though the
+    input data did not change.
+    """
+    if not reset_converters:
+        return False
+    haystacks = [
+        row.get("path_signature") or "",
+        row.get("edge_signature") or "",
+        row.get("converter_name") or "",
+    ]
+    return any(name and any(name in h for h in haystacks) for name in reset_converters)
+
+
 def carry_forward_review_annotations(
     rows: list[dict],
     previous_annotations: dict[tuple[str, ...], tuple[str, str]],
     key_fields: list[str],
-) -> None:
+    reset_converters: list[str] | None = None,
+) -> int:
+    """Carry over previous annotations, except for rows that use a reset converter.
+
+    Returns the number of rows whose carry-over was skipped because they involve
+    a reset converter (those rows keep their freshly computed default status, i.e.
+    ``I`` for automatically invalid output and blank for valid output that needs
+    a new human judgement).
+    """
+    reset_converters = reset_converters or []
+    skipped = 0
     for row in rows:
+        if row_involves_converter(row, reset_converters):
+            skipped += 1
+            continue
         previous = previous_annotations.get(review_key(row, key_fields))
         if previous is None:
             continue
@@ -514,6 +559,7 @@ def carry_forward_review_annotations(
         if previous_status:
             row["status"] = previous_status
             row["notes"] = previous_notes
+    return skipped
 
 
 def write_review_csv(path: Path, fields: list[str], rows: list[dict]) -> None:
@@ -530,6 +576,18 @@ def main() -> None:
     parser.add_argument("--output-dir", type=Path, default=OUTPUT_DIR)
     parser.add_argument("--run-id", default=datetime.now().strftime("%Y%m%d_%H%M%S"))
     parser.add_argument("--full-graph", action="store_true", help="Use all registered converters, not only core-language converters.")
+    parser.add_argument(
+        "--reset-converter",
+        action="append",
+        default=[],
+        metavar="CONVERTER_NAME",
+        help=(
+            "Drop carried-over annotations for any path or edge that uses this converter, "
+            "so they are re-annotated. Use when a converter (not the input data) changed. "
+            "Repeatable, e.g. --reset-converter shacl-bridge --reset-converter Jsonix. "
+            "Matches as a substring of the converter name / path signature."
+        ),
+    )
     args = parser.parse_args()
 
     run_dir = run_evaluation(
@@ -537,6 +595,7 @@ def main() -> None:
         output_dir=args.output_dir,
         run_id=args.run_id,
         only_core_languages=not args.full_graph,
+        reset_converters=args.reset_converter,
     )
     print(f"Evaluation run stored in {run_dir}")
     print(f"Review CSVs stored in {args.output_dir / 'review'}")

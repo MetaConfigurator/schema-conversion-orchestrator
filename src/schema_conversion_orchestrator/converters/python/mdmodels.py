@@ -36,7 +36,7 @@ class ConverterFromMdModels(ConverterInternal):
             #    return dm.convert_to(Templates.Julia)
             elif self.target_language == SchemaLanguage.Mermaid:
                 return dm.convert_to(Templates.Mermaid)
-            elif self.target_language == SchemaLanguage.SHACL:
+            elif self.target_language == SchemaLanguage.SHACL_TTL:
                 return dm.convert_to(Templates.Shacl)
             # elif self.target_language == SchemaLanguage.Rust_MdModels:
             #    return dm.convert_to(Templates.Rust)

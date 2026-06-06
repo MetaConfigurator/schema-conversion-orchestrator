@@ -313,7 +313,7 @@ def visualize_conversion_graph_with_metrics(
         sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
         sm.set_array([])
         cbar = fig.colorbar(sm, ax=ax, fraction=0.028, pad=0.012)
-        cbar.set_label("Edge quality score: (G + 0.5L) / total")
+        cbar.set_label("Edge robustness score: (G + 0.5L) / total")
 
     xs = [x for x, _ in pos.values()]
     ys = [y for _, y in pos.values()]

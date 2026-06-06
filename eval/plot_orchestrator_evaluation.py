@@ -6,6 +6,7 @@ columns with G, L, or I.
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from pathlib import Path
 
@@ -15,6 +16,10 @@ EVAL_DIR = Path(__file__).resolve().parent
 REPO_ROOT = EVAL_DIR.parent
 SRC_DIR = REPO_ROOT / "src"
 sys.path.insert(0, str(SRC_DIR))
+
+from schema_conversion_orchestrator.domain.edge_robustness import (  # noqa: E402
+    DEFAULT_ROBUSTNESS_PATH,
+)
 
 from schema_conversion_orchestrator.converters.registry import register_converters  # noqa: E402
 from schema_conversion_orchestrator.domain.conversion_graph import build_conversion_graph  # noqa: E402
@@ -45,14 +50,16 @@ def normalize_status(value) -> str:
     return str(value).strip().upper()
 
 
-def compute_edge_scores(edge_review: pd.DataFrame) -> dict[str, float]:
-    """Compute edge-local quality scores from immediate edge outputs.
+def compute_edge_robustness(edge_review: pd.DataFrame) -> dict[str, dict]:
+    """Compute per-edge robustness from immediate edge outputs.
 
-    Only reviewed statuses G/L/I are included. This keeps the graph from
-    pretending unreviewed valid outputs are good or lacking. Failed/invalid edge
-    outputs are prefilled as I by the runner and therefore count immediately.
+    For each converter edge, robustness is ``(G + 0.5*L) / (G + L + I)`` over all
+    reviewed immediate outputs. Only reviewed statuses G/L/I are included, so the
+    graph does not pretend unreviewed valid outputs are good or lacking.
+    Returns a dict keyed by edge signature (``source:target:converter``) with the
+    robustness value and the underlying counts (for transparency / persistence).
     """
-    scores: dict[str, float] = {}
+    scores: dict[str, dict] = {}
     if edge_review.empty:
         return scores
 
@@ -64,8 +71,23 @@ def compute_edge_scores(edge_review: pd.DataFrame) -> dict[str, float]:
         total = len(group)
         good = int((group["status_normalized"] == "G").sum())
         lacking = int((group["status_normalized"] == "L").sum())
-        scores[edge_signature] = (good + 0.5 * lacking) / total if total else 0.0
+        invalid = int((group["status_normalized"] == "I").sum())
+        robustness = (good + 0.5 * lacking) / total if total else 0.0
+        scores[str(edge_signature)] = {
+            "robustness": round(robustness, 4),
+            "good": good,
+            "lacking": lacking,
+            "invalid": invalid,
+            "cases": total,
+        }
     return scores
+
+
+def persist_edge_robustness(scores: dict[str, dict], path: Path) -> None:
+    """Persist per-edge robustness scores for the orchestrator to load at runtime."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    ordered = dict(sorted(scores.items()))
+    path.write_text(json.dumps(ordered, indent=2) + "\n", encoding="utf-8")
 
 
 def main() -> None:
@@ -93,13 +115,18 @@ def main() -> None:
 
     edge_review = pd.read_csv(edge_review_path)
     edge_quality = build_edge_quality_matrix(edge_review)
-    edge_matrix_path = plots_dir / "edge_quality_matrix.png"
+    edge_matrix_path = plots_dir / "edge_robustness_matrix.png"
     plot_edge_quality_matrix(edge_quality, output_path=str(edge_matrix_path))
 
-    edge_scores = compute_edge_scores(edge_review)
+    edge_robustness = compute_edge_robustness(edge_review)
+    # Persist the per-edge robustness scores so the orchestrator can load them
+    # for the edge-robustness ranking strategy (analogous to accuracy scores).
+    persist_edge_robustness(edge_robustness, DEFAULT_ROBUSTNESS_PATH)
+    persist_edge_robustness(edge_robustness, args.output_dir / "edge_robustness_scores.json")
+    edge_scores = {sig: entry["robustness"] for sig, entry in edge_robustness.items()}
     converters = register_converters(only_core_languages=not args.full_graph)
     conversion_graph = build_conversion_graph(converters)
-    graph_path = plots_dir / "conversion_graph_edge_quality.png"
+    graph_path = plots_dir / "conversion_graph_edge_robustness.png"
     visualize_conversion_graph_with_metrics(
         conversion_graph,
         output_path=str(graph_path),
@@ -123,6 +150,7 @@ def main() -> None:
     print(f"Wrote {edge_matrix_path}")
     print(f"Wrote {graph_path}")
     print(f"Wrote {full_graph_path}")
+    print(f"Wrote edge robustness scores -> {DEFAULT_ROBUSTNESS_PATH}")
 
 
 if __name__ == "__main__":
