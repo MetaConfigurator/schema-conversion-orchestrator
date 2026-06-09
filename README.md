@@ -132,13 +132,12 @@ When several paths connect the source and target language, the returned
 attempts are ranked so that the most faithful result surfaces first; failed
 attempts are always sorted below successful ones. Two strategies are available:
 
-- **Least character loss** (`LeastCharacterLoss`, default): a knowledge-free
-  fallback that prefers the largest successful output, on the assumption that
-  dropped constraints tend to shorten a schema.
-- **Accuracy-based** (`AccuracyBased`): ranks paths by benchmark-derived
-  accuracy scores. It is preferred automatically whenever offline benchmark
-  scores exist for the requested source--target pair (currently the
-  SHACL&nbsp;&harr;&nbsp;JSON&nbsp;Schema conversions).
+- **Least character loss** (`LeastCharacterLoss`, default): a fallback that
+  prefers the largest successful output, assuming dropped constraints tend to
+  shorten a schema.
+- **Accuracy-based** (`AccuracyBased`): ranks paths by benchmark-derived accuracy
+  scores. Chosen automatically whenever offline scores exist for the requested
+  source/target pair (currently the SHACL <-> JSON Schema conversions).
 
 ## Test
 
