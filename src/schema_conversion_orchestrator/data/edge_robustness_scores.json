@@ -1,8 +1,8 @@
 {
   "JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine": {
-    "robustness": 0.7297,
-    "good": 18,
-    "lacking": 18,
+    "robustness": 0.8108,
+    "good": 24,
+    "lacking": 12,
     "invalid": 1,
     "cases": 37,
     "excluded_invalid_input": 2
@@ -16,9 +16,9 @@
     "excluded_invalid_input": 0
   },
   "JsonSchema:SHACL_TTL:jsonschema2shacl": {
-    "robustness": 0.6316,
-    "good": 9,
-    "lacking": 6,
+    "robustness": 0.7895,
+    "good": 15,
+    "lacking": 0,
     "invalid": 4,
     "cases": 19,
     "excluded_invalid_input": 0
