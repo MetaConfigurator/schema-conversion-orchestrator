@@ -2,13 +2,13 @@
 
 Schema Conversion Orchestrator is a Flask-based schema conversion service.
 It builds a conversion graph across multiple schema languages and can route
-conversions through built-in Python converters plus external Java, Node.js, and
-ROBOT converter subprocesses.
+conversions through built-in Python converters, external Java and Node.js
+converter packages, and standalone executable tools such as ROBOT.
 
 ## Features
 
 - Dynamic conversion graph and multi-hop path discovery
-- Python, Java, Node.js, and ROBOT-based converters
+- Python, Java, Node.js, and standalone executable converter integrations
 - HTTP API for schema conversion
 - Evaluation plots for conversion coverage, robustness, and graph structure
 - Unit tests that run without heavy external converter dependencies
@@ -17,7 +17,7 @@ ROBOT converter subprocesses.
 
 ```text
 src/schema_conversion_orchestrator/   Python package
-external_converters/                  Java, Node.js, and ROBOT converter assets
+external_converters/                  Java, Node.js, and standalone executable assets
 deploy/docker/                        Dockerfile and compose files
 requirements/                         Python runtime and test requirements
 scripts/                              Build, run, test, and utility scripts

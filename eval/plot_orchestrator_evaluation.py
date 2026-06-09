@@ -140,6 +140,15 @@ def persist_edge_robustness(scores: dict[str, dict], path: Path) -> None:
     path.write_text(json.dumps(ordered, indent=2) + "\n", encoding="utf-8")
 
 
+def filter_scores_to_registered_edges(scores: dict[str, dict], converters) -> dict[str, dict]:
+    """Drop stale score rows for converters that are no longer registered."""
+    registered = {
+        f"{converter.source_language.value}:{converter.target_language.value}:{converter.name}"
+        for converter in converters
+    }
+    return {signature: score for signature, score in scores.items() if signature in registered}
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Plot broad orchestrator evaluation results.")
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
@@ -168,14 +177,18 @@ def main() -> None:
     edge_matrix_path = plots_dir / "edge_robustness_matrix.png"
     plot_edge_quality_matrix(edge_quality, output_path=str(edge_matrix_path))
 
-    edge_robustness = compute_edge_robustness(edge_review)
+    converters = register_converters(only_core_languages=not args.full_graph)
+    full_converters = register_converters(only_core_languages=False)
+    edge_robustness = filter_scores_to_registered_edges(
+        compute_edge_robustness(edge_review),
+        full_converters,
+    )
     # Persist the per-edge robustness scores so the orchestrator can load them
     # for the edge-robustness ranking strategy (analogous to accuracy scores).
     persist_edge_robustness(edge_robustness, DEFAULT_ROBUSTNESS_PATH)
     persist_edge_robustness(edge_robustness, RESULTS_ROBUSTNESS_PATH)
     persist_edge_robustness(edge_robustness, args.output_dir / "edge_robustness_scores.json")
     edge_scores = {sig: entry["robustness"] for sig, entry in edge_robustness.items()}
-    converters = register_converters(only_core_languages=not args.full_graph)
     conversion_graph = build_conversion_graph(converters)
     graph_path = plots_dir / "conversion_graph_edge_robustness.png"
     visualize_conversion_graph_with_metrics(
@@ -188,7 +201,6 @@ def main() -> None:
     )
 
     full_graph_path = plots_dir / "conversion_graph_all_languages.png"
-    full_converters = register_converters(only_core_languages=False)
     full_conversion_graph = build_conversion_graph(full_converters)
     visualize_conversion_graph_with_metrics(
         full_conversion_graph,

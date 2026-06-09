@@ -601,7 +601,7 @@ def main() -> None:
         help=(
             "Drop carried-over annotations for any path or edge that uses this converter, "
             "so they are re-annotated. Use when a converter (not the input data) changed. "
-            "Repeatable, e.g. --reset-converter shacl-bridge --reset-converter Jsonix. "
+            "Repeatable, e.g. --reset-converter shacl-bridge --reset-converter xsd2jsonschema. "
             "Matches as a substring of the converter name / path signature."
         ),
     )

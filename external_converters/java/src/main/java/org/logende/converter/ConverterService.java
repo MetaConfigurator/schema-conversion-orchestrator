@@ -15,7 +15,6 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Stream;
 import org.logende.converter.converters.DtdToXsdConverter;
-import org.logende.converter.converters.XsdToJsonSchemaConverter;
 
 public class ConverterService {
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -73,7 +72,6 @@ public class ConverterService {
     private void loadConverters() {
         // Just new them up manually
         register(new DtdToXsdConverter());
-        register(new XsdToJsonSchemaConverter());
         // add more as needed
     }
 

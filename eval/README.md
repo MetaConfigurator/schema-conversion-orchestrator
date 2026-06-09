@@ -140,7 +140,7 @@ Carry-over keys on the input and the conversion path, not on converter behaviour
 
 ```bash
 PYTHONPATH=src venv/bin/python eval/evaluate.py \
-  --reset-converter shacl-bridge --reset-converter Jsonix
+  --reset-converter shacl-bridge --reset-converter xsd2jsonschema
 ```
 
 The runner reports how many final and edge annotations it dropped; those rows revert to the default (`I` for invalid output, blank for valid output needing a fresh judgement).

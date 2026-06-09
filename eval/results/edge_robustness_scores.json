@@ -1,35 +1,35 @@
 {
   "JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine": {
-    "robustness": 0.7436,
-    "good": 20,
+    "robustness": 0.7297,
+    "good": 18,
     "lacking": 18,
     "invalid": 1,
-    "cases": 39,
-    "excluded_invalid_input": 12
+    "cases": 37,
+    "excluded_invalid_input": 2
   },
   "JsonSchema:MdModels:MdModels DataModel from JsonSchema": {
-    "robustness": 0.1364,
+    "robustness": 0.1429,
     "good": 6,
     "lacking": 0,
-    "invalid": 38,
-    "cases": 44,
-    "excluded_invalid_input": 4
+    "invalid": 36,
+    "cases": 42,
+    "excluded_invalid_input": 0
   },
   "JsonSchema:SHACL_TTL:jsonschema2shacl": {
-    "robustness": 0.6,
+    "robustness": 0.6316,
     "good": 9,
     "lacking": 6,
-    "invalid": 5,
-    "cases": 20,
-    "excluded_invalid_input": 5
+    "invalid": 4,
+    "cases": 19,
+    "excluded_invalid_input": 0
   },
   "JsonSchema:SHACL_TTL:shacl-bridge": {
-    "robustness": 0.775,
+    "robustness": 0.7895,
     "good": 11,
-    "lacking": 9,
+    "lacking": 8,
     "invalid": 0,
-    "cases": 20,
-    "excluded_invalid_input": 5
+    "cases": 19,
+    "excluded_invalid_input": 0
   },
   "LinkMl:JsonSchema:LinkML JsonSchema Generator": {
     "robustness": 1.0,
@@ -40,11 +40,11 @@
     "excluded_invalid_input": 0
   },
   "LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator": {
-    "robustness": 0.814,
-    "good": 35,
+    "robustness": 0.7838,
+    "good": 29,
     "lacking": 0,
     "invalid": 8,
-    "cases": 43,
+    "cases": 37,
     "excluded_invalid_input": 0
   },
   "MdModels:JsonSchema:MdModels Templates: JsonSchema": {
@@ -65,10 +65,10 @@
   },
   "MdModels:Xsd:MdModels Templates: Xsd": {
     "robustness": 1.0,
-    "good": 50,
+    "good": 35,
     "lacking": 0,
     "invalid": 0,
-    "cases": 50,
+    "cases": 35,
     "excluded_invalid_input": 0
   },
   "SHACL_TTL:JsonSchema:shacl-bridge": {
@@ -86,14 +86,6 @@
     "invalid": 10,
     "cases": 18,
     "excluded_invalid_input": 6
-  },
-  "Xsd:JsonSchema:Jsonix": {
-    "robustness": 0.0972,
-    "good": 0,
-    "lacking": 7,
-    "invalid": 29,
-    "cases": 36,
-    "excluded_invalid_input": 0
   },
   "Xsd:JsonSchema:xsd-json-converter (xjc)": {
     "robustness": 0.4583,

@@ -2,10 +2,10 @@
   "languages_in_graph": 15,
   "ordered_pairs_total": 210,
   "ordered_pairs_reachable": 131,
-  "total_paths": 721,
-  "max_paths": 26,
+  "total_paths": 651,
+  "max_paths": 20,
   "max_paths_pair": "MdModels -> SHACL_JSON_LD",
-  "avg_paths_over_all_pairs": 3.43,
-  "avg_paths_over_reachable_pairs": 5.5,
+  "avg_paths_over_all_pairs": 3.1,
+  "avg_paths_over_reachable_pairs": 4.97,
   "graph": "full"
 }
