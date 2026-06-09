@@ -15,7 +15,11 @@ import pandas as pd
 EVAL_DIR = Path(__file__).resolve().parent
 REPO_ROOT = EVAL_DIR.parent
 SRC_DIR = REPO_ROOT / "src"
+RESULTS_DIR = EVAL_DIR / "results"
 sys.path.insert(0, str(SRC_DIR))
+sys.path.insert(0, str(EVAL_DIR))
+
+from crop_to_content import crop_to_content  # noqa: E402
 
 from schema_conversion_orchestrator.domain.edge_robustness import (  # noqa: E402
     DEFAULT_ROBUSTNESS_PATH,
@@ -23,24 +27,35 @@ from schema_conversion_orchestrator.domain.edge_robustness import (  # noqa: E40
 
 from schema_conversion_orchestrator.converters.registry import register_converters  # noqa: E402
 from schema_conversion_orchestrator.domain.conversion_graph import build_conversion_graph  # noqa: E402
-from schema_conversion_orchestrator.reporting.conversion_matrix import (  # noqa: E402
+from plotting_conversion_matrix import (  # noqa: E402
     build_edge_quality_matrix,
     build_orchestrator_result_matrix,
     plot_edge_quality_matrix,
     plot_orchestrator_result_matrix,
 )
-from schema_conversion_orchestrator.reporting.visualize_conversion_graph import (  # noqa: E402
+from plotting_conversion_graph import (  # noqa: E402
+    visualize_graphical_abstract,
     visualize_conversion_graph_with_metrics,
 )
 
 
-DEFAULT_OUTPUT_DIR = EVAL_DIR / "orchestrator_outputs"
+DEFAULT_OUTPUT_DIR = RESULTS_DIR / "orchestrator_outputs"
+RESULTS_ROBUSTNESS_PATH = RESULTS_DIR / "edge_robustness_scores.json"
 EVALUATION_LANGUAGES = {
     "JsonSchema",
     "Xsd",
     "SHACL_TTL",
     "LinkMl",
     "MdModels",
+}
+GRAPHICAL_ABSTRACT_LANGUAGES = EVALUATION_LANGUAGES | {
+    "Dtd",
+    "GraphQL",
+    "Mermaid",
+    "Protobuf",
+    "Shex",
+    "Owl_OFN",
+    "SqlAlchemy",
 }
 
 
@@ -50,14 +65,39 @@ def normalize_status(value) -> str:
     return str(value).strip().upper()
 
 
+def _direct_input_invalid(row, prev_index: dict) -> bool:
+    """Whether an edge's direct input (the previous step's output) was invalid.
+
+    Edge robustness judges each converter against its direct input. If that input
+    was itself invalid (the previous step's output was automatically invalid or
+    human-annotated ``I``), the sample tests the upstream step, not this converter,
+    so it is excluded. First steps consume the real source schema and are kept.
+    """
+    try:
+        step_index = int(row["step_index"])
+    except (TypeError, ValueError):
+        return False
+    if step_index <= 1:
+        return False
+    prev = prev_index.get(
+        (row["source_language"], row["target_language"], row["input_file"], row["path_id"], step_index - 1)
+    )
+    if prev is None:
+        return False
+    prev_status = normalize_status(prev.get("status"))
+    prev_auto = str(prev.get("automatic_valid")).strip().lower()
+    return prev_status == "I" or prev_auto in {"false", "0", "no"}
+
+
 def compute_edge_robustness(edge_review: pd.DataFrame) -> dict[str, dict]:
     """Compute per-edge robustness from immediate edge outputs.
 
-    For each converter edge, robustness is ``(G + 0.5*L) / (G + L + I)`` over all
-    reviewed immediate outputs. Only reviewed statuses G/L/I are included, so the
-    graph does not pretend unreviewed valid outputs are good or lacking.
-    Returns a dict keyed by edge signature (``source:target:converter``) with the
-    robustness value and the underlying counts (for transparency / persistence).
+    For each converter edge, robustness is ``(G + 0.5*L) / (G + L + I)`` over its
+    reviewed immediate outputs (statuses G/L/I). Samples whose *direct input* was
+    invalid are excluded (see ``_direct_input_invalid``), so a converter is not
+    penalised for information an earlier step already lost or for being handed an
+    unusable input. Returns a dict keyed by edge signature with the robustness
+    value and the underlying counts (including how many samples were excluded).
     """
     scores: dict[str, dict] = {}
     if edge_review.empty:
@@ -65,13 +105,22 @@ def compute_edge_robustness(edge_review: pd.DataFrame) -> dict[str, dict]:
 
     edge_review = edge_review.copy()
     edge_review["status_normalized"] = edge_review["status"].map(normalize_status)
+
+    prev_index = {
+        (r["source_language"], r["target_language"], r["input_file"], r["path_id"], int(r["step_index"])): r
+        for _, r in edge_review.iterrows()
+        if str(r["step_index"]).strip().isdigit()
+    }
+
     reviewed = edge_review[edge_review["status_normalized"].isin({"G", "L", "I"})]
 
     for edge_signature, group in reviewed.groupby("edge_signature"):
-        total = len(group)
-        good = int((group["status_normalized"] == "G").sum())
-        lacking = int((group["status_normalized"] == "L").sum())
-        invalid = int((group["status_normalized"] == "I").sum())
+        excluded = int(group.apply(lambda r: _direct_input_invalid(r, prev_index), axis=1).sum())
+        kept = group[~group.apply(lambda r: _direct_input_invalid(r, prev_index), axis=1)]
+        total = len(kept)
+        good = int((kept["status_normalized"] == "G").sum())
+        lacking = int((kept["status_normalized"] == "L").sum())
+        invalid = int((kept["status_normalized"] == "I").sum())
         robustness = (good + 0.5 * lacking) / total if total else 0.0
         scores[str(edge_signature)] = {
             "robustness": round(robustness, 4),
@@ -79,6 +128,7 @@ def compute_edge_robustness(edge_review: pd.DataFrame) -> dict[str, dict]:
             "lacking": lacking,
             "invalid": invalid,
             "cases": total,
+            "excluded_invalid_input": excluded,
         }
     return scores
 
@@ -122,6 +172,7 @@ def main() -> None:
     # Persist the per-edge robustness scores so the orchestrator can load them
     # for the edge-robustness ranking strategy (analogous to accuracy scores).
     persist_edge_robustness(edge_robustness, DEFAULT_ROBUSTNESS_PATH)
+    persist_edge_robustness(edge_robustness, RESULTS_ROBUSTNESS_PATH)
     persist_edge_robustness(edge_robustness, args.output_dir / "edge_robustness_scores.json")
     edge_scores = {sig: entry["robustness"] for sig, entry in edge_robustness.items()}
     converters = register_converters(only_core_languages=not args.full_graph)
@@ -133,6 +184,7 @@ def main() -> None:
         show_edge_labels=True,
         edge_scores=edge_scores,
         include_languages=EVALUATION_LANGUAGES,
+        show_colorbar=False,
     )
 
     full_graph_path = plots_dir / "conversion_graph_all_languages.png"
@@ -146,11 +198,32 @@ def main() -> None:
         include_languages=None,
     )
 
+    graphical_abstract_path = plots_dir / "graphical_abstract_conversion_graph.png"
+    graphical_abstract_pdf_path = plots_dir / "graphical_abstract_conversion_graph.pdf"
+    visualize_graphical_abstract(
+        full_conversion_graph,
+        output_path=str(graphical_abstract_path),
+        include_languages=GRAPHICAL_ABSTRACT_LANGUAGES,
+    )
+    visualize_graphical_abstract(
+        full_conversion_graph,
+        output_path=str(graphical_abstract_pdf_path),
+        include_languages=GRAPHICAL_ABSTRACT_LANGUAGES,
+    )
+
+    # Trim the residual white margin left by matplotlib so the graph plots embed
+    # tightly in the manuscript.
+    crop_to_content(graph_path)
+    crop_to_content(full_graph_path)
+
     print(f"Wrote {matrix_path}")
     print(f"Wrote {edge_matrix_path}")
     print(f"Wrote {graph_path}")
+    print(f"Wrote {graphical_abstract_path}")
+    print(f"Wrote {graphical_abstract_pdf_path}")
     print(f"Wrote {full_graph_path}")
     print(f"Wrote edge robustness scores -> {DEFAULT_ROBUSTNESS_PATH}")
+    print(f"Wrote edge robustness scores -> {RESULTS_ROBUSTNESS_PATH}")
 
 
 if __name__ == "__main__":

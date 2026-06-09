@@ -87,7 +87,7 @@ PYTHONPATH=src venv/bin/python eval/evaluate.py --full-graph
 Outputs are written to:
 
 ```text
-eval/orchestrator_outputs/
+eval/results/orchestrator_outputs/
   runs/<run_id>/
     review/final_outputs.csv
     review/edge_outputs.csv
@@ -110,13 +110,29 @@ steps/step_02_output.<ext>
 
 Fill the `status` column in both review CSV files:
 
-- `G`: good, valid and practically usable.
+- `G`: good, valid and practically usable overall; it may still miss minor details.
 - `L`: lacking, valid and partially useful but missing important structure or constraints.
 - `I`: invalid, failed, syntactically invalid, empty/trivial, wrong target language, or unusable.
 
 The runner pre-fills `I` for failed or automatically invalid outputs. Valid outputs are left blank for inspection.
 
-The runs are deterministic, so on a re-run the runner **carries over** existing annotations from `orchestrator_outputs/review/*.csv`: you only need to (re-)annotate rows for inputs that changed. New or changed inputs leave their valid outputs blank for re-annotation.
+**What each output is judged against (important):**
+
+- In `final_outputs.csv`, judge the final schema against the **original source schema / the modeling intent** — i.e. the end-to-end usefulness of the orchestrator's result.
+- In `edge_outputs.csv`, judge each converter's output against its **direct input only**, given by the `input_step_index` / `input_path` columns (the original source for `step_index == 1`, otherwise the previous step's output). Ask *"given exactly this input, is this converter's direct output a mostly good, partially useful, or unusable target-language representation?"* — **not** how it compares to the original source. This isolates each converter's own fidelity: a converter is graded `G` when it carries its direct input across well enough to be practically useful, even if minor details are imperfect. A converter is graded `L` when the direct output is valid but misses important direct-input structure or constraints. No edge is penalized for information a previous step already lost.
+
+The runs are deterministic, so on a re-run the runner **carries over** existing annotations from `results/orchestrator_outputs/review/*.csv`: you only need to (re-)annotate rows for inputs that changed. New or changed inputs leave their valid outputs blank for re-annotation.
+
+You can annotate in a local browser UI instead of editing the CSVs directly:
+
+```bash
+PYTHONPATH=src python3 eval/annotate_outputs.py
+```
+
+The page shows the full final-output or edge-output table. Clicking a row opens
+the relevant input and produced output side by side, with a `G`/`L`/`I` status
+dropdown and a notes field. The `Next`, `Back`, and `Table` buttons support
+sequential review and returning to the full table.
 
 #### Re-annotating after a converter changed
 
@@ -131,7 +147,7 @@ The runner reports how many final and edge annotations it dropped; those rows re
 
 `final_outputs.csv` is used for the orchestrator-level matrix. Only the best-ranked path per `(source_language, target_language, input_file)` is counted there.
 
-`edge_outputs.csv` is used for the edge-colored graph. It evaluates each converter edge on its own immediate output, not on downstream path success.
+`edge_outputs.csv` is used for the edge-colored graph. It evaluates each converter edge on its own immediate output, judged against that edge's direct input (`input_path`) — not on downstream path success, and not against the original source schema.
 
 ### Plot
 
@@ -144,9 +160,11 @@ PYTHONPATH=src venv/bin/python eval/plot_orchestrator_evaluation.py
 Generated plots:
 
 ```text
-eval/orchestrator_outputs/plots/orchestrator_result_matrix.png
-eval/orchestrator_outputs/plots/conversion_graph_edge_quality.png
-eval/orchestrator_outputs/plots/conversion_graph_all_languages.png
+eval/results/orchestrator_outputs/plots/orchestrator_result_matrix.png
+eval/results/orchestrator_outputs/plots/edge_robustness_matrix.png
+eval/results/orchestrator_outputs/plots/conversion_graph_edge_robustness.png
+eval/results/orchestrator_outputs/plots/conversion_graph_all_languages.png
+eval/results/orchestrator_outputs/plots/graphical_abstract_conversion_graph.png
 ```
 
 The matrix cell format is:
@@ -176,7 +194,7 @@ using only edge-local annotations from `edge_outputs.csv`.
 
 ## Accuracy-Based Ranking Benchmarks
 
-These benchmarks evaluate SHACL `->` JSON Schema and JSON Schema `->` SHACL paths against ground-truth test suites. Their per-path scores are persisted to `src/schema_conversion_orchestrator/data/accuracy_scores.json` and used by the orchestrator's accuracy-based ranking strategy.
+These benchmarks evaluate SHACL `->` JSON Schema and JSON Schema `->` SHACL paths against ground-truth test suites. Their per-path scores are persisted to `src/schema_conversion_orchestrator/data/accuracy_scores.json` for runtime ranking and copied to `eval/results/accuracy_scores.json` with the other generated evaluation results.
 
 The orchestrator service must be running locally:
 
@@ -206,8 +224,9 @@ ORCHESTRATOR_URL=http://localhost:5002/convert
 Generated outputs:
 
 ```text
-eval/benchmark_results_<task>.csv
-eval/benchmark_accuracy_<task>.png
+eval/results/benchmarks/benchmark_results_<task>.csv
+eval/results/benchmarks/benchmark_accuracy_<task>.png
+eval/results/accuracy_scores.json
 src/schema_conversion_orchestrator/data/accuracy_scores.json
 ```
 
@@ -249,14 +268,14 @@ PYTHONPATH=src python3 eval/cache_timing_analysis.py "SHACL_TTL -> JsonSchema"
 Choose an output path:
 
 ```bash
-PYTHONPATH=src python3 eval/cache_timing_analysis.py --output eval/cache_timing_results.csv
+PYTHONPATH=src python3 eval/cache_timing_analysis.py --output eval/results/cache_timing_results.csv
 ```
 
 Generated outputs:
 
 ```text
-eval/cache_timing_results.csv
-eval/cache_timing_results.json
+eval/results/cache_timing_results.csv
+eval/results/cache_timing_results.json
 ```
 
 ## Notes

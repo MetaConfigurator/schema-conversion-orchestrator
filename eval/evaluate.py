@@ -19,7 +19,7 @@ Input corpus layout:
 
 Output layout:
 
-    eval/orchestrator_outputs/
+    eval/results/orchestrator_outputs/
       runs/<run_id>/<source>/<input_stem>/<target>/path_001/
         metadata.json
         final_output.<ext> | error.txt
@@ -81,7 +81,8 @@ TARGET_LANGUAGES = [
 ]
 
 INPUT_DIR = EVAL_DIR / "real_world_inputs"
-OUTPUT_DIR = EVAL_DIR / "orchestrator_outputs"
+RESULTS_DIR = EVAL_DIR / "results"
+OUTPUT_DIR = RESULTS_DIR / "orchestrator_outputs"
 
 LANGUAGE_EXTENSIONS = {
     SchemaLanguage.JsonSchema.value: ".schema.json",
@@ -120,6 +121,8 @@ EDGE_REVIEW_FIELDS = [
     "edge_target_language",
     "converter_name",
     "library",
+    "input_step_index",
+    "input_path",
     "output_path",
     "notes",
 ]
@@ -459,6 +462,18 @@ def run_evaluation(
 
                     for step in attempt.steps:
                         edge_status = "I" if not step.automatic_valid else ""
+                        # The edge's *direct* input: the original source schema for
+                        # the first step, otherwise the previous step's output. Edge
+                        # robustness judges each converter against this direct input
+                        # (not the original source), so an edge is not penalised for
+                        # information already lost by an earlier step.
+                        if step.step_index == 1:
+                            input_step_index = 0
+                            input_path = f"real_world_inputs/{attempt.input_file}"
+                        else:
+                            previous_step = attempt.steps[step.step_index - 2]
+                            input_step_index = step.step_index - 1
+                            input_path = previous_step.output_path
                         edge_review_rows.append({
                             "status": edge_status,
                             "automatic_valid": step.automatic_valid,
@@ -473,6 +488,8 @@ def run_evaluation(
                             "edge_target_language": step.target_language,
                             "converter_name": step.converter_name,
                             "library": step.library or step.converter_name,
+                            "input_step_index": input_step_index,
+                            "input_path": input_path,
                             "output_path": step.output_path,
                             "notes": "",
                         })

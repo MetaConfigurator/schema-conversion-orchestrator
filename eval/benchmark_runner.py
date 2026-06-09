@@ -32,6 +32,9 @@ import requests
 
 EVAL_DIR = Path(__file__).resolve().parent
 REPO_ROOT = EVAL_DIR.parent
+RESULTS_DIR = EVAL_DIR / "results"
+BENCHMARK_RESULTS_DIR = RESULTS_DIR / "benchmarks"
+RESULTS_SCORES_PATH = RESULTS_DIR / "accuracy_scores.json"
 sys.path.insert(0, str(EVAL_DIR))
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
@@ -108,6 +111,7 @@ def short_label(signature: str) -> str:
 
 def persist_scores(task: str, path_scores: Dict[str, dict]) -> None:
     DEFAULT_SCORES_PATH.parent.mkdir(parents=True, exist_ok=True)
+    RESULTS_SCORES_PATH.parent.mkdir(parents=True, exist_ok=True)
     existing = {}
     if DEFAULT_SCORES_PATH.exists():
         try:
@@ -115,8 +119,11 @@ def persist_scores(task: str, path_scores: Dict[str, dict]) -> None:
         except json.JSONDecodeError:
             existing = {}
     existing[task] = path_scores
-    DEFAULT_SCORES_PATH.write_text(json.dumps(existing, indent=2) + "\n")
+    payload = json.dumps(existing, indent=2) + "\n"
+    DEFAULT_SCORES_PATH.write_text(payload)
+    RESULTS_SCORES_PATH.write_text(payload)
     print(f"  scores -> {DEFAULT_SCORES_PATH}")
+    print(f"  copy   -> {RESULTS_SCORES_PATH}")
 
 
 def plot(df: pd.DataFrame, path_scores: Dict[str, dict], benchmark: ConversionBenchmark,
@@ -170,10 +177,13 @@ def run_benchmark(benchmark: ConversionBenchmark, use_cache: bool = True) -> Non
         print(f"  {metric_str} successes={s['successes']}/{s['cases']}  {short_label(sig)}")
 
     out_slug = slug(benchmark.task_name)
-    df.to_csv(EVAL_DIR / f"benchmark_results_{out_slug}.csv", index=False)
-    print(f"  csv    -> {EVAL_DIR / f'benchmark_results_{out_slug}.csv'}")
+    BENCHMARK_RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    csv_path = BENCHMARK_RESULTS_DIR / f"benchmark_results_{out_slug}.csv"
+    plot_path = BENCHMARK_RESULTS_DIR / f"benchmark_accuracy_{out_slug}.png"
+    df.to_csv(csv_path, index=False)
+    print(f"  csv    -> {csv_path}")
     persist_scores(task_key(benchmark.source_language, benchmark.target_language), path_scores)
-    plot(df, path_scores, benchmark, EVAL_DIR / f"benchmark_accuracy_{out_slug}.png")
+    plot(df, path_scores, benchmark, plot_path)
 
 
 def main() -> None:

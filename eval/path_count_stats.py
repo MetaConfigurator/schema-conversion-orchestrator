@@ -8,7 +8,7 @@ A *path* here is a full converter chain (the same notion the orchestrator
 enumerates and ranks via ``domain.conversion_graph.find_paths``): parallel
 converters for the same source/target hop count as *separate* paths, and
 multi-hop chains through intermediate languages are included. This differs from
-the language-node path-count matrix in ``reporting/conversion_matrix.py``, which
+the language-node path-count matrix in ``eval/plotting_conversion_matrix.py``, which
 collapses parallel converters into a single edge; here we count what the user
 actually sees ranked.
 
@@ -22,7 +22,7 @@ Usage::
 
     python eval/path_count_stats.py            # full graph (all languages)
     python eval/path_count_stats.py --core      # only the core-language subset
-    python eval/path_count_stats.py --output eval/path_count_stats.json
+    python eval/path_count_stats.py --output eval/results/path_count_stats.json
 """
 from __future__ import annotations
 
@@ -34,6 +34,7 @@ from typing import Dict, List, Tuple
 
 EVAL_DIR = Path(__file__).resolve().parent
 REPO_ROOT = EVAL_DIR.parent
+RESULTS_DIR = EVAL_DIR / "results"
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
 from schema_conversion_orchestrator.converters.registry import register_converters  # noqa: E402
@@ -86,7 +87,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--core", action="store_true",
                         help="restrict to the core-language subset (register_converters(True))")
-    parser.add_argument("--output", type=Path, default=EVAL_DIR / "path_count_stats.json",
+    parser.add_argument("--output", type=Path, default=RESULTS_DIR / "path_count_stats.json",
                         help="where to write the JSON summary")
     args = parser.parse_args()
 
@@ -106,6 +107,7 @@ def main() -> None:
     print(f"  avg paths over all distinct pairs    : {summary['avg_paths_over_all_pairs']}")
     print(f"  avg paths over reachable pairs       : {summary['avg_paths_over_reachable_pairs']}")
 
+    args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(summary, indent=2) + "\n")
     print(f"  summary -> {args.output}")
 

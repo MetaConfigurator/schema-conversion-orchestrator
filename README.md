@@ -10,7 +10,7 @@ ROBOT converter subprocesses.
 - Dynamic conversion graph and multi-hop path discovery
 - Python, Java, Node.js, and ROBOT-based converters
 - HTTP API for schema conversion
-- Diagram/report generation for available conversion paths
+- Evaluation plots for conversion coverage, robustness, and graph structure
 - Unit tests that run without heavy external converter dependencies
 
 ## Repository Layout
@@ -23,7 +23,6 @@ requirements/                         Python runtime and test requirements
 scripts/                              Build, run, test, and utility scripts
 tests/                                Pytest suite and fixtures
 eval/                                 Evaluation schemas and generated eval outputs
-artifacts/                            Ignored generated diagrams/reports
 ```
 
 ## Setup
@@ -178,17 +177,16 @@ deploy/docker/docker-compose.https.yml
 The Docker image uses the repo root as build context and
 `deploy/docker/Dockerfile` as the Dockerfile.
 
-## Generate Diagrams
+## Generate Evaluation Plots
 
 ```bash
-scripts/generate_diagrams.sh
+PYTHONPATH=src venv/bin/python eval/plot_orchestrator_evaluation.py
 ```
 
-Generated files are written to ignored artifact directories:
+Generated files are written to:
 
 ```text
-artifacts/diagrams/core/
-artifacts/diagrams/full/
+eval/results/orchestrator_outputs/plots/
 ```
 
 ## Supported Formats

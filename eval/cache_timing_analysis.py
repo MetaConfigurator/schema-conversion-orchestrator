@@ -12,7 +12,7 @@ Usage:
 
     python eval/cache_timing_analysis.py
     python eval/cache_timing_analysis.py "SHACL_TTL -> JsonSchema"
-    python eval/cache_timing_analysis.py --output eval/cache_timing_results.csv
+    python eval/cache_timing_analysis.py --output eval/results/cache_timing_results.csv
 """
 from __future__ import annotations
 
@@ -28,6 +28,7 @@ import pandas as pd
 
 EVAL_DIR = Path(__file__).resolve().parent
 REPO_ROOT = EVAL_DIR.parent
+RESULTS_DIR = EVAL_DIR / "results"
 sys.path.insert(0, str(EVAL_DIR))
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
@@ -129,7 +130,7 @@ def main() -> None:
     parser.add_argument(
         "--output",
         type=Path,
-        default=EVAL_DIR / "cache_timing_results.csv",
+        default=RESULTS_DIR / "cache_timing_results.csv",
         help="CSV output path. A JSON file with the same stem is written too.",
     )
     args = parser.parse_args()

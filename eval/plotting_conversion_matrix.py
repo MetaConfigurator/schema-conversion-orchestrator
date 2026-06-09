@@ -103,7 +103,7 @@ def plot_conversion_matrix(matrix: pd.DataFrame, output_path: str | None = None)
 def build_orchestrator_result_matrix(final_review: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Build annotation and heat matrices for orchestrator-level best results.
 
-    The input is ``eval/orchestrator_outputs/review/final_outputs.csv`` after
+    The input is ``eval/results/orchestrator_outputs/review/final_outputs.csv`` after
     optional human annotation. Only the best-ranked path per
     (source, target, input) is counted, because this matrix evaluates the
     orchestrator result shown to the user, not every individual path.
@@ -330,7 +330,10 @@ def plot_orchestrator_result_matrix(
         raise ValueError("Cannot plot an empty orchestrator result matrix.")
 
     cmap = LinearSegmentedColormap.from_list("orchestrator_quality", ["#C94C4C", "#F2D06B", "#5BAF72"])
-    plt.figure(figsize=(12, 9))
+    rows, cols = annotations.shape
+    fig_width = max(5.8, cols * 1.05 + 1.65)
+    fig_height = max(4.5, rows * 0.95 + 1.5)
+    plt.figure(figsize=(fig_width, fig_height))
     sns.heatmap(
         heat.astype(float),
         annot=annotations,
@@ -340,19 +343,11 @@ def plot_orchestrator_result_matrix(
         vmax=1.0,
         linewidths=0.8,
         linecolor="white",
-        cbar_kws={"label": "Best-result quality score: (G + 0.5L) / total"},
+        cbar_kws={"label": ""},
         annot_kws={"fontsize": 12, "fontweight": "semibold"},
     )
     plt.xticks(rotation=45, ha="right")
     plt.yticks(rotation=0)
-    plt.gcf().text(
-        0.5,
-        0.02,
-        "G = good, L = lacking, I = invalid",
-        ha="center",
-        va="center",
-        fontsize=11,
-    )
     plt.tight_layout()
 
     if output_path:

@@ -103,6 +103,7 @@ def register_external_converters() -> List[Converter]:
 
     # Robot service
     robot_jar = EXTERNAL_CONVERTERS_DIR / "robot" / "robot.jar"
+    robot_version = "1.9.8"
     if robot_jar.exists():
         print(f"Found Robot converter at: {robot_jar}")
         converter_robot_ttl_to_ofn = ConverterExternalGeneric(
@@ -114,6 +115,7 @@ def register_external_converters() -> List[Converter]:
             input_file_raw_suffix=".ttl",
             output_file_raw_suffix=".ofn",
             library="ROBOT",
+            library_version=robot_version,
             library_url="http://robot.obolibrary.org/",
         )
         converter_robot_ttl_to_obo = ConverterExternalGeneric(
@@ -125,6 +127,7 @@ def register_external_converters() -> List[Converter]:
             input_file_raw_suffix=".ttl",
             output_file_raw_suffix=".obo",
             library="ROBOT",
+            library_version=robot_version,
             library_url="http://robot.obolibrary.org/",
         )
         converter_robot_ofn_to_ttl = ConverterExternalGeneric(
@@ -136,6 +139,7 @@ def register_external_converters() -> List[Converter]:
             input_file_raw_suffix=".ofn",
             output_file_raw_suffix=".ttl",
             library="ROBOT",
+            library_version=robot_version,
             library_url="http://robot.obolibrary.org/",
         )
         converter_robot_obo_to_ttl = ConverterExternalGeneric(
@@ -147,6 +151,7 @@ def register_external_converters() -> List[Converter]:
             input_file_raw_suffix=".obo",
             output_file_raw_suffix=".ttl",
             library="ROBOT",
+            library_version=robot_version,
             library_url="http://robot.obolibrary.org/",
         )
         converters.append(converter_robot_ttl_to_ofn)
