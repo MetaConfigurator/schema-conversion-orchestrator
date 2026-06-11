@@ -66,7 +66,9 @@ Outputs go to `eval/results/orchestrator_outputs/`: the per-run `runs/<run_id>/.
 
 ### Annotation
 
-Fill the `status` column in both review CSVs:
+The `status` column in both review CSVs is filled in two passes: a coding agent (Claude Code running Claude Sonnet 4.6) performs the first annotation pass following [ANNOTATION_INSTRUCTIONS.md](ANNOTATION_INSTRUCTIONS.md), and a human then reviews every label with the interactive viewer below. Disagreements are usually corrected directly in review; where they reveal an unclear criterion, the instructions are refined and the agent is re-run on the affected rows.
+
+The labels:
 
 - `G` good: valid and practically usable; minor gaps are fine.
 - `L` lacking: valid but missing important structure or constraints.

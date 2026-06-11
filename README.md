@@ -212,29 +212,83 @@ Currently modeled schema language enum values include:
 
 ## Add a Converter
 
-Python converters live under:
+The conversion graph is built from converter registrations at service startup, so a new converter participates in path finding, execution, and ranking as soon as it is registered. No other part of the service needs to change. There are two integration routes: internal Python converters and external sub-process converters (Node.js, Java, or any standalone executable).
 
-```text
-src/schema_conversion_orchestrator/converters/python/
-```
+### Internal Python converter
 
-Register Python converters in:
+1. **Add the dependency.** Add the underlying library to `requirements/runtime.txt`.
+2. **Implement the converter.** Create a module under `src/schema_conversion_orchestrator/converters/python/` with a subclass of `ConverterInternal` (from `converters/base.py`). Declare the source and target language and the library metadata in `__init__`, and implement `converter_logic` (plus `validate_input` / `validate_output`, which may simply return `True`):
 
-```text
-src/schema_conversion_orchestrator/converters/python_registry.py
-```
+   ```python
+   from schema_conversion_orchestrator.converters.base import ConverterInternal, get_package_version
+   from schema_conversion_orchestrator.domain.schema_types import SchemaLanguage
 
-External converter registration lives in:
 
-```text
-src/schema_conversion_orchestrator/converters/external_registry.py
-```
+   class ConverterMyLibrary(ConverterInternal):
+       def __init__(self) -> None:
+           super().__init__(
+               name="my-library",
+               service_address="internal",
+               service_name="FlaskApp",
+               source_language=SchemaLanguage.JsonSchema,
+               target_language=SchemaLanguage.SHACL_TTL,
+               library="my-library",
+               library_version=get_package_version("my-library"),
+               library_url="https://github.com/example/my-library",
+           )
 
-External converter source/assets live under:
+       def converter_logic(self, schema: str) -> str:
+           ...  # call the library, return the converted schema as a string
 
-```text
-external_converters/
-```
+       def validate_input(self, schema: str) -> bool:
+           return True
+
+       def validate_output(self, schema: str) -> bool:
+           return True
+   ```
+
+   The `library`, `library_version`, and `library_url` values are what the API reports as per-step provenance, so fill them in accurately. `get_package_version` reads the installed package version, keeping the reported version in sync with the environment.
+3. **Register it.** Add an instance to the list returned by `register_python_converters()` in `src/schema_conversion_orchestrator/converters/python_registry.py`.
+
+### External converter (Node.js)
+
+Node converters are auto-discovered: at startup the Python service runs `node external_converters/node/dist/index.js list` and registers every converter the bundle reports, so no Python code changes are needed.
+
+1. **Add the dependency.** Add the npm package to `external_converters/node/package.json` and run `npm install` in that directory.
+2. **Implement the converter.** Create `external_converters/node/src/converters/<name>.ts` exporting a `Converter` object (see `dataStructures.ts` for the interface):
+
+   ```typescript
+   import {Converter, SchemaLanguage} from "../dataStructures.js";
+
+   export const converter: Converter = {
+     name: "my-converter",
+     sourceLanguage: SchemaLanguage.Xsd,
+     targetLanguage: SchemaLanguage.JsonSchema,
+     library: "my-npm-package",          // resolvable package name; its version is read from package.json
+     libraryUrl: "https://www.npmjs.com/package/my-npm-package",
+
+     async convert(schema: string): Promise<string> {
+       ...  // call the library, return the converted schema as a string
+     }
+   };
+
+   export default converter;
+   ```
+
+   Every file in `src/converters/` is loaded automatically; there is no separate Node-side registry.
+3. **Build.** Run `npm run build` in `external_converters/node/`.
+
+### External converter (Java or standalone executable)
+
+Java converters live in `external_converters/java/` and are discovered the same way (the service runs `java -jar converter.jar list` at startup). Standalone executables that cannot report their own converters, such as ROBOT, are instead registered explicitly as `ConverterExternalGeneric` instances in `src/schema_conversion_orchestrator/converters/external_registry.py`, which specifies the command to run, the source and target languages, file suffixes, and the library metadata.
+
+### Add a schema language
+
+Add a value to the `SchemaLanguage` enum in `src/schema_conversion_orchestrator/domain/schema_types.py` (and, if Node converters use it, to the `SchemaLanguage` enum in `external_converters/node/src/dataStructures.ts`). The language appears as a node in the conversion graph as soon as a registered converter consumes or produces it.
+
+### Verify
+
+Start the service (`scripts/run.sh`) and check the startup log: every registered converter is printed there, and a `POST /convert` request for the new language pair exercises the new edge. Add a test in `tests/` (see `tests/test_logic.py` for converter-level examples). Optionally, add benchmark inputs and ground truths under `eval/benchmarks/` so the new conversion participates in accuracy-based ranking (see `eval/README.md`).
 
 ## License
 
