@@ -1,3 +1,3 @@
 task,cache_enabled_seconds,cache_disabled_seconds,absolute_saved_seconds,speedup_percent,cache_enabled_rows,cache_disabled_rows,cache_enabled_cases,cache_disabled_cases
-SHACL_TTL -> JsonSchema,54.7638,61.7385,6.9747,11.3,234,234,39,39
-JsonSchema -> SHACL_TTL,52.6585,52.844,0.1855,0.35,352,352,88,88
+SHACL_TTL -> JsonSchema,53.089,60.0421,6.953,11.58,234,234,39,39
+JsonSchema -> SHACL_TTL,52.0608,53.0569,0.9961,1.88,352,352,88,88

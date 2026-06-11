@@ -2,7 +2,8 @@
 
 The script runs the registered conversion benchmarks once with the orchestrator's
 per-request sub-path cache enabled and once with it disabled, then reports the
-absolute timings and percentage speed-up.
+absolute timings and percentage speed-up, together with the hardware and software
+environment the measurement ran on.
 
 Prerequisites: the orchestrator must be running locally (default
 http://localhost:5002). The script passes ``useCache`` in each /convert request,
@@ -18,6 +19,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import platform
+import subprocess
 import sys
 import time
 from dataclasses import asdict, dataclass
@@ -47,6 +51,38 @@ class TimingResult:
     cache_disabled_rows: int
     cache_enabled_cases: int
     cache_disabled_cases: int
+
+
+def collect_hardware() -> dict:
+    """Record the hardware and software environment of the timing run."""
+    info: dict = {
+        "os": f"{platform.system()} {platform.release()}",
+        "machine": platform.machine(),
+        "python": platform.python_version(),
+        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+    }
+    if sys.platform == "darwin":
+
+        def _sysctl(key: str) -> str | None:
+            try:
+                return subprocess.check_output(["sysctl", "-n", key], text=True).strip()
+            except (subprocess.CalledProcessError, OSError):
+                return None
+
+        info["model"] = _sysctl("hw.model")
+        info["chip"] = _sysctl("machdep.cpu.brand_string")
+        memsize = _sysctl("hw.memsize")
+        if memsize:
+            info["memory_gb"] = round(int(memsize) / 1024**3, 1)
+    else:
+        info["chip"] = platform.processor() or None
+        try:
+            info["memory_gb"] = round(
+                os.sysconf("SC_PAGE_SIZE") * os.sysconf("SC_PHYS_PAGES") / 1024**3, 1
+            )
+        except (ValueError, OSError, AttributeError):
+            pass
+    return info
 
 
 def timed_run(benchmark: ConversionBenchmark, use_cache: bool) -> tuple[float, pd.DataFrame]:
@@ -99,13 +135,13 @@ def measure_task(benchmark: ConversionBenchmark) -> TimingResult:
     return result
 
 
-def write_outputs(results: list[TimingResult], output_csv: Path) -> None:
+def write_outputs(results: list[TimingResult], output_csv: Path, hardware: dict) -> None:
     output_csv.parent.mkdir(parents=True, exist_ok=True)
     rows = [asdict(result) for result in results]
     pd.DataFrame(rows).to_csv(output_csv, index=False)
 
     output_json = output_csv.with_suffix(".json")
-    output_json.write_text(json.dumps(rows, indent=2) + "\n")
+    output_json.write_text(json.dumps({"hardware": hardware, "results": rows}, indent=2) + "\n")
 
     print(f"\nTiming CSV  -> {output_csv}")
     print(f"Timing JSON -> {output_json}")
@@ -136,9 +172,11 @@ def main() -> None:
     args = parser.parse_args()
 
     benchmarks = resolve_tasks(args.tasks)
+    hardware = collect_hardware()
+    print(f"Environment: {hardware}")
     print(f"Timing benchmarks: {[benchmark.task_name for benchmark in benchmarks]}")
     results = [measure_task(benchmark) for benchmark in benchmarks]
-    write_outputs(results, args.output)
+    write_outputs(results, args.output, hardware)
 
 
 if __name__ == "__main__":

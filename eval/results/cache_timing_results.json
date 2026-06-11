@@ -1,24 +1,35 @@
-[
-  {
-    "task": "SHACL_TTL -> JsonSchema",
-    "cache_enabled_seconds": 54.7638,
-    "cache_disabled_seconds": 61.7385,
-    "absolute_saved_seconds": 6.9747,
-    "speedup_percent": 11.3,
-    "cache_enabled_rows": 234,
-    "cache_disabled_rows": 234,
-    "cache_enabled_cases": 39,
-    "cache_disabled_cases": 39
+{
+  "hardware": {
+    "os": "Darwin 25.4.0",
+    "machine": "arm64",
+    "python": "3.13.7",
+    "timestamp": "2026-06-11T18:42:42+0200",
+    "model": "MacBookAir10,1",
+    "chip": "Apple M1",
+    "memory_gb": 8.0
   },
-  {
-    "task": "JsonSchema -> SHACL_TTL",
-    "cache_enabled_seconds": 52.6585,
-    "cache_disabled_seconds": 52.844,
-    "absolute_saved_seconds": 0.1855,
-    "speedup_percent": 0.35,
-    "cache_enabled_rows": 352,
-    "cache_disabled_rows": 352,
-    "cache_enabled_cases": 88,
-    "cache_disabled_cases": 88
-  }
-]
+  "results": [
+    {
+      "task": "SHACL_TTL -> JsonSchema",
+      "cache_enabled_seconds": 53.089,
+      "cache_disabled_seconds": 60.0421,
+      "absolute_saved_seconds": 6.953,
+      "speedup_percent": 11.58,
+      "cache_enabled_rows": 234,
+      "cache_disabled_rows": 234,
+      "cache_enabled_cases": 39,
+      "cache_disabled_cases": 39
+    },
+    {
+      "task": "JsonSchema -> SHACL_TTL",
+      "cache_enabled_seconds": 52.0608,
+      "cache_disabled_seconds": 53.0569,
+      "absolute_saved_seconds": 0.9961,
+      "speedup_percent": 1.88,
+      "cache_enabled_rows": 352,
+      "cache_disabled_rows": 352,
+      "cache_enabled_cases": 88,
+      "cache_disabled_cases": 88
+    }
+  ]
+}
