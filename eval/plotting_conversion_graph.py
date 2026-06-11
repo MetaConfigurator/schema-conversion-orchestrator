@@ -5,13 +5,16 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap, Normalize
-from matplotlib.patches import FancyArrowPatch
+from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
 import networkx as nx
 
 from schema_conversion_orchestrator.domain.conversion_types import ConversionGraph
+from schema_conversion_orchestrator.domain.edge_robustness import DEFAULT_EDGE_ROBUSTNESS
 
 
 DISPLAY_LABELS = {
+    "Dtd": "DTD",
+    "Xsd": "XSD",
     "JsonSchema": "JSON\nSchema",
     "SHACL_TTL": "SHACL\nTTL",
     "SHACL_JSON_LD": "SHACL\nJSON-LD",
@@ -21,9 +24,11 @@ DISPLAY_LABELS = {
     "OWL_OBO": "OWL\nOBO",
     "OntologyRdf": "Ontology\nRDF",
     "LinkMl": "LinkML",
-    "MdModels": "MdModels",
+    "MdModels": "MD-\nModels",
     "GraphQL": "GraphQL",
     "Protobuf": "Protobuf",
+    "Shex": "ShEx",
+    "Mermaid": "Mermaid",
     "SqlAlchemy": "SQL\nAlchemy",
 }
 
@@ -81,18 +86,18 @@ PREFERRED_POSITIONS = {
 }
 
 GRAPHICAL_ABSTRACT_POSITIONS = {
-    "Dtd": (-3.0, 0.72),
-    "Xsd": (-2.35, 0.2),
-    "JsonSchema": (-0.78, 0.38),
-    "SHACL_TTL": (-0.35, -0.9),
-    "LinkMl": (0.48, 0.56),
-    "MdModels": (0.58, -0.82),
-    "Owl_OFN": (1.08, 1.25),
-    "GraphQL": (2.42, 1.12),
-    "Protobuf": (2.82, 0.56),
-    "SqlAlchemy": (2.82, -0.08),
-    "Shex": (2.42, -0.78),
-    "Mermaid": (1.86, -1.28),
+    "Dtd": (-3.0, -1.85),
+    "Xsd": (-3.0, 0.25),
+    "JsonSchema": (-1.55, 0.25),
+    "SHACL_TTL": (-1.55, -1.85),
+    "LinkMl": (-0.10, 0.25),
+    "MdModels": (-0.10, -1.85),
+    "Owl_OFN": (-0.10, 2.35),
+    "GraphQL": (1.77, 1.12),
+    "Protobuf": (1.35, 0.25),
+    "SqlAlchemy": (2.17, -0.08),
+    "Shex": (1.35, -1.85),
+    "Mermaid": (1.21, -1.28),
 }
 
 GRAPHICAL_ABSTRACT_LABELS = {
@@ -101,6 +106,8 @@ GRAPHICAL_ABSTRACT_LABELS = {
 }
 
 GRAPHICAL_ABSTRACT_TITLE = "Graph-Based Schema Conversion Orchestration"
+GRAPHICAL_ABSTRACT_SOURCE = "Xsd"
+GRAPHICAL_ABSTRACT_TARGET = "Protobuf"
 
 
 def _language_value(language) -> str:
@@ -111,6 +118,17 @@ def _display_label(language: str) -> str:
     return DISPLAY_LABELS.get(language, language.replace("_", "\n"))
 
 
+def _compact_label(language: str) -> str:
+    label = GRAPHICAL_ABSTRACT_LABELS.get(language, DISPLAY_LABELS.get(language, language))
+    return label.replace("MD-\nModels", "MD-Models").replace("SQL\nAlchemy", "SQLAlchemy").replace("\n", " ")
+
+
+def _edge_score(edge_scores: dict[str, float] | None, signature: str) -> float:
+    if not edge_scores:
+        return DEFAULT_EDGE_ROBUSTNESS
+    return float(edge_scores.get(signature, DEFAULT_EDGE_ROBUSTNESS))
+
+
 def _converter_label(name: str) -> str:
     replacements = {
         "JSON Schema": "JSON Schema",
@@ -119,7 +137,7 @@ def _converter_label(name: str) -> str:
         "SHACL_TTL": "SHACL TTL",
         "SHACL JSON LD": "SHACL JSON-LD",
         "SHACL_JSON_LD": "SHACL JSON-LD",
-        "MdModels": "MdModels",
+        "MdModels": "MD-Models",
         "LinkMl": "LinkML",
     }
     label = name.replace("_", " ").replace(" TO ", " -> ").replace(" to ", " -> ")
@@ -135,7 +153,9 @@ def _library_label(converter) -> str:
     replacements = {
         "schema-automator": "LinkML",
         "linkml": "LinkML",
-        "mdmodels": "MdModels",
+        "mdmodels": "MD-Models",
+        "mdmodels-core": "MD-Models",
+        "mdmodels_core": "MD-Models",
         "xsd-json-converter": "xsd-json",
         "@comake/shacl-to-json-schema": "@comake",
         "shacl-bridge": "shacl-bridge",
@@ -216,7 +236,7 @@ def _draw_edge(
         label,
         ha="center",
         va="center",
-        fontsize=7.2,
+        fontsize=10.1,
         color="#26313A",
         bbox={
             "boxstyle": "round,pad=0.18,rounding_size=0.08",
@@ -458,13 +478,16 @@ def visualize_conversion_graph_with_metrics(
         bbox_to_anchor=(0.5, -0.02),
         ncol=len(legend_handles),
         frameon=False,
-        fontsize=9,
+        fontsize=12.6,
     )
     if edge_scores and show_colorbar:
         sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
         sm.set_array([])
         cbar = fig.colorbar(sm, ax=ax, fraction=0.028, pad=0.012)
-        cbar.set_label("Edge robustness score: (G + 0.5L) / total")
+        cbar.set_label("Edge robustness score: (G + 0.5L) / total", fontsize=12.6)
+        cbar.set_ticks([0.0, 1.0])
+        cbar.set_ticklabels(["Invalid (0)", "Good (1)"])
+        cbar.ax.tick_params(labelsize=12.6)
 
     xs = [x for x, _ in pos.values()]
     ys = [y for _, y in pos.values()]
@@ -477,20 +500,13 @@ def visualize_conversion_graph_with_metrics(
     plt.close(fig)
 
 
-def visualize_graphical_abstract(
+def _best_language_pair_edges(
     conversion_graph: ConversionGraph,
-    output_path,
-    include_languages: set[str] | None = None,
-):
-    """Render a compact, label-free graph for graphical abstracts.
-
-    This intentionally does not share the full evaluation graph renderer:
-    parallel converter implementations are collapsed into one directed edge,
-    edges are neutral, and node positions are tuned for a compact submission
-    image rather than for detailed converter inspection.
-    """
+    edge_scores: dict[str, float] | None,
+    include_languages: set[str] | None,
+) -> tuple[set[str], dict[tuple[str, str], dict]]:
     nodes = set()
-    edge_pairs = set()
+    best_edges = {}
     for source, converters in conversion_graph.items():
         for converter in converters:
             src = _language_value(converter.source_language)
@@ -498,7 +514,107 @@ def visualize_graphical_abstract(
             if include_languages is not None and (src not in include_languages or tgt not in include_languages):
                 continue
             nodes.update([src, tgt])
-            edge_pairs.add((src, tgt))
+            signature = f"{src}:{tgt}:{converter.name}"
+            score = _edge_score(edge_scores, signature)
+            key = (src, tgt)
+            if key not in best_edges or score > best_edges[key]["score"]:
+                best_edges[key] = {"score": score, "signature": signature}
+    return nodes, best_edges
+
+
+def _rank_language_paths(
+    best_edges: dict[tuple[str, str], dict],
+    source: str,
+    target: str,
+) -> list[tuple[list[str], float]]:
+    adjacency = defaultdict(list)
+    for (src, tgt), entry in best_edges.items():
+        adjacency[src].append((tgt, entry["score"]))
+
+    def visit(current: str, path: list[str], score: float, seen: set[str]):
+        if current == target:
+            yield path, score
+            return
+        for next_node, edge_score in adjacency.get(current, []):
+            if next_node in seen:
+                continue
+            yield from visit(next_node, path + [next_node], score * edge_score, seen | {next_node})
+
+    return sorted(
+        visit(source, [source], 1.0, {source}),
+        key=lambda item: item[1],
+        reverse=True,
+    )
+
+
+def _path_label(path: list[str]) -> str:
+    return " -> ".join(_compact_label(language) for language in path)
+
+
+def _draw_panel(ax, xy, width, height, title, lines, face="#FFFFFF", edge="#2C3945"):
+    x, y = xy
+    patch = FancyBboxPatch(
+        (x, y),
+        width,
+        height,
+        boxstyle="round,pad=0.05,rounding_size=0.06",
+        linewidth=1.2,
+        edgecolor=edge,
+        facecolor=face,
+        zorder=7,
+    )
+    ax.add_patch(patch)
+    ax.text(
+        x + width / 2,
+        y + height - 0.20,
+        title,
+        ha="center",
+        va="top",
+        fontsize=20.0,
+        fontweight="semibold",
+        color="#17202A",
+        zorder=8,
+    )
+    for index, line in enumerate(lines):
+        ax.text(
+            x + 0.22,
+            y + height - 0.70 - 0.38 * index,
+            line,
+            ha="left",
+            va="top",
+            fontsize=18.0,
+            color="#26313A",
+            zorder=8,
+        )
+
+
+def visualize_graphical_abstract(
+    conversion_graph: ConversionGraph,
+    output_path,
+    include_languages: set[str] | None = None,
+    edge_scores: dict[str, float] | None = None,
+):
+    """Render the graphical abstract as an orchestrated path-ranking example.
+
+    Parallel converters are collapsed to the strongest directed edge for each
+    language pair. The highlighted task shows how the orchestrator ranks
+    candidate MD-Models -> SHACL paths by multiplying edge robustness scores.
+    """
+    nodes, best_edges = _best_language_pair_edges(conversion_graph, edge_scores, include_languages)
+    ranked_paths = _rank_language_paths(best_edges, GRAPHICAL_ABSTRACT_SOURCE, GRAPHICAL_ABSTRACT_TARGET)
+    direct_path = next(
+        (item for item in ranked_paths if item[0] == [GRAPHICAL_ABSTRACT_SOURCE, GRAPHICAL_ABSTRACT_TARGET]),
+        None,
+    )
+    shown_paths = ranked_paths[:2] + ([direct_path] if direct_path and direct_path not in ranked_paths[:2] else [])
+
+    highlighted_edges = {}
+    highlighted_edge_ranks = {}
+    path_colors = ["#2364AA", "#2E8B57", "#B4443F"]
+    for path_index, (path, _) in enumerate(shown_paths):
+        for edge in zip(path, path[1:]):
+            highlighted_edges.setdefault(edge, path_colors[min(path_index, len(path_colors) - 1)])
+            highlighted_edge_ranks.setdefault(edge, path_index)
 
     pos = {node: GRAPHICAL_ABSTRACT_POSITIONS[node] for node in nodes if node in GRAPHICAL_ABSTRACT_POSITIONS}
     missing = sorted(nodes - set(pos))
@@ -506,44 +622,86 @@ def visualize_graphical_abstract(
         fallback = _positions_for(missing)
         pos.update(fallback)
 
-    fig, ax = plt.subplots(figsize=(13.28, 5.31))
+    fig, ax = plt.subplots(figsize=(17.6, 7.6))
     ax.set_facecolor("#FFFFFF")
     edge_color = "#74808A"
 
-    for src, tgt in sorted(edge_pairs):
+    for src, tgt in sorted(best_edges):
         if src not in pos or tgt not in pos:
             continue
         arrowstyle = "-|>"
         if {src, tgt} == {"Owl_OFN", "LinkMl"}:
             arrowstyle = "<|-|>"
-        if (tgt, src) in edge_pairs:
+        if (tgt, src) in best_edges:
             rad = 0.055 if src < tgt else -0.055
         else:
             rad = 0.0
+        is_highlighted = (src, tgt) in highlighted_edges
+        is_winning_edge = highlighted_edge_ranks.get((src, tgt)) == 0
+        color = highlighted_edges.get((src, tgt), edge_color)
+        score = best_edges[(src, tgt)]["score"]
+        if is_winning_edge:
+            glow = FancyArrowPatch(
+                pos[src],
+                pos[tgt],
+                arrowstyle="-|>",
+                mutation_scale=18,
+                linewidth=7.2,
+                color="#9EC5F8",
+                alpha=0.55,
+                shrinkA=44,
+                shrinkB=44,
+                connectionstyle=f"arc3,rad={rad}",
+                zorder=2,
+            )
+            ax.add_patch(glow)
         arrow = FancyArrowPatch(
             pos[src],
             pos[tgt],
             arrowstyle=arrowstyle,
             mutation_scale=14,
-            linewidth=1.35,
-            color=edge_color,
-            alpha=0.9,
-            shrinkA=40,
-            shrinkB=40,
+            linewidth=4.4 if is_winning_edge else (3.0 if is_highlighted else 1.2),
+            color=color,
+            alpha=0.96 if is_highlighted else 0.45,
+            shrinkA=44,
+            shrinkB=44,
             connectionstyle=f"arc3,rad={rad}",
-            zorder=1,
+            zorder=4 if is_winning_edge else (3 if is_highlighted else 1),
         )
         ax.add_patch(arrow)
+        if is_highlighted:
+            p0, p1 = pos[src], pos[tgt]
+            control = _arc_control_point(p0, p1, rad)
+            lx, ly = _bezier_point(p0, control, p1, 0.5)
+            ax.text(
+                lx,
+                ly,
+                f"{score:.2f}",
+                ha="center",
+                va="center",
+                fontsize=11.8,
+                fontweight="semibold",
+                color="#17202A",
+                bbox={
+                    "boxstyle": "round,pad=0.18,rounding_size=0.08",
+                    "facecolor": "white",
+                    "edgecolor": color,
+                    "linewidth": 0.8,
+                    "alpha": 0.96,
+                },
+                zorder=6,
+            )
 
     for node, (x, y) in pos.items():
         group = NODE_GROUPS.get(node, "generated")
+        is_endpoint = node in {GRAPHICAL_ABSTRACT_SOURCE, GRAPHICAL_ABSTRACT_TARGET}
         ax.scatter(
             [x],
             [y],
-            s=4400,
+            s=6900,
             c=GROUP_COLORS[group],
-            edgecolors="#28323C",
-            linewidths=1.15,
+            edgecolors="#111820" if is_endpoint else "#28323C",
+            linewidths=3.0 if is_endpoint else 1.35,
             zorder=4,
         )
         ax.text(
@@ -552,28 +710,148 @@ def visualize_graphical_abstract(
             GRAPHICAL_ABSTRACT_LABELS.get(node, _display_label(node)),
             ha="center",
             va="center",
-            fontsize=12.2,
+            fontsize=15.9,
             fontweight="semibold",
             color="#17202A",
             linespacing=0.9,
             zorder=5,
         )
 
+    request_text = f"Task: {_compact_label(GRAPHICAL_ABSTRACT_SOURCE)} -> {_compact_label(GRAPHICAL_ABSTRACT_TARGET)}"
+    request_xy = (2.55, 0.98)
+    request_width = 4.25
+    request_height = 0.96
+    orchestrator_xy = (2.55, -0.60)
+    orchestrator_width = 4.25
+    orchestrator_height = 1.32
+
+    _draw_panel(
+        ax,
+        request_xy,
+        request_width,
+        request_height,
+        "Conversion request",
+        [request_text],
+        face="#F7F9FB",
+    )
+    _draw_panel(
+        ax,
+        orchestrator_xy,
+        orchestrator_width,
+        orchestrator_height,
+        "Conversion Orchestrator",
+        ["Finds paths, executes conversions, ranks results"],
+        face="#FFFFFF",
+    )
+
+    table_x, table_y = 2.35, -2.64
+    table_w, table_h = 5.05, 1.76
+    table = FancyBboxPatch(
+        (table_x, table_y),
+        table_w,
+        table_h,
+        boxstyle="round,pad=0.05,rounding_size=0.06",
+        linewidth=1.15,
+        edgecolor="#2C3945",
+        facecolor="#FFFFFF",
+        zorder=7,
+    )
+    ax.add_patch(table)
+    ax.text(
+        table_x + 0.12,
+        table_y + table_h - 0.18,
+        "Ranked paths",
+        ha="left",
+        va="top",
+        fontsize=20.0,
+        fontweight="semibold",
+        color="#17202A",
+        zorder=8,
+    )
+    ax.text(
+        table_x + table_w - 0.18,
+        table_y + table_h - 0.18,
+        "Score",
+        ha="right",
+        va="top",
+        fontsize=18.0,
+        fontweight="semibold",
+        color="#17202A",
+        zorder=8,
+    )
+    for row_index, (path, score) in enumerate(shown_paths):
+        y = table_y + table_h - 0.68 - 0.48 * row_index
+        color = path_colors[min(row_index, len(path_colors) - 1)]
+        ax.text(
+            table_x + 0.13,
+            y,
+            f"{row_index + 1}. {_path_label(path)}",
+            ha="left",
+            va="top",
+            fontsize=17.0,
+            color=color,
+            zorder=8,
+        )
+        ax.text(
+            table_x + table_w - 0.18,
+            y,
+            f"{score:.2f}",
+            ha="right",
+            va="top",
+            fontsize=17.0,
+            color="#17202A",
+            zorder=8,
+        )
+    ax.text(
+        table_x + 0.13,
+        table_y + 0.10,
+        "Path score = product of edge robustness scores",
+        ha="left",
+        va="bottom",
+        fontsize=13.0,
+        color="#5D6873",
+        zorder=8,
+    )
+
+    connector_x = orchestrator_xy[0] + orchestrator_width / 2
+    connectors = [
+        (
+            (connector_x, request_xy[1]),
+            (connector_x, orchestrator_xy[1] + orchestrator_height),
+        ),
+        (
+            (connector_x, orchestrator_xy[1]),
+            (connector_x, table_y + table_h),
+        ),
+    ]
+    for start, end in connectors:
+        ax.add_patch(
+            FancyArrowPatch(
+                start,
+                end,
+                arrowstyle="-|>",
+                mutation_scale=12,
+                linewidth=1.15,
+                color="#2C3945",
+                zorder=7,
+            )
+        )
+
     xs = [x for x, _ in pos.values()]
     ys = [y for _, y in pos.values()]
-    ax.set_xlim(min(xs) - 1.05, max(xs) + 1.05)
-    ax.set_ylim(min(ys) - 0.35, max(ys) + 0.35)
+    ax.set_xlim(min(xs) - 0.8, 7.70)
+    ax.set_ylim(min(ys) - 2.08, max(ys) + 1.12)
     ax.axis("off")
     fig.text(
         0.5,
-        0.94,
+        0.955,
         GRAPHICAL_ABSTRACT_TITLE,
         ha="center",
         va="center",
-        fontsize=17,
+        fontsize=34,
         fontweight="semibold",
         color="#17202A",
     )
-    fig.tight_layout(rect=(0, 0, 1, 0.88), pad=0.03)
+    fig.tight_layout(rect=(0, 0, 1, 0.84), pad=0.03)
     fig.savefig(output_path, dpi=300, facecolor="white")
     plt.close(fig)

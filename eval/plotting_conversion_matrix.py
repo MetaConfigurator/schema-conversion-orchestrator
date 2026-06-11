@@ -19,6 +19,34 @@ def _language_value(language) -> str:
     return getattr(language, "value", str(language))
 
 
+# Human-readable, correctly spelled labels for schema-language enum values,
+# used for the matrix axis ticks (single line, unlike the graph node labels).
+LANGUAGE_DISPLAY = {
+    "Dtd": "DTD",
+    "Xsd": "XSD",
+    "JsonSchema": "JSON Schema",
+    "SHACL_TTL": "SHACL",
+    "SHACL_JSON_LD": "SHACL JSON-LD",
+    "Owl_TTL": "OWL (TTL)",
+    "Owl_XML": "OWL (XML)",
+    "Owl_OFN": "OWL (OFN)",
+    "OWL_OBO": "OWL (OBO)",
+    "OntologyRdf": "Ontology RDF",
+    "LinkMl": "LinkML",
+    "MdModels": "MD-Models",
+    "GraphQL": "GraphQL",
+    "Protobuf": "Protobuf",
+    "Shex": "ShEx",
+    "Mermaid": "Mermaid",
+    "SqlAlchemy": "SQLAlchemy",
+}
+
+
+def _display_languages(frame: pd.DataFrame) -> pd.DataFrame:
+    """Rename a square matrix's index/columns to display labels for plotting."""
+    return frame.rename(index=LANGUAGE_DISPLAY, columns=LANGUAGE_DISPLAY)
+
+
 def build_path_count_matrix(conversion_graph: ConversionGraph) -> pd.DataFrame:
     """Build a matrix of possible path lengths for the converter graph."""
     graph = nx.DiGraph()
@@ -329,12 +357,15 @@ def plot_orchestrator_result_matrix(
     if annotations.empty:
         raise ValueError("Cannot plot an empty orchestrator result matrix.")
 
+    annotations = _display_languages(annotations)
+    heat = _display_languages(heat)
+
     cmap = LinearSegmentedColormap.from_list("orchestrator_quality", ["#C94C4C", "#F2D06B", "#5BAF72"])
     rows, cols = annotations.shape
     fig_width = max(5.8, cols * 1.05 + 1.65)
     fig_height = max(4.5, rows * 0.95 + 1.5)
     plt.figure(figsize=(fig_width, fig_height))
-    sns.heatmap(
+    axis = sns.heatmap(
         heat.astype(float),
         annot=annotations,
         fmt="",
@@ -346,6 +377,11 @@ def plot_orchestrator_result_matrix(
         cbar_kws={"label": ""},
         annot_kws={"fontsize": 12, "fontweight": "semibold"},
     )
+    colorbar = axis.collections[0].colorbar
+    colorbar.set_ticks([0.0, 1.0])
+    colorbar.set_ticklabels(["Invalid (0)", "Good (1)"])
+    axis.set_xlabel("Output Schema Language")
+    axis.set_ylabel("Input Schema Language")
     plt.xticks(rotation=45, ha="right")
     plt.yticks(rotation=0)
     plt.tight_layout()

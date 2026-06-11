@@ -48,14 +48,15 @@ EVALUATION_LANGUAGES = {
     "LinkMl",
     "MdModels",
 }
+# The graphical abstract shows only schema languages. GraphQL (a query
+# language), SQLAlchemy (an ORM toolkit), and Mermaid (a diagramming language)
+# are generated targets but not schema languages, so they are excluded; the
+# data-schema languages Protobuf and ShEx are kept.
 GRAPHICAL_ABSTRACT_LANGUAGES = EVALUATION_LANGUAGES | {
     "Dtd",
-    "GraphQL",
-    "Mermaid",
     "Protobuf",
     "Shex",
     "Owl_OFN",
-    "SqlAlchemy",
 }
 
 
@@ -197,7 +198,7 @@ def main() -> None:
         show_edge_labels=True,
         edge_scores=edge_scores,
         include_languages=EVALUATION_LANGUAGES,
-        show_colorbar=False,
+        show_colorbar=True,
     )
 
     full_graph_path = plots_dir / "conversion_graph_all_languages.png"
@@ -212,15 +213,24 @@ def main() -> None:
 
     graphical_abstract_path = plots_dir / "graphical_abstract_conversion_graph.png"
     graphical_abstract_pdf_path = plots_dir / "graphical_abstract_conversion_graph.pdf"
+    graphical_abstract_svg_path = plots_dir / "graphical_abstract_conversion_graph.svg"
     visualize_graphical_abstract(
         full_conversion_graph,
         output_path=str(graphical_abstract_path),
         include_languages=GRAPHICAL_ABSTRACT_LANGUAGES,
+        edge_scores=edge_scores,
     )
     visualize_graphical_abstract(
         full_conversion_graph,
         output_path=str(graphical_abstract_pdf_path),
         include_languages=GRAPHICAL_ABSTRACT_LANGUAGES,
+        edge_scores=edge_scores,
+    )
+    visualize_graphical_abstract(
+        full_conversion_graph,
+        output_path=str(graphical_abstract_svg_path),
+        include_languages=GRAPHICAL_ABSTRACT_LANGUAGES,
+        edge_scores=edge_scores,
     )
 
     # Trim the residual white margin left by matplotlib so the graph plots embed
@@ -233,6 +243,7 @@ def main() -> None:
     print(f"Wrote {graph_path}")
     print(f"Wrote {graphical_abstract_path}")
     print(f"Wrote {graphical_abstract_pdf_path}")
+    print(f"Wrote {graphical_abstract_svg_path}")
     print(f"Wrote {full_graph_path}")
     print(f"Wrote edge robustness scores -> {DEFAULT_ROBUSTNESS_PATH}")
     print(f"Wrote edge robustness scores -> {RESULTS_ROBUSTNESS_PATH}")
