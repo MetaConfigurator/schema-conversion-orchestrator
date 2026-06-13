@@ -66,7 +66,7 @@ Outputs go to `eval/results/orchestrator_outputs/`: the per-run `runs/<run_id>/.
 
 ### Annotation
 
-The `status` column in both review CSVs is filled in two passes: a coding agent (Claude Code running Claude Sonnet 4.6) performs the first annotation pass following [ANNOTATION_INSTRUCTIONS.md](ANNOTATION_INSTRUCTIONS.md), and a human then reviews every label with the interactive viewer below. Disagreements are usually corrected directly in review; where they reveal an unclear criterion, the instructions are refined and the agent is re-run on the affected rows.
+The `status` column in `final_outputs.csv` is filled in two passes: a coding agent (Claude Code running Claude Sonnet 4.6) performs the first annotation pass following [ANNOTATION_INSTRUCTIONS.md](ANNOTATION_INSTRUCTIONS.md), and a human then reviews every label with the interactive viewer below. Disagreements are usually corrected directly in review; where they reveal an unclear criterion, the instructions are refined and the agent is re-run on the affected rows.
 
 The labels:
 
@@ -79,7 +79,7 @@ The runner pre-fills `I` for failed or automatically invalid outputs and leaves 
 What to compare each output against:
 
 - `final_outputs.csv`: judge the final schema against the original source and modeling intent, i.e. the end-to-end usefulness of the orchestrator's result.
-- `edge_outputs.csv`: judge each converter's output against its **direct input only**, given by the `input_step_index` and `input_path` columns (the original source for `step_index == 1`, otherwise the previous step's output). The question is "given this input, is the direct output a mostly good, partially useful, or unusable target-language version?", not how it compares to the original source. This keeps a converter from being blamed for structure an earlier step already dropped.
+- `edge_outputs.csv`: deprecated optional diagnostic table for intermediate-step annotations. It is not used by the default paper-facing edge reliability scores because the intermediate rows are much more expensive to annotate and depend on upstream converter outputs.
 
 Runs are deterministic, so a re-run carries over existing annotations from `results/orchestrator_outputs/review/*.csv`; only new or changed rows come back blank.
 
@@ -102,7 +102,9 @@ PYTHONPATH=src venv/bin/python eval/evaluate.py \
 
 Dropped rows revert to the default: `I` for invalid output, blank for valid output that needs a fresh judgement.
 
-`final_outputs.csv` drives the orchestrator-level matrix (only the best-ranked path per source/target/input counts). `edge_outputs.csv` drives the edge-colored graph, scoring each converter on its own output against its direct input, not on downstream path success.
+`final_outputs.csv` drives both the orchestrator-level matrix and the default edge reliability scores. The matrix counts only the best-ranked path per source/target/input. Edge reliability is estimated from direct one-step rows in `final_outputs.csv`, where the path has exactly one converter and the final output is therefore that converter's direct output on a real source-language schema. Edge scores separate syntactic robustness from quality: robustness is the fraction of reviewed direct outputs with automatically valid output; quality is `(G + 0.5L) / total` over those automatically valid direct outputs; reliability is `robustness * quality` and is used for edge coloring. The orchestrator ranks paths by the product of edge quality scores (syntactic failures are already known at ranking time and sort last, so only the expected quality of successful output matters).
+
+Intermediate-step annotations in `edge_outputs.csv` are still supported for diagnostics with `eval/plot_orchestrator_evaluation.py --edge-score-source intermediate-edge`, but this mode is deprecated and is not used for the paper figures by default.
 
 ### Plot
 
@@ -127,7 +129,7 @@ A matrix cell reads:
 2G 2L 1I
 ```
 
-`4P` is the number of discovered paths for the source-target pair; `2G 2L 1I` summarises the best-ranked result over the input files. Cells and edges share the red-yellow-green scale `(G + 0.5L) / total`: the matrix over the best-ranked final outputs, the edge graph over edge-local annotations from `edge_outputs.csv`. `conversion_graph_all_languages.png` shows the full registered graph with neutral edges (topology only, since the broad evaluation does not cover every language).
+`4P` is the number of discovered paths for the source-target pair; `2G 2L 1I` summarises the best-ranked result over the input files. The orchestrator matrix uses the red-yellow-green scale `(G + 0.5L) / total` over best-ranked final outputs. The edge graph colors direct converter edges by combined reliability (`robustness * quality`) from one-step final outputs and labels evaluated edges with both components (`R` for syntactic robustness, `Q` for conditional quality). `conversion_graph_all_languages.png` shows the full registered graph with neutral edges (topology only, since the broad evaluation does not cover every language).
 
 ## Accuracy benchmarks
 

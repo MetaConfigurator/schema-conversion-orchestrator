@@ -15,7 +15,7 @@ from schema_conversion_orchestrator.domain.conversion_types import (
 )
 from schema_conversion_orchestrator.domain.conversion_graph import build_conversion_graph, find_paths
 from schema_conversion_orchestrator.domain.schema_types import SchemaLanguage, schema_language_from_string
-from schema_conversion_orchestrator.domain.ranking import rank_with_strategy_character_length
+from schema_conversion_orchestrator.domain.ranking import rank_results
 from schema_conversion_orchestrator.application.serialize_results import serialize_conversion_results
 from schema_conversion_orchestrator.application.attempt_conversions import attempt_all_conversion_paths
 
@@ -177,22 +177,28 @@ class TestConversionPathToString:
 
 
 # ---------------------------------------------------------------------------
-# rank_with_strategy_character_length
+# rank_results: output-length tie-breaker (last criterion of the chain)
 # ---------------------------------------------------------------------------
 
 class TestRanking:
+    """Exercises the final output-length criterion of the ranking chain.
+
+    Uses empty paths and a task with no accuracy benchmark, so the accuracy,
+    edge-quality, and path-length criteria all tie and the larger output decides.
+    """
+
     def _make_results(self, entries):
-        """entries: list of (success, schema_or_error) — path can be []"""
+        """entries: list of (success, schema_or_error) — path is empty here"""
         return [(success, content, [], None) for success, content in entries]
 
     def test_successful_before_failed(self):
         results = self._make_results([(False, "err"), (True, "ok")])
-        rank_with_strategy_character_length(results)
+        rank_results(results, "Xsd", "JsonSchema")
         assert results[0][0] is True
 
     def test_longer_schema_wins_among_successes(self):
         results = self._make_results([(True, "short"), (True, "much_longer_schema")])
-        rank_with_strategy_character_length(results)
+        rank_results(results, "Xsd", "JsonSchema")
         assert results[0][1] == "much_longer_schema"
 
     def test_failed_error_length_ignored(self):
@@ -200,7 +206,7 @@ class TestRanking:
             (False, "very long error message that should not beat a success"),
             (True, "x"),
         ])
-        rank_with_strategy_character_length(results)
+        rank_results(results, "Xsd", "JsonSchema")
         assert results[0][0] is True
 
 

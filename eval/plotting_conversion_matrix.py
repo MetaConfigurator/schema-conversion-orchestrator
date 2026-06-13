@@ -195,32 +195,65 @@ def _status_counts(rows: pd.DataFrame) -> tuple[int, int, int, int]:
     return good, lacking, invalid, unknown
 
 
-def build_edge_quality_matrix(edge_review: pd.DataFrame) -> pd.DataFrame:
-    """Aggregate edge-local quality counts by concrete converter edge."""
-    if edge_review.empty:
-        return pd.DataFrame()
+def _path_steps(path_signature: str) -> list[str]:
+    return [step.strip() for step in str(path_signature).split(" -> ") if step.strip()]
 
-    rows = []
-    for edge_signature, group in edge_review.groupby("edge_signature", sort=False):
-        good, lacking, invalid, unknown = _status_counts(group)
-        total = len(group)
-        score = (good + 0.5 * lacking) / total if total else 0.0
-        first = group.iloc[0]
-        rows.append({
-            "edge_signature": edge_signature,
-            "edge_source_language": first["edge_source_language"],
-            "edge_target_language": first["edge_target_language"],
-            "converter_name": first["converter_name"],
-            "library": first["library"],
-            "total": total,
-            "good": good,
-            "lacking": lacking,
-            "invalid": invalid,
-            "unknown": unknown,
-            "score": score,
-        })
 
-    matrix = pd.DataFrame(rows)
+def _parse_edge_signature(edge_signature: str) -> tuple[str, str, str]:
+    source, target, converter = str(edge_signature).split(":", 2)
+    return source, target, converter
+
+
+def _append_edge_quality_row(rows: list[dict], edge_signature: str, group: pd.DataFrame, metadata: dict) -> None:
+    reviewed = group[group["status_normalized"].isin({"G", "L", "I"})]
+    good, lacking, invalid, unknown = _status_counts(group)
+    total = len(reviewed)
+    auto_valid = reviewed["automatic_valid"].astype(str).str.strip().str.lower().isin({"true", "1", "yes"})
+    valid_outputs = int(auto_valid.sum())
+    quality_rows = reviewed[auto_valid]
+    quality_cases = len(quality_rows)
+    quality_good = int((quality_rows["status_normalized"] == "G").sum())
+    quality_lacking = int((quality_rows["status_normalized"] == "L").sum())
+    robustness = valid_outputs / total if total else 0.0
+    quality = (quality_good + 0.5 * quality_lacking) / quality_cases if quality_cases else 0.0
+    score = robustness * quality
+    rows.append({
+        "edge_signature": edge_signature,
+        "edge_source_language": metadata["edge_source_language"],
+        "edge_target_language": metadata["edge_target_language"],
+        "converter_name": metadata["converter_name"],
+        "library": metadata.get("library", metadata["converter_name"]),
+        "total": total,
+        "good": good,
+        "lacking": lacking,
+        "invalid": invalid,
+        "unknown": unknown,
+        "score": score,
+        "robustness": robustness,
+        "quality": quality,
+        "valid_outputs": valid_outputs,
+        "quality_cases": quality_cases,
+    })
+
+
+def _direct_input_invalid(row, prev_index: dict) -> bool:
+    try:
+        step_index = int(row["step_index"])
+    except (TypeError, ValueError):
+        return False
+    if step_index <= 1:
+        return False
+    prev = prev_index.get(
+        (row["source_language"], row["target_language"], row["input_file"], row["path_id"], step_index - 1)
+    )
+    if prev is None:
+        return False
+    prev_status = _normalize_status(prev.get("status"))
+    prev_auto = str(prev.get("automatic_valid")).strip().lower()
+    return prev_status == "I" or prev_auto in {"false", "0", "no"}
+
+
+def _sort_edge_quality_matrix(matrix: pd.DataFrame) -> pd.DataFrame:
     if matrix.empty:
         return matrix
 
@@ -228,11 +261,68 @@ def build_edge_quality_matrix(edge_review: pd.DataFrame) -> pd.DataFrame:
     matrix["pair"] = matrix["edge_source_language"] + " -> " + matrix["edge_target_language"]
     matrix["_source_order"] = matrix["edge_source_language"].map(source_order).fillna(999)
     matrix["_target_order"] = matrix["edge_target_language"].map(source_order).fillna(999)
-    matrix = matrix.sort_values(
+    return matrix.sort_values(
         ["_source_order", "_target_order", "score", "good", "lacking", "total", "converter_name"],
         ascending=[True, True, False, False, False, False, True],
     ).drop(columns=["_source_order", "_target_order"]).reset_index(drop=True)
-    return matrix
+
+
+def build_direct_edge_quality_matrix(final_review: pd.DataFrame) -> pd.DataFrame:
+    """Aggregate edge reliability from one-step final conversion results."""
+    if final_review.empty:
+        return pd.DataFrame()
+
+    direct = final_review.copy()
+    direct["status_normalized"] = direct["status"].map(_normalize_status)
+    direct = direct[direct["path_signature"].map(lambda signature: len(_path_steps(signature)) == 1)]
+
+    rows = []
+    for edge_signature, group in direct.groupby("path_signature", sort=False):
+        source, target, converter = _parse_edge_signature(edge_signature)
+        _append_edge_quality_row(
+            rows,
+            edge_signature,
+            group,
+            {
+                "edge_source_language": source,
+                "edge_target_language": target,
+                "converter_name": converter,
+                "library": converter,
+            },
+        )
+    return _sort_edge_quality_matrix(pd.DataFrame(rows))
+
+
+def build_intermediate_edge_quality_matrix(edge_review: pd.DataFrame) -> pd.DataFrame:
+    """Deprecated: aggregate metrics from annotated intermediate edge outputs."""
+    if edge_review.empty:
+        return pd.DataFrame()
+
+    edge_review = edge_review.copy()
+    edge_review["status_normalized"] = edge_review["status"].map(_normalize_status)
+    prev_index = {
+        (r["source_language"], r["target_language"], r["input_file"], r["path_id"], int(r["step_index"])): r
+        for _, r in edge_review.iterrows()
+        if str(r["step_index"]).strip().isdigit()
+    }
+    reviewed = edge_review[edge_review["status_normalized"].isin({"G", "L", "I"})]
+
+    rows = []
+    for edge_signature, group in reviewed.groupby("edge_signature", sort=False):
+        kept = group[~group.apply(lambda r: _direct_input_invalid(r, prev_index), axis=1)]
+        first = group.iloc[0]
+        _append_edge_quality_row(
+            rows,
+            edge_signature,
+            kept,
+            {
+                "edge_source_language": first["edge_source_language"],
+                "edge_target_language": first["edge_target_language"],
+                "converter_name": first["converter_name"],
+                "library": first["library"],
+            },
+        )
+    return _sort_edge_quality_matrix(pd.DataFrame(rows))
 
 
 def plot_edge_quality_matrix(
@@ -302,17 +392,17 @@ def plot_edge_quality_matrix(
             axis.text(
                 index,
                 float(row["total"]) + 0.15,
-                f"{row['score']:.2f}",
+                f"{row['score']:.2f}\nR {row['robustness']:.2f} Q {row['quality']:.2f}",
                 ha="center",
                 va="bottom",
-                fontsize=8,
+                fontsize=7.4,
             )
 
         axis.set_title(pair, fontsize=12, fontweight="semibold")
         axis.set_xticks(list(x_positions))
         axis.set_xticklabels(labels, rotation=35, ha="right", fontsize=8)
-        axis.set_ylabel("Annotated edge uses")
-        axis.set_ylim(0, max(pair_data["total"].max() + 1, 3))
+        axis.set_ylabel("Annotated direct outputs")
+        axis.set_ylim(0, max(pair_data["total"].max() + 1.8, 3))
         axis.grid(axis="y", alpha=0.25)
 
     for axis in axes.flatten()[len(pairs):]:
@@ -330,11 +420,11 @@ def plot_edge_quality_matrix(
             frameon=False,
             bbox_to_anchor=(0.5, 0.995),
         )
-    fig.suptitle("Direct Converter Edge Robustness by Language Pair", y=1.01, fontsize=15, fontweight="semibold")
+    fig.suptitle("Direct Converter Edge Reliability by Language Pair", y=1.01, fontsize=15, fontweight="semibold")
     fig.text(
         0.5,
         0.01,
-        "Bars show concrete converter edges; height is annotated edge-output uses; numbers above bars are robustness scores (G + 0.5L) / total.",
+        "Bars show annotated direct one-step outputs; labels show combined reliability, then R=syntactic robustness and Q=conditional quality.",
         ha="center",
         va="center",
         fontsize=10,
@@ -375,9 +465,10 @@ def plot_orchestrator_result_matrix(
         linewidths=0.8,
         linecolor="white",
         cbar_kws={"label": ""},
-        annot_kws={"fontsize": 12, "fontweight": "semibold"},
+        annot_kws={"fontsize": 10.8, "fontweight": "semibold"},
     )
     colorbar = axis.collections[0].colorbar
+    colorbar.set_label("Result quality score: (G + 0.5L) / total", fontsize=12)
     colorbar.set_ticks([0.0, 1.0])
     colorbar.set_ticklabels(["Invalid (0)", "Good (1)"])
     axis.set_xlabel("Output Schema Language")

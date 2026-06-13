@@ -64,6 +64,7 @@ GROUP_COLORS = {
 # label placement so labels can be kept clear of the node circles.
 NODE_MARKER_AREA = 2500
 LABEL_GAP_PX = 8.0
+EDGE_LABEL_START_PARAM = 2.0 / 3.0
 
 PREFERRED_POSITIONS = {
     "Dtd": (-4.7, 1.8),
@@ -71,7 +72,7 @@ PREFERRED_POSITIONS = {
     "JsonSchema": (-0.8, 0.1),
     "LinkMl": (1.4, 1.15),
     "MdModels": (1.4, -1.15),
-    "SHACL_TTL": (-0.4, -2.0),
+    "SHACL_TTL": (-1.45, -2.68),
     "SHACL_JSON_LD": (-2.7, -2.05),
     "Owl_TTL": (0.1, 2.25),
     "Owl_XML": (-1.9, 2.85),
@@ -105,7 +106,6 @@ GRAPHICAL_ABSTRACT_LABELS = {
     "Owl_OFN": "OWL",
 }
 
-GRAPHICAL_ABSTRACT_TITLE = "Graph-Based Schema Conversion Orchestration"
 GRAPHICAL_ABSTRACT_SOURCE = "Xsd"
 GRAPHICAL_ABSTRACT_TARGET = "Protobuf"
 
@@ -123,10 +123,34 @@ def _compact_label(language: str) -> str:
     return label.replace("MD-\nModels", "MD-Models").replace("SQL\nAlchemy", "SQLAlchemy").replace("\n", " ")
 
 
-def _edge_score(edge_scores: dict[str, float] | None, signature: str) -> float:
+def _edge_metrics(edge_scores: dict | None, signature: str) -> dict[str, float]:
     if not edge_scores:
-        return DEFAULT_EDGE_ROBUSTNESS
-    return float(edge_scores.get(signature, DEFAULT_EDGE_ROBUSTNESS))
+        return {
+            "robustness": DEFAULT_EDGE_ROBUSTNESS,
+            "quality": DEFAULT_EDGE_ROBUSTNESS,
+            "reliability": DEFAULT_EDGE_ROBUSTNESS,
+        }
+    entry = edge_scores.get(signature)
+    if entry is None:
+        return {
+            "robustness": DEFAULT_EDGE_ROBUSTNESS,
+            "quality": DEFAULT_EDGE_ROBUSTNESS,
+            "reliability": DEFAULT_EDGE_ROBUSTNESS,
+        }
+    return {
+        "robustness": float(entry["robustness"]),
+        "quality": float(entry["quality"]),
+        "reliability": float(entry["reliability"]),
+    }
+
+
+def _edge_reliability(edge_scores: dict | None, signature: str) -> float:
+    return _edge_metrics(edge_scores, signature)["reliability"]
+
+
+def _edge_metric_label(edge_scores: dict | None, signature: str) -> str:
+    metrics = _edge_metrics(edge_scores, signature)
+    return f"R {metrics['robustness']:.2f}  Q {metrics['quality']:.2f}"
 
 
 def _converter_label(name: str) -> str:
@@ -205,7 +229,7 @@ def _draw_edge(
     pos: dict[str, tuple[float, float]],
     show_label: bool,
     color: str,
-    init_param: float = 0.5,
+    init_param: float = EDGE_LABEL_START_PARAM,
 ):
     p0 = pos[src]
     p1 = pos[tgt]
@@ -227,9 +251,9 @@ def _draw_edge(
     if not show_label:
         return None
 
-    # The label sits centered *on* the edge (the same quadratic Bezier the arc
-    # follows) at parameter ``init_param``; the de-overlap pass only slides it
-    # back and forth along this curve, so it stays attached to its edge.
+    # The label sits on the edge (the same quadratic Bezier the arc follows) at
+    # parameter ``init_param``; the de-overlap pass only slides it back and forth
+    # along this curve, so it stays attached to its edge.
     control = _arc_control_point(p0, p1, rad)
     text = ax.text(
         *_bezier_point(p0, control, p1, init_param),
@@ -274,12 +298,13 @@ def _place_labels_along_edges(
 ):
     """Place each edge label on its edge, sliding it to avoid collisions.
 
-    Each label starts at the edge center and is moved *along its own edge*,
-    toward the target first and then back toward the source, stopping at the
-    first collision-free position. A first pass tries to avoid the other edge
-    lines, the other labels, and the node circles. If no such spot exists for a
-    label, a second pass for that label allows it to sit on top of other edge
-    lines, but still enforces spacing from other labels and the node circles.
+    Each label starts one third back from the target and is moved *along its own
+    edge*, toward the target first and then back toward the source, stopping at
+    the first collision-free position. A first pass tries to avoid the other
+    edge lines, the other labels, and the node circles. If no such spot exists
+    for a label, a second pass for that label allows it to sit on top of other
+    edge lines, but still enforces spacing from other labels and the node
+    circles.
     """
     labels = [item for item in labels if item is not None]
     if not labels:
@@ -304,13 +329,15 @@ def _place_labels_along_edges(
     node_centers = [tuple(ax.transData.transform(p)) for p in node_positions]
     node_radius = (node_area ** 0.5) / 2.0 * (fig.dpi / 72.0) + node_pad_px
 
-    # Candidate parameters: edge center first, then toward the target, then back.
-    candidates = [0.5]
-    forward = 0.5 + step
+    # Candidate parameters: target-side third first, then toward the target,
+    # then back toward the source.
+    start_param = EDGE_LABEL_START_PARAM
+    candidates = [start_param]
+    forward = start_param + step
     while forward <= param_max + 1e-9:
         candidates.append(forward)
         forward += step
-    backward = 0.5 - step
+    backward = start_param - step
     while backward >= param_min - 1e-9:
         candidates.append(backward)
         backward -= step
@@ -357,9 +384,9 @@ def _place_labels_along_edges(
                     continue
                 chosen = (param, box)
                 break
-        # Last resort: keep the edge center.
+        # Last resort: keep the target-side default position.
         if chosen is None:
-            chosen = (0.5, _extent(item, 0.5))
+            chosen = (start_param, _extent(item, start_param))
         param, box = chosen
         item["param"] = param
         item["text"].set_position(_point(item, param))
@@ -380,7 +407,7 @@ def visualize_conversion_graph_with_metrics(
     conversion_graph: ConversionGraph,
     output_path,
     show_edge_labels: bool = True,
-    edge_scores: dict[str, float] | None = None,
+    edge_scores: dict | None = None,
     include_languages: set[str] | None = None,
     show_colorbar: bool = True,
 ):
@@ -395,6 +422,8 @@ def visualize_conversion_graph_with_metrics(
             nodes.update([src, tgt])
             signature = f"{src}:{tgt}:{converter.name}"
             label = _library_label(converter) if show_edge_labels else _converter_label(converter.name)
+            if show_edge_labels and edge_scores:
+                label = f"{label}\n{_edge_metric_label(edge_scores, signature)}"
             edges_by_pair[(src, tgt)].append((label, signature))
 
     pos = _positions_for(sorted(nodes))
@@ -413,7 +442,7 @@ def visualize_conversion_graph_with_metrics(
         else:
             radii = _edge_radii(len(edge_entries))
         for (label, signature), rad in zip(edge_entries, radii):
-            score = edge_scores.get(signature) if edge_scores else None
+            score = _edge_reliability(edge_scores, signature) if edge_scores else None
             color = cmap(norm(score)) if score is not None else "#5F6B76"
             item = _draw_edge(
                 ax,
@@ -484,9 +513,9 @@ def visualize_conversion_graph_with_metrics(
         sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
         sm.set_array([])
         cbar = fig.colorbar(sm, ax=ax, fraction=0.028, pad=0.012)
-        cbar.set_label("Edge robustness score: (G + 0.5L) / total", fontsize=12.6)
+        cbar.set_label("Combined edge reliability: robustness x quality", fontsize=12.6)
         cbar.set_ticks([0.0, 1.0])
-        cbar.set_ticklabels(["Invalid (0)", "Good (1)"])
+        cbar.set_ticklabels(["Low (0)", "High (1)"])
         cbar.ax.tick_params(labelsize=12.6)
 
     xs = [x for x, _ in pos.values()]
@@ -502,7 +531,7 @@ def visualize_conversion_graph_with_metrics(
 
 def _best_language_pair_edges(
     conversion_graph: ConversionGraph,
-    edge_scores: dict[str, float] | None,
+    edge_scores: dict | None,
     include_languages: set[str] | None,
 ) -> tuple[set[str], dict[tuple[str, str], dict]]:
     nodes = set()
@@ -515,7 +544,7 @@ def _best_language_pair_edges(
                 continue
             nodes.update([src, tgt])
             signature = f"{src}:{tgt}:{converter.name}"
-            score = _edge_score(edge_scores, signature)
+            score = _edge_reliability(edge_scores, signature)
             key = (src, tgt)
             if key not in best_edges or score > best_edges[key]["score"]:
                 best_edges[key] = {"score": score, "signature": signature}
@@ -548,29 +577,18 @@ def _rank_language_paths(
 
 
 def _path_label(path: list[str]) -> str:
-    return " -> ".join(_compact_label(language) for language in path)
+    return " > ".join(_compact_label(language) for language in path)
 
 
 def _draw_panel(ax, xy, width, height, title, lines, face="#FFFFFF", edge="#2C3945"):
     x, y = xy
-    patch = FancyBboxPatch(
-        (x, y),
-        width,
-        height,
-        boxstyle="round,pad=0.05,rounding_size=0.06",
-        linewidth=1.2,
-        edgecolor=edge,
-        facecolor=face,
-        zorder=7,
-    )
-    ax.add_patch(patch)
     ax.text(
-        x + width / 2,
+        x + 0.22,
         y + height - 0.20,
         title,
-        ha="center",
+        ha="left",
         va="top",
-        fontsize=20.0,
+        fontsize=24.0,
         fontweight="semibold",
         color="#17202A",
         zorder=8,
@@ -582,7 +600,7 @@ def _draw_panel(ax, xy, width, height, title, lines, face="#FFFFFF", edge="#2C39
             line,
             ha="left",
             va="top",
-            fontsize=18.0,
+            fontsize=21.6,
             color="#26313A",
             zorder=8,
         )
@@ -592,7 +610,7 @@ def visualize_graphical_abstract(
     conversion_graph: ConversionGraph,
     output_path,
     include_languages: set[str] | None = None,
-    edge_scores: dict[str, float] | None = None,
+    edge_scores: dict | None = None,
 ):
     """Render the graphical abstract as an orchestrated path-ranking example.
 
@@ -640,21 +658,7 @@ def visualize_graphical_abstract(
         is_winning_edge = highlighted_edge_ranks.get((src, tgt)) == 0
         color = highlighted_edges.get((src, tgt), edge_color)
         score = best_edges[(src, tgt)]["score"]
-        if is_winning_edge:
-            glow = FancyArrowPatch(
-                pos[src],
-                pos[tgt],
-                arrowstyle="-|>",
-                mutation_scale=18,
-                linewidth=7.2,
-                color="#9EC5F8",
-                alpha=0.55,
-                shrinkA=44,
-                shrinkB=44,
-                connectionstyle=f"arc3,rad={rad}",
-                zorder=2,
-            )
-            ax.add_patch(glow)
+        signature = best_edges[(src, tgt)]["signature"]
         arrow = FancyArrowPatch(
             pos[src],
             pos[tgt],
@@ -720,7 +724,7 @@ def visualize_graphical_abstract(
     request_text = f"Task: {_compact_label(GRAPHICAL_ABSTRACT_SOURCE)} -> {_compact_label(GRAPHICAL_ABSTRACT_TARGET)}"
     request_xy = (2.55, 0.98)
     request_width = 4.25
-    request_height = 0.96
+    request_height = 1.22
     orchestrator_xy = (2.55, -0.60)
     orchestrator_width = 4.25
     orchestrator_height = 1.32
@@ -744,26 +748,15 @@ def visualize_graphical_abstract(
         face="#FFFFFF",
     )
 
-    table_x, table_y = 2.35, -2.64
-    table_w, table_h = 5.05, 1.76
-    table = FancyBboxPatch(
-        (table_x, table_y),
-        table_w,
-        table_h,
-        boxstyle="round,pad=0.05,rounding_size=0.06",
-        linewidth=1.15,
-        edgecolor="#2C3945",
-        facecolor="#FFFFFF",
-        zorder=7,
-    )
-    ax.add_patch(table)
+    table_x, table_y = 2.25, -2.64
+    table_w, table_h = 5.98, 1.76
     ax.text(
         table_x + 0.12,
         table_y + table_h - 0.18,
         "Ranked paths",
         ha="left",
         va="top",
-        fontsize=20.0,
+        fontsize=24.0,
         fontweight="semibold",
         color="#17202A",
         zorder=8,
@@ -774,7 +767,7 @@ def visualize_graphical_abstract(
         "Score",
         ha="right",
         va="top",
-        fontsize=18.0,
+        fontsize=21.6,
         fontweight="semibold",
         color="#17202A",
         zorder=8,
@@ -788,7 +781,7 @@ def visualize_graphical_abstract(
             f"{row_index + 1}. {_path_label(path)}",
             ha="left",
             va="top",
-            fontsize=17.0,
+            fontsize=20.4,
             color=color,
             zorder=8,
         )
@@ -798,17 +791,29 @@ def visualize_graphical_abstract(
             f"{score:.2f}",
             ha="right",
             va="top",
-            fontsize=17.0,
+            fontsize=20.4,
             color="#17202A",
             zorder=8,
         )
+        if row_index == 0:
+            ax.text(
+                table_x + table_w - 0.04,
+                y,
+                "✓",
+                ha="left",
+                va="top",
+                fontsize=20.4,
+                fontweight="semibold",
+                color="#2E8B57",
+                zorder=8,
+            )
     ax.text(
         table_x + 0.13,
         table_y + 0.10,
-        "Path score = product of edge robustness scores",
+        "Path score = product of edge reliability scores",
         ha="left",
         va="bottom",
-        fontsize=13.0,
+        fontsize=15.6,
         color="#5D6873",
         zorder=8,
     )
@@ -839,19 +844,9 @@ def visualize_graphical_abstract(
 
     xs = [x for x, _ in pos.values()]
     ys = [y for _, y in pos.values()]
-    ax.set_xlim(min(xs) - 0.8, 7.70)
+    ax.set_xlim(min(xs) - 0.8, 8.55)
     ax.set_ylim(min(ys) - 2.08, max(ys) + 1.12)
     ax.axis("off")
-    fig.text(
-        0.5,
-        0.955,
-        GRAPHICAL_ABSTRACT_TITLE,
-        ha="center",
-        va="center",
-        fontsize=34,
-        fontweight="semibold",
-        color="#17202A",
-    )
-    fig.tight_layout(rect=(0, 0, 1, 0.84), pad=0.03)
+    fig.tight_layout(pad=0.03)
     fig.savefig(output_path, dpi=300, facecolor="white")
     plt.close(fig)

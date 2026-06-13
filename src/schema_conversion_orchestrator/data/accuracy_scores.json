@@ -56,7 +56,7 @@
       "jaccard": 0.0,
       "score": 0.0,
       "cases": 88,
-      "successes": 0
+      "successes": 4
     },
     "JsonSchema:SHACL_TTL:jsonschema2shacl": {
       "f1": 0.0167,

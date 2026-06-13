@@ -61,7 +61,7 @@ from schema_conversion_orchestrator.converters.base import Converter  # noqa: E4
 from schema_conversion_orchestrator.converters.registry import register_converters  # noqa: E402
 from schema_conversion_orchestrator.domain.conversion_graph import find_paths  # noqa: E402
 from schema_conversion_orchestrator.domain.conversion_types import ConversionPath, ConversionResult  # noqa: E402
-from schema_conversion_orchestrator.domain.schema_types import SchemaLanguage  # noqa: E402
+from schema_conversion_orchestrator.domain.schema_types import SchemaLanguage, schema_language_from_string  # noqa: E402
 
 
 SOURCE_LANGUAGES = [
@@ -91,6 +91,7 @@ LANGUAGE_EXTENSIONS = {
     SchemaLanguage.SHACL_JSON_LD.value: ".jsonld",
     SchemaLanguage.LinkMl.value: ".yaml",
     SchemaLanguage.MdModels.value: ".md",
+    SchemaLanguage.Protobuf.value: ".proto",
 }
 
 REVIEW_FIELDS = [
@@ -355,6 +356,8 @@ def run_evaluation(
     output_dir: Path,
     run_id: str,
     only_core_languages: bool,
+    source_languages: list[SchemaLanguage] | None = None,
+    target_languages: list[SchemaLanguage] | None = None,
     reset_converters: list[str] | None = None,
 ) -> Path:
     global OUTPUT_DIR
@@ -373,7 +376,9 @@ def run_evaluation(
     )
 
     service = ConversionService(register_converters(only_core_languages=only_core_languages))
-    inputs = discover_inputs(input_dir, SOURCE_LANGUAGES)
+    source_languages = source_languages or SOURCE_LANGUAGES
+    target_languages = target_languages or TARGET_LANGUAGES
+    inputs = discover_inputs(input_dir, source_languages)
 
     final_review_rows: list[dict[str, str | int | bool | None]] = []
     edge_review_rows: list[dict[str, str | int | bool | None]] = []
@@ -386,7 +391,7 @@ def run_evaluation(
 
         for input_file in input_files:
             input_schema = input_file.read_text(encoding="utf-8")
-            for target in TARGET_LANGUAGES:
+            for target in target_languages:
                 if source == target:
                     continue
 
@@ -594,6 +599,26 @@ def main() -> None:
     parser.add_argument("--run-id", default=datetime.now().strftime("%Y%m%d_%H%M%S"))
     parser.add_argument("--full-graph", action="store_true", help="Use all registered converters, not only core-language converters.")
     parser.add_argument(
+        "--source-language",
+        action="append",
+        default=[],
+        metavar="LANGUAGE",
+        help=(
+            "Restrict input source languages for this run. Repeatable, e.g. "
+            "--source-language LinkMl --source-language MdModels. Defaults to the core corpus."
+        ),
+    )
+    parser.add_argument(
+        "--target-language",
+        action="append",
+        default=[],
+        metavar="LANGUAGE",
+        help=(
+            "Restrict target languages for this run. Repeatable, e.g. "
+            "--target-language Protobuf. Defaults to the core matrix targets."
+        ),
+    )
+    parser.add_argument(
         "--reset-converter",
         action="append",
         default=[],
@@ -606,12 +631,16 @@ def main() -> None:
         ),
     )
     args = parser.parse_args()
+    source_languages = [schema_language_from_string(value) for value in args.source_language] or None
+    target_languages = [schema_language_from_string(value) for value in args.target_language] or None
 
     run_dir = run_evaluation(
         input_dir=args.input_dir,
         output_dir=args.output_dir,
         run_id=args.run_id,
         only_core_languages=not args.full_graph,
+        source_languages=source_languages,
+        target_languages=target_languages,
         reset_converters=args.reset_converter,
     )
     print(f"Evaluation run stored in {run_dir}")

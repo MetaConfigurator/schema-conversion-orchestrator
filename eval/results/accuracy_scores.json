@@ -3,32 +3,74 @@
     "SHACL_TTL:JsonSchema:shacl-bridge": {
       "f1": 0.9281,
       "jaccard": 0.89,
+      "score": 0.9281,
       "cases": 39,
       "successes": 39
     },
-    "SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema": {
-      "f1": 0.4265,
-      "jaccard": 0.2897,
+    "SHACL_TTL:JsonSchema:shacl-jsonschema-converter": {
+      "f1": 0.4668,
+      "jaccard": 0.3416,
+      "score": 0.4668,
       "cases": 39,
       "successes": 35
     },
+    "SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema": {
+      "f1": 0.4472,
+      "jaccard": 0.4278,
+      "score": 0.4472,
+      "cases": 39,
+      "successes": 20
+    },
     "SHACL_TTL:SHACL_JSON_LD:RdfLib -> SHACL_JSON_LD:JsonSchema:shacl-bridge": {
-      "f1": 0.4983,
-      "jaccard": 0.3581,
+      "f1": 0.8512,
+      "jaccard": 0.8088,
+      "score": 0.8512,
       "cases": 39,
       "successes": 38
     },
     "SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:@comake/shacl-to-json-schema": {
-      "f1": 0.4265,
-      "jaccard": 0.2897,
+      "f1": 0.2122,
+      "jaccard": 0.1641,
+      "score": 0.2122,
       "cases": 39,
-      "successes": 35
+      "successes": 20
     },
     "SHACL_TTL:SHACL_JSON_LD:n3 and rdf-ext -> SHACL_JSON_LD:JsonSchema:shacl-bridge": {
-      "f1": 0.524,
-      "jaccard": 0.3837,
+      "f1": 0.8768,
+      "jaccard": 0.8344,
+      "score": 0.8768,
       "cases": 39,
       "successes": 39
+    }
+  },
+  "JsonSchema->SHACL_TTL": {
+    "JsonSchema:LinkMl:LinkMl schema_automator JsonSchemaImportEngine -> LinkMl:SHACL_TTL:LinkML SHACL_TTL Generator": {
+      "f1": 0.0065,
+      "jaccard": 0.0034,
+      "score": 0.0065,
+      "cases": 88,
+      "successes": 87
+    },
+    "JsonSchema:MdModels:MdModels DataModel from JsonSchema -> MdModels:SHACL_TTL:MdModels Templates: SHACL_TTL": {
+      "f1": 0.0,
+      "jaccard": 0.0,
+      "score": 0.0,
+      "cases": 88,
+      "successes": 4
+    },
+    "JsonSchema:SHACL_TTL:jsonschema2shacl": {
+      "f1": 0.0167,
+      "jaccard": 0.0114,
+      "score": 0.0167,
+      "cases": 88,
+      "successes": 86
+    },
+    "JsonSchema:SHACL_TTL:shacl-bridge": {
+      "f1": 0.9841,
+      "jaccard": 0.9754,
+      "score": 0.9841,
+      "cases": 88,
+      "successes": 88
     }
   }
 }

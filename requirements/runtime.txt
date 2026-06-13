@@ -5,7 +5,7 @@ gevent
 linkml
 jsonschema2shacl
 mdmodels
-mdmodels_core
+mdmodels_core==0.2.10
 schema_automator
 strenum
 Werkzeug

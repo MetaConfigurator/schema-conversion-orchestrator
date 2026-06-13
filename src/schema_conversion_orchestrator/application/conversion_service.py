@@ -4,13 +4,7 @@ from schema_conversion_orchestrator.application.attempt_conversions import attem
 from schema_conversion_orchestrator.converters.base import Converter
 from schema_conversion_orchestrator.domain.conversion_graph import build_conversion_graph, find_paths
 from schema_conversion_orchestrator.domain.conversion_types import ConversionGraph, ConversionResults
-from schema_conversion_orchestrator.domain.accuracy_scores import has_accuracy_scores
-from schema_conversion_orchestrator.domain.edge_robustness import has_robustness_scores
-from schema_conversion_orchestrator.domain.ranking import (
-    rank_with_strategy_accuracy_based,
-    rank_with_strategy_edge_robustness,
-    rank_with_strategy_character_length,
-)
+from schema_conversion_orchestrator.domain.ranking import rank_results
 from schema_conversion_orchestrator.domain.schema_types import SchemaLanguage
 
 
@@ -41,14 +35,8 @@ class ConversionService:
         return sorted(results, key=lambda x: x[0], reverse=True)
 
     def _rank_results(self, results: ConversionResults, source: SchemaLanguage, target: SchemaLanguage) -> None:
-        # Ranking is fully automatic, applied in a fixed priority order:
-        #   1. accuracy scores for this source -> target task, if available;
-        #   2. otherwise per-edge robustness scores (product over the path's
-        #      edges; unevaluated edges default to 0.5, ties broken by length);
-        #   3. otherwise the naive character-length heuristic.
-        if has_accuracy_scores(source.value, target.value):
-            rank_with_strategy_accuracy_based(results, source.value, target.value)
-        elif has_robustness_scores():
-            rank_with_strategy_edge_robustness(results)
-        else:
-            rank_with_strategy_character_length(results)
+        # Ranking is fully automatic: a single fallback chain that orders
+        # successful attempts by benchmark accuracy (where available), then by
+        # empirical edge quality, then by shorter path, then by larger output
+        # (see schema_conversion_orchestrator.domain.ranking.rank_results).
+        rank_results(results, source.value, target.value)
