@@ -42,7 +42,7 @@ from plotting_conversion_graph import (  # noqa: E402
 
 DEFAULT_OUTPUT_DIR = RESULTS_DIR / "orchestrator_outputs"
 RESULTS_ROBUSTNESS_PATH = RESULTS_DIR / "edge_robustness_scores.json"
-PROTOBUF_EDGE_ROBUSTNESS_PATH = RESULTS_DIR / "protobuf_edge_outputs" / "edge_robustness_scores.json"
+PROTOBUF_EDGE_ROBUSTNESS_PATH = DEFAULT_OUTPUT_DIR / "protobuf_edge_robustness_scores.json"
 EVALUATION_LANGUAGES = {
     "JsonSchema",
     "Xsd",

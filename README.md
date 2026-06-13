@@ -129,15 +129,21 @@ A ready-made example request is in `scripts/send_test_request.py`.
 ## Conversion Path Ranking
 
 When several paths connect the source and target language, the returned
-attempts are ranked so that the most faithful result surfaces first; failed
-attempts are always sorted below successful ones. Two strategies are available:
+attempts are ranked so the most faithful result surfaces first. Failed attempts
+always sort below successful ones. Successful attempts are ordered by a single
+fallback chain, where each criterion only breaks the ties left by the previous
+one:
 
-- **Least character loss** (`LeastCharacterLoss`, default): a fallback that
-  prefers the largest successful output, assuming dropped constraints tend to
-  shorten a schema.
-- **Accuracy-based** (`AccuracyBased`): ranks paths by benchmark-derived accuracy
-  scores. Chosen automatically whenever offline scores exist for the requested
-  source/target pair (currently the SHACL <-> JSON Schema conversions).
+1. **Benchmark accuracy**, where offline accuracy scores exist for the requested
+   source/target pair (currently the SHACL <-> JSON Schema conversions).
+2. **Empirical edge quality**: the product of the path's per-edge quality scores.
+   Unevaluated edges default to `0.5`, so this is always defined and favors
+   shorter paths when nothing is measured.
+3. **Shorter path**: fewer converter edges.
+4. **Larger output**: assumes dropped constraints tend to shorten a schema.
+
+The accuracy and edge-quality scores come from the offline evaluations described
+in [eval/README.md](eval/README.md).
 
 ## Test
 

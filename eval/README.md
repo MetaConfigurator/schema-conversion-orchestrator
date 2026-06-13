@@ -102,7 +102,7 @@ PYTHONPATH=src venv/bin/python eval/evaluate.py \
 
 Dropped rows revert to the default: `I` for invalid output, blank for valid output that needs a fresh judgement.
 
-`final_outputs.csv` drives both the orchestrator-level matrix and the default edge reliability scores. The matrix counts only the best-ranked path per source/target/input. Edge reliability is estimated from direct one-step rows in `final_outputs.csv`, where the path has exactly one converter and the final output is therefore that converter's direct output on a real source-language schema. Edge scores separate syntactic robustness from quality: robustness is the fraction of reviewed direct outputs with automatically valid output; quality is `(G + 0.5L) / total` over those automatically valid direct outputs; reliability is `robustness * quality` and is used for edge coloring. The orchestrator ranks paths by the product of edge quality scores (syntactic failures are already known at ranking time and sort last, so only the expected quality of successful output matters).
+`final_outputs.csv` drives both the orchestrator-level matrix and the default edge reliability scores. The matrix counts only the best-ranked path per source/target/input. Edge reliability is estimated from direct one-step rows in `final_outputs.csv`, where the path has exactly one converter and the final output is therefore that converter's direct output on a real source-language schema. Edge scores separate syntactic robustness from quality: robustness is the fraction of reviewed direct outputs with automatically valid output; quality is `(G + 0.5L) / total` over those automatically valid direct outputs; reliability is `robustness * quality` and is used for edge coloring. At runtime the orchestrator ranks paths by the product of edge quality scores (failures sort last, so only the expected quality of successful output matters), after any benchmark accuracy score and with ties broken by shorter path and then larger output.
 
 Intermediate-step annotations in `edge_outputs.csv` are still supported for diagnostics with `eval/plot_orchestrator_evaluation.py --edge-score-source intermediate-edge`, but this mode is deprecated and is not used for the paper figures by default.
 
@@ -130,6 +130,10 @@ A matrix cell reads:
 ```
 
 `4P` is the number of discovered paths for the source-target pair; `2G 2L 1I` summarises the best-ranked result over the input files. The orchestrator matrix uses the red-yellow-green scale `(G + 0.5L) / total` over best-ranked final outputs. The edge graph colors direct converter edges by combined reliability (`robustness * quality`) from one-step final outputs and labels evaluated edges with both components (`R` for syntactic robustness, `Q` for conditional quality). `conversion_graph_all_languages.png` shows the full registered graph with neutral edges (topology only, since the broad evaluation does not cover every language).
+
+### Protobuf edges
+
+Protobuf and the other generated targets sit outside the main matrix, so the Protobuf-targeting edges were evaluated in a separate run that restricts the targets to Protobuf. Its outputs live in the same tree: the run under `runs/20260612_protobuf_edges`, the annotations in `review/protobuf_final_outputs.csv` and `review/protobuf_edge_outputs.csv`, and the per-edge scores in `protobuf_edge_robustness_scores.json`. `plot_orchestrator_evaluation.py` reads that scores file (filtered to `:Protobuf:` edges) and colors those edges in the conversion-graph figure.
 
 ## Accuracy benchmarks
 

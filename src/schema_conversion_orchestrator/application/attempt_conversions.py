@@ -1,9 +1,5 @@
 import traceback
 from typing import List
-try:
-    from enum import StrEnum
-except ImportError:
-    from strenum import StrEnum
 
 from schema_conversion_orchestrator.converters.base import Converter
 from schema_conversion_orchestrator.domain.conversion_types import (
@@ -20,10 +16,6 @@ PRINT_STEPS_IN_CONSOLE = False
 DETAILED_ERROR_OUTPUT = True
 DETAILED_RESULT_OUTPUT = False
 ERROR_OUTPUT_INCLUDE_PREVIOUS_RUNS = True
-
-
-class ConversionStrategy(StrEnum):
-    LeastCharacterLoss = "LeastCharacterLoss"
 
 
 class ConversionPathError(Exception):
